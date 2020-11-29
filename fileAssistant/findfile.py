@@ -58,8 +58,7 @@ def findfile(item,fdir=os.path.abspath(os.curdir),match=False):
     rs=[rs_file,rs_dir]
     return rs
 #
-def start():
-    pass
+def startloop():
     resu=findfile(item,fdir,match=mth)
     print('='*5,'files found:','='*5)
     ct=1
@@ -71,7 +70,6 @@ def start():
         ct+=1
     #
     print('='*5,'file search finished!','='*5)
-
     print('='*5,'folders found:','='*5)
     ct=1
     for i in resu[1]:
@@ -83,34 +81,36 @@ def start():
         ct+=1
     #
     print('='*5,'folders search finished!','='*5)
-    #
+    return
 #
-# define the search mode:
-mth=input(r'>>> whether in match mode(y/n; default no.):')
-if mth == r'y':
-    mth=True
-    print('you must match the whole string.')
-else:
-    # pass
-    mth=False
-    print('no need to match the whole string.')
-print('\n'*1)
-#
-# type in search string:
-item=input(r'>>> type in regular expression to search:')
-# start searching:
-while True:
+if __name__=='__main__':
+# set the directory to search:
     fdir=r'D:\\skandha\\a-Project\\TangShanProject'
-    print('\n','-'*3,r'Search Description','-'*5)
-    print(r'search item:',item)
-    print(r'search in this path as project root directory:',fdir)
-    print('-'*3,r'Search Description','-'*5,'\n')
-    start()
-    item=input(r'>>> type in regular expression to search:')
-    if item==r'exit' or len(item)==0:
-        break
+# define the search mode:
+    mth=input(r'>>> whether in match mode(y/n; default no.):')
+    if mth == r'y':
+        mth=True
+        print('you must match the whole string.')
     else:
-        # print('\n')
-        continue
-# input("Press <enter> to close the window...")
+        mth=False
+        print('no need to match the whole string.')
+    print('\n'*1)
+    #
+# type in search string:
+    item=input(r'>>> type in regular expression to search:')
+# start searching:
+    while True:
+        print('\n','-'*3,r'Search Description','-'*5)
+        print(r'search item:',item)
+        print(r'search in this path as project root directory:',fdir)
+        print('-'*3,r'Search Description','-'*5,'\n')
+        startloop()
+        item=input(r'>>> type in regular expression to search:')
+        if item==r'exit' or len(item)==0:
+            break
+        else:
+            # print('\n')
+            continue
+    return
+    # input("Press <enter> to close the window...")
 

@@ -75,7 +75,7 @@ def oneprintpdf(pdfdir):
     #     pass
     return
 #
-def start():
+def startprint():
     '''
     start printing the files in the given directory one after another.
     '''
@@ -103,4 +103,6 @@ def start():
     print(r'-'*5,'\n')
     print(finishword ,'\n')
 #
-start()
+if __name__=='__main__':
+    startprint()
+    return
