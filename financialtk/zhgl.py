@@ -25,7 +25,7 @@ class Acct:
         self.isdr=True # 借方主导的科目,共同类科目也归入此类。
         self.iscr=-self.isdr # 贷方主导的科目
         self.cata='' # account catagory
-class zhgl:
+class Gele: # GeneralLedger
     '''
     General Ledgers in a sheet from an Excel Workbook.
     Default sheet name is '表页-1'.
@@ -39,11 +39,19 @@ class zhgl:
         self.columns=['凭证日期', '字', '号', '摘要', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
         print('GL初始化之前，需要手动添加glid列。')
         return
+    def showshtl(self):
+        from openpyxl import load_workbook
+        return load_workbook(self.fdir).sheetnames
+    def showcol(self):
+        from pandas import read_excel
+        col=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title).columns
+        return list(col)
     def getdata(self):
         from pandas import read_excel
         d1=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title)
+        # print(d1.columns)
         # self.columns=list(d1.columns)
-        d1.dtypes[5]='string'
+        # d1.dtypes[5]='string'
         # print(d1.dtypes)
         return d1
     # @classmethod
@@ -67,11 +75,17 @@ class zhgl:
                 pass
 #         print(fli)
         from pandas import DataFrame,concat
-        ftable=DataFrame([])
+        ftableli=[]
         for j in fli:
             ftable_fake=indf[indf[label]==j]
-#             print(ftable_fake)
-            ftable=concat([ftable,ftable_fake],join='outer',axis=0)
+            ftableli.append(ftable_fake)
+            continue
+        if len(ftableli)==0:
+            print('No result filtered.')
+            ftable=DataFrame([],index=[],columns=self.showcol())
+            pass
+        else:
+            ftable=concat(ftableli,axis=0,join='outer')
         return ftable
     def refilter(self,indf,regitem,label=r'',match=False):
         '''
