@@ -30,12 +30,13 @@ class zhgl:
     General Ledgers in a sheet from an Excel Workbook.
     Default sheet name is '表页-1'.
     '''
-    def __init__(self,fdir):
+    def __init__(self,fdir,shtna=r'表页-1',title=3):
         self.fdir=fdir
-        self.sheetname=r'表页-1'
-        self.title=3
+        self.sheetname=shtna
+        self.title=title
         # glid 是GL的主键。
-        self.columns=['凭证日期', '字', '号', '摘要', 'glid', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
+        self.columnsk=['凭证日期', '字', '号', '摘要', 'glid', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
+        self.columns=['凭证日期', '字', '号', '摘要', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
         print('GL初始化之前，需要手动添加glid列。')
         return
     def getdata(self):
