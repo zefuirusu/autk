@@ -19,6 +19,7 @@ class GL(object):
         self.shtna=shtna
         self.indf=indf
         self.data=pd.read_excel(gldir,sheet_name=shtna)
+        print(self.data.columns)
         pass
     #
     def sample(self,acct_id,filterIdCol,acquired_rate=0.31,drcrdesc=[r'借方',r'贷方']):
@@ -31,7 +32,8 @@ class GL(object):
         if self.indf==None:
             gl=pd.read_excel(self.gldir,sheet_name=self.shtna)
         else:
-            gl=self.indf
+            gl=pd.read_excel(self.gldir,sheet_name=self.shtna)
+            # gl=self.indf
         # regitem=r'^'+str(acct_id)+r'.*'
         regitem=str(acct_id)
         theAcct=gl.filter(regitem,filterIdCol)

@@ -9,7 +9,7 @@ import os
 print('Current Directory:')
 print(os.path.abspath(os.curdir))
 #
-def findfile(item,fdir=os.path.abspath(os.curdir),match=False):
+def find(item,fdir=os.path.abspath(os.curdir),match=False):
     '''
     Find the file you need in a directory.
     Regular Expression is supported.
@@ -59,7 +59,7 @@ def findfile(item,fdir=os.path.abspath(os.curdir),match=False):
     return rs
 #
 def startloop():
-    resu=findfile(item,fdir,match=mth)
+    resu=find(item,fdir,match=mth)
     print('='*5,'files found:','='*5)
     ct=1
     for i in resu[0]:
