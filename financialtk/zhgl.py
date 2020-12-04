@@ -214,6 +214,7 @@ class Gele: # GeneralLedger
             n_dr_start+=1
             dr_sample=theAcct.nlargest(n=n_dr_start,columns=[drcrdesc[0]],keep='last')
             dr_sam_rate=dr_sample[drcrdesc[0]].sum(axis=0)/acct_sum[0]
+        # n_cr_start如果贷方没有发生额,此处会报错.
         n_cr_start=int(start_nums[1]/2)
         n_cr_start=1
         cr_sample=theAcct.nlargest(n=n_cr_start,columns=[drcrdesc[1]],keep='last')
@@ -239,4 +240,16 @@ class Gele: # GeneralLedger
         print('sampling accsum rate:')
         print(sample_sum/acct_sum)
         return final_sample
-
+    def wsample(self,account,savedir):
+        '''
+        account is an instance object of class Acct with attributes of 'accid' and 'name'.
+        '''
+        from openpyxl import load_workbook
+        wb=load_workbook(savedir)
+        from pandas import ExcelWriter
+        wter=ExcelWriter(savedir,engine='openpyxl')
+        wter.book=wb
+        s1=self.sample(account.accid,filterIdCol,acquired_rate=0.81,drcrdesc=[r'借方',r'贷方'])
+        s1.to_excel(wter,sheet_name=account.name)
+        wter.save()
+        wter.close()
