@@ -1,23 +1,16 @@
 #!/usr/bin/env python
 # coding=utf-8
 '''
-从审计系统里读取账套数据，查询凭证，导出Excel之后，进行抽象，得到zhgl类。
+Acct是对Account的抽象,会计账户;
+Gele是对General Ledger的抽象,序时账.
 '''
-class ChartOfAccount:
-    '''
-    Chart of Account is a table where you can get reference from Account ID to Account Name.
-    会计科目表,可以对应查找科目名称与科目编码。
-    '''
-    def __init__(self,filedir=''):
-        self.filedir=filedir
-        return
-    def getid(acc_name):
-        pass
-    def getna(acc_id):
-        pass
 class Acct:
+    '''
+    Acct是对会计账户的抽象.
+    '''
     def __init__(self,name='主营业务收入',accid=r'6001'):
         '''
+        class of Account.
         初始化，传入科目名称，科目编码，增加方向，账户类别。
         '''
         self.name=name # 科目名称
@@ -29,14 +22,17 @@ class Gele: # GeneralLedger
     '''
     General Ledgers in a sheet from an Excel Workbook.
     Default sheet name is '表页-1'.
+    从审计系统里,读取账套数据，查询凭证，导出序时账和余额表Excel之后，进行抽象，得到zhgl类。
+    Gele.sample()方法是有缺陷的,对某方向上累计金额未0的科目无效,会报错,原因在于acct_sum的计算会遇到0/0的情况.
+    Gele.sample()的bug已经修复,但有个不足之处,从算法上讲,该抽样的"目标累计金额"是根据序时账GL的发生额计算出的,其实由于账务系统可能存在同账户金额互相转的情况,可能存在GL发生额大于实际发生额的情况,解决之道是从余额表TB获取计算"目标累计金额",如此可获得准确的该账户借方/贷方的发生额.
     '''
     def __init__(self,fdir,shtna=r'表页-1',title=3):
         self.fdir=fdir
         self.sheetname=shtna
         self.title=title
         # glid 是GL的主键。
-        self.columnsk=['凭证日期', '字', '号', '摘要', 'glid', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
-        self.columns=['凭证日期', '字', '号', '摘要', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
+        self.cols=['凭证日期', '字', '号', '摘要', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
+        self.colsk=['凭证日期', '字', '号', '摘要', 'glid', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
         print('GL初始化之前，需要手动添加glid列。')
         return
     def showshtl(self):
@@ -187,58 +183,63 @@ class Gele: # GeneralLedger
         Finally return a pandas.DataFrame as a sample.
         '''
         from pandas import read_excel
-        gl=read_excel(self.fdir,sheet_name=self.sheetname)
+        # gl=read_excel(self.fdir,sheet_name=self.sheetname)
+        gl=self.getdata()
         # regitem=r'^'+str(acct_id)+r'.*'
         regitem=str(acct_id)
-        theAcct=gl.filter(regitem,filterIdCol)
+        theAcct=gl.filter(regitem,filterIdCol) # 筛出被抽样的科目.
         print('this account shape:',theAcct.shape)
-        # theAcct.to_excel(r'D:\skandha\a-Project\zhongTang\广东中糖贸易发展有限公司\余额表和序时账\filterAcct-test.xlsx')
-        acct_sum=theAcct[drcrdesc].sum(axis=0)
+        # from autk.zhchart import ChartAccount
+        # chac=ChartAccount()
+        # acctli=chac.getAcct()
+        from pandas import DataFrame
+        # acct_sum=DataFrame([acct_li[2],acct_li[3]],index=inAcct.accid,columns=drcrdesc)
+        acct_sum=theAcct[drcrdesc].sum(axis=0) # 被指定的科目借方贷方求和.这里要修改,要从余额表读取此数.
         sub_count=theAcct[drcrdesc].count(axis=0)
-        averAmount=acct_sum/sub_count
-        target_sum=acct_sum*acquired_rate
-        start_nums=target_sum/averAmount
-        #
-        # theAcct=theAcct.drop_duplicates()
-        # print(theAcct.shape)
-        #
-        n_dr_start=int(start_nums[0]/2)
-        n_dr_start=1
-        dr_sample=theAcct.nlargest(n=n_dr_start,columns=[drcrdesc[0]],keep='last')
-        # print('dr sample sum:',dr_sample[drcrdesc].sum(axis=0))
-        dr_sam_rate=dr_sample[drcrdesc[0]].sum(axis=0)/acct_sum[0]
-        while dr_sam_rate<acquired_rate:
-            # print('current dr sum:',dr_sample[drcrdesc[0]].sum(axis=0))
-            # print('target dr sum:',acquired_rate*acct_sum[0])
-            # print('current dr sum rate:',dr_sam_rate)
-            n_dr_start+=1
+        averAmount=acct_sum/sub_count # 平均每个样本的金额
+        target_sum=acct_sum*acquired_rate # 依据目标金额比例,确定目标累计合计金额.
+        # start_nums=target_sum/averAmount # 计算初始样本容量,如acct_sum为0,start_nums会报错.
+        def get_dr_sample():
+            # 开始抽借方样本:
+            n_dr_start=int(target_sum[0]/averAmount[0]/2)
+            # n_dr_start=1
             dr_sample=theAcct.nlargest(n=n_dr_start,columns=[drcrdesc[0]],keep='last')
+            # print('dr sample sum:',dr_sample[drcrdesc].sum(axis=0))
             dr_sam_rate=dr_sample[drcrdesc[0]].sum(axis=0)/acct_sum[0]
-        # n_cr_start如果贷方没有发生额,此处会报错.
-        n_cr_start=int(start_nums[1]/2)
-        n_cr_start=1
-        cr_sample=theAcct.nlargest(n=n_cr_start,columns=[drcrdesc[1]],keep='last')
-        # print('cr sample sum:',cr_sample[drcrdesc].sum(axis=0))
-        cr_sam_rate=cr_sample[drcrdesc[1]].sum(axis=0)/acct_sum[1]
-        while cr_sam_rate<acquired_rate:
-            # print('current cr sum:',cr_sample[drcrdesc[1]].sum(axis=0))
-            # print('target cr sum:',acquired_rate*acct_sum[1])
-            # print('current cr sum rate:',cr_sam_rate)
-            n_cr_start+=1
+            while dr_sam_rate<acquired_rate:
+                # n_dr_start+=1
+                dr_sample=theAcct.nlargest(n=n_dr_start,columns=[drcrdesc[0]],keep='last')
+                dr_sam_rate=dr_sample[drcrdesc[0]].sum(axis=0)/acct_sum[0]
+                continue
+            return dr_sample
+        def get_cr_sample():
+            # 开始抽贷方样本:
+            n_cr_start=int(target_sum[1]/averAmount[1]/2)
+            # n_cr_start=1
             cr_sample=theAcct.nlargest(n=n_cr_start,columns=[drcrdesc[1]],keep='last')
             cr_sam_rate=cr_sample[drcrdesc[1]].sum(axis=0)/acct_sum[1]
+            while cr_sam_rate<acquired_rate:
+                n_cr_start+=1
+                cr_sample=theAcct.nlargest(n=n_cr_start,columns=[drcrdesc[1]],keep='last')
+                cr_sam_rate=cr_sample[drcrdesc[1]].sum(axis=0)/acct_sum[1]
+                continue
+            return cr_sample
+        # 将借方贷方样本拼接在一起:
+        if acct_sum[0] !=0: 
+            dr=get_dr_sample()
+            pass
+        else:
+            dr=DataFrame([],columns=theAcct.columns)
+            pass
+        if acct_sum[1] !=0:
+            cr=get_cr_sample()
+            pass
+        else:
+            cr=DataFrame([],columns=theAcct.columns)
+            pass
         from pandas import concat
-        final_sample=concat([dr_sample,cr_sample],axis=0,join='outer',ignore_index=True)
+        final_sample=concat([dr,cr],axis=0,join='outer',ignore_index=True)
         final_sample=final_sample.reset_index(drop=True)
-        print('total account sum:')
-        print(acct_sum)
-        sample_sum=final_sample[drcrdesc].sum(axis=0)
-        print('sample shape:')
-        print(final_sample.shape)
-        print('sample sum:')
-        print(sample_sum)
-        print('sampling accsum rate:')
-        print(sample_sum/acct_sum)
         return final_sample
     def wsample(self,account,savedir):
         '''
