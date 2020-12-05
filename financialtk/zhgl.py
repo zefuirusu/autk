@@ -77,7 +77,7 @@ class Gele: # GeneralLedger
             ftableli.append(ftable_fake)
             continue
         if len(ftableli)==0:
-            print('No result filtered.')
+            # print('No result filtered.')
             ftable=DataFrame([],index=[],columns=self.showcol())
             pass
         else:
@@ -199,6 +199,8 @@ class Gele: # GeneralLedger
         averAmount=acct_sum/sub_count # 平均每个样本的金额
         target_sum=acct_sum*acquired_rate # 依据目标金额比例,确定目标累计合计金额.
         # start_nums=target_sum/averAmount # 计算初始样本容量,如acct_sum为0,start_nums会报错.
+        print(target_sum)
+        print(type(target_sum))
         def get_dr_sample():
             # 开始抽借方样本:
             n_dr_start=int(target_sum[0]/averAmount[0]/2)
@@ -207,7 +209,7 @@ class Gele: # GeneralLedger
             # print('dr sample sum:',dr_sample[drcrdesc].sum(axis=0))
             dr_sam_rate=dr_sample[drcrdesc[0]].sum(axis=0)/acct_sum[0]
             while dr_sam_rate<acquired_rate:
-                # n_dr_start+=1
+                n_dr_start+=1
                 dr_sample=theAcct.nlargest(n=n_dr_start,columns=[drcrdesc[0]],keep='last')
                 dr_sam_rate=dr_sample[drcrdesc[0]].sum(axis=0)/acct_sum[0]
                 continue
