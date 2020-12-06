@@ -1,7 +1,7 @@
 # Tutorial
 ## Automatic Sampling
 1. 新建`'./sampleAcctID_list.txt'`,将要抽样的科目编码列在上边,一行一科目,不要有空行.
-2. `zhsample.py`写了一半,尚未完成,该脚本会读取上述被抽科目.
+2. `sample.py`写了一半,尚未完成,该脚本会读取上述被抽科目.还应该写一个对待抽凭证号去重并输出的功能.
 ### Expample:
 ```python
 #!/usr/bin/env python
@@ -29,5 +29,4 @@ s1.multiSample(acctlidir1,sdir1)
 
 s2=AuSample(gl2,cht2)
 s2.multiSample(acctlidir2,sdir2)
-
 ```

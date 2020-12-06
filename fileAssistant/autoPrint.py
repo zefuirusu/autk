@@ -17,6 +17,50 @@ indir=input(r'=>where are the files that you want to print?(type in directory)')
 # 参数设置:
 prtlogdir=indir+r'-prtlog.txt'
 appdir=r'C:\Program Files (x86)\Adobe\Acrobat DC\Acrobat\Acrobat.exe'
+class AuPrint:
+    '''
+    此class尚不完美,self.oneprint需要确认,self.multiprint还没添加.
+    '''
+    def __init__(self,logdir,appdir):
+        self.logdir=logdir
+        self.appdir=appdir
+        return
+    # from autk.financialtk.logwriter import wtlog
+    def wtlog(self,logline):
+        with open(self.logdir,mode='a',encoding='utf-8') as f:
+            f.write(logline)
+            f.write('\n')
+        return
+    def oneprint(self,pdfdir):
+        '''
+        print a file once.
+        '''
+        fname=in_pdf_path.split(os.sep)
+        fname=fname=[-1]
+        pdfprinter=Application(backend='uia').start(appdir+r' '+pdfdir)
+        #
+        # pdfprinter['Dialog'].menu_select("文件 -> 打印(P)... Ctrl+P")
+        pdfprinter['Dialog'].type_keys("^p", with_spaces = False)
+        #
+        # pdfprinter['Dialog'].type_keys("ENTER", with_spaces = False)
+        pdfprinter['Dialog']['打印2'].click()
+        #
+        try:
+            pdfprinter[fname+r' - Adobe Acrobat Pro DC']['关闭'].click()
+            # pdfprinter[fname+r' - Adobe Acrobat Pro DC'].type_keys("^q", with_spaces = False)
+        except pywinauto.timings.TimeoutError:
+            # time.sleep(3)
+            pdfprinter=Application(backend='uia').start(appdir+r' '+pdfdir)
+            pdfprinter['Dialog'].type_keys("^p", with_spaces = False)
+            pdfprinter['Dialog']['打印2'].click()
+        except pywinauto.findwindows.ElementNotFoundError:
+            pdfprinter['Dialog'].type_keys("^q", with_spaces = False)
+        else:
+            pass
+        finally:
+            time.sleep(1.3)
+        return
+
 # 新建日志文件,并写入初始信息:
 def wtlog(logline):
     '''

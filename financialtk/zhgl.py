@@ -6,7 +6,7 @@ Gele是对General Ledger的抽象,序时账.
 '''
 class Acct:
     '''
-    Acct是对会计账户的抽象.
+    Acct is short for Account, with two main attributes, 'name' and 'accid'.
     '''
     def __init__(self,name='主营业务收入',accid=r'6001'):
         '''
@@ -15,9 +15,9 @@ class Acct:
         '''
         self.name=name # 科目名称
         self.accid=str(accid) # 科目编码
-        self.isdr=True # 借方主导的科目,共同类科目也归入此类。
-        self.iscr=-self.isdr # 贷方主导的科目
-        self.cata='' # account catagory
+        # self.isdr=True # 借方主导的科目,共同类科目也归入此类。
+        # self.iscr=-self.isdr # 贷方主导的科目
+        # self.cata='' # account catagory
 class Gele: # GeneralLedger
     '''
     General Ledgers in a sheet from an Excel Workbook.

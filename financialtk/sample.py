@@ -7,6 +7,9 @@ class AuSample:
     无论是序时账还是余额表,发生额的名字都叫['借方','贷方'].
     '''
     def __init__(self,gl_object,chart_object):
+        '''
+        self.gl is an instance of class Gele and self.chart is an instance of class ChartAccount.
+        '''
         self.gl=gl_object
         self.chart=chart_object
         return
@@ -54,6 +57,8 @@ class AuSample:
         '''
         在savedir处的Excel文件必须事先创建.
         '''
+        logdir='./sampleFailed.txt'
+        from autk.logwriter import wtlog
         from openpyxl import load_workbook
         from pandas import ExcelWriter
         wb=load_workbook(savedir)
@@ -64,9 +69,7 @@ class AuSample:
             acctli=''.join(acctli).split('\n')
             acctli.pop()
             pass
-        logdir='./sampleFailed.txt'
-        from autk.logwriter import wtlog
-        wtlog('=====',logdir)
+        wtlog('==multiSample==',logdir)
         for i in acctli:
             acct=Acct(self.chart.getna(i),i)
             try:
@@ -78,7 +81,6 @@ class AuSample:
                 lgline=acct.accid+'\t'+acct.name
                 wtlog(lgline,logdir)
                 pass
-            print(m_sample)
             if m_sample.shape[0]==0:
                 wtlog('no sample for this account:',logdir)
                 no_sample_line=acct.accid+'\t'+acct.name
@@ -86,6 +88,8 @@ class AuSample:
                 pass
             else:
                 m_sample.to_excel(wter,sheet_name=str(acct.accid+acct.name))
+                # yield list(m_sample.loc[:,'glid'].drop_duplicates())
+                print(m_sample)
                 wter.save()
         wter.close()
         return
