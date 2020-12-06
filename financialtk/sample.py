@@ -45,6 +45,7 @@ class AuSample:
                     sloop=theAcct.nlargest(n=n_start,columns=[dcr],keep='last')
                     sam_rate=sloop[dcr].sum(axis=0)/acct_sum[dcr]
                     continue
+                print(sam_rate)
             return sloop
         def drcr_sample():
             for i in drcrdesc:
