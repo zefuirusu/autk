@@ -33,7 +33,10 @@ class Gele: # GeneralLedger
         # glid 是GL的主键。
         self.cols=['凭证日期', '字', '号', '摘要', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
         self.colsk=['凭证日期', '字', '号', '摘要', 'glid', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
-        print('GL初始化之前，需要手动添加glid列。')
+        print('Before GL initialized，column "glid" should be added.')
+        print('GL path:\n',self.fdir)
+        print('GL sheet:\t',self.sheetname)
+        print('GL columns:\n',self.cols)
         return
     def showshtl(self):
         from openpyxl import load_workbook

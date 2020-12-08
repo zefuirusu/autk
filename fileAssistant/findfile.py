@@ -85,7 +85,8 @@ def startloop():
 #
 if __name__=='__main__':
 # set the directory to search:
-    fdir=r'D:\\skandha\\a-Project\\TangShanProject'
+    # fdir=r'D:\\skandha\\a-Project\\TangShanProject'
+    fdir=os.path.abspath(os.curdir)
 # define the search mode:
     mth=input(r'>>> whether in match mode(y/n; default no.):')
     if mth == r'y':
@@ -111,6 +112,5 @@ if __name__=='__main__':
         else:
             # print('\n')
             continue
-    return
+    pass
     # input("Press <enter> to close the window...")
-
