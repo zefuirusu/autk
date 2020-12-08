@@ -27,16 +27,19 @@ class Gele: # GeneralLedger
     Gele.sample()的bug已经修复,但有个不足之处,从算法上讲,该抽样的"目标累计金额"是根据序时账GL的发生额计算出的,其实由于账务系统可能存在同账户金额互相转的情况,可能存在GL发生额大于实际发生额的情况,解决之道是从余额表TB获取计算"目标累计金额",如此可获得准确的该账户借方/贷方的发生额.
     '''
     def __init__(self,fdir,shtna=r'表页-1',title=3):
+        import os
         self.fdir=fdir
         self.sheetname=shtna
         self.title=title
+        self.glname=str(self.fdir.split(os.sep)[-1])
         # glid 是GL的主键。
         self.cols=['凭证日期', '字', '号', '摘要', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
         self.colsk=['凭证日期', '字', '号', '摘要', 'glid', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
         print('Before GL initialized，column "glid" should be added.')
+        print('=====\nGL name:%s'%self.glname)
         print('GL path:\n',self.fdir)
         print('GL sheet:\t',self.sheetname)
-        print('GL columns:\n',self.cols)
+        # print('GL columns:\n',self.cols)
         return
     def showshtl(self):
         from openpyxl import load_workbook
