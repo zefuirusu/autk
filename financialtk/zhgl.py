@@ -29,6 +29,7 @@ class Gele: # GeneralLedger
     def __init__(self,fdir,shtna=r'表页-1',title=3):
         import os
         self.fdir=fdir
+        self.path=fdir
         self.sheetname=shtna
         self.title=title
         self.glname=str(self.fdir.split(os.sep)[-1])
@@ -41,10 +42,10 @@ class Gele: # GeneralLedger
         print('GL sheet:\t',self.sheetname)
         # print('GL columns:\n',self.cols)
         return
-    def showshtl(self):
+    def getshtli(self):
         from openpyxl import load_workbook
         return load_workbook(self.fdir).sheetnames
-    def showcol(self):
+    def getcol(self):
         from pandas import read_excel
         col=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title).columns
         return list(col)
@@ -84,7 +85,7 @@ class Gele: # GeneralLedger
             continue
         if len(ftableli)==0:
             # print('No result filtered.')
-            ftable=DataFrame([],index=[],columns=self.showcol())
+            ftable=DataFrame([],index=[],columns=self.getcol())
             pass
         else:
             ftable=concat(ftableli,axis=0,join='outer')

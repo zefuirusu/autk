@@ -21,6 +21,7 @@ class AuSample:
     '''
     def __init__(self,gl_object,chart_object,savedir,acctli_dir='./accountList.txt',logdir='./sampleLog.txt',acquired_rate=0.81,drcrdesc=[r'借方',r'贷方']):
         '''
+        Get sample according to GL and TB.
         self.gl is an instance of class Gele and self.chart is an instance of class ChartAccount.
         '''
         self.gl=gl_object
