@@ -46,6 +46,14 @@ class ActStated:
     def randSample(self,acquired_rate=0.81,drcrdesc=['借方发生额', '贷方发生额']):
         data=self.getdata()
         s=data.sample(frac=acquired_rate,axis=0,random_state=None,replace=False)
+        if str('glid') in s.columns:
+            glid_li=s['glid'].drop_duplicates().sort_values(ascending=True) # ascending=True为升序排列.
+            for i in glid_li:
+                print(i)
+                continue
+            pass
+        else:
+            print('You have not add "glid" into columns!')
         return s
     def simpSample(self):
         from pandas import concat
@@ -53,13 +61,15 @@ class ActStated:
         dr=data.nlargest(n=10,columns=self.acctcol[0],keep='last')
         cr=data.nlargest(n=10,columns=self.acctcol[1],keep='last')
         s=concat([dr,cr],axis=0,join='inner')
+        print('='*5)
         if str('glid') in s.columns:
             glid_li=s['glid'].drop_duplicates().sort_values(ascending=True) # ascending=True为升序排列.
             for i in glid_li:
                 print(i)
                 continue
             pass
-        print('='*5)
+        else:
+            print('You have not add "glid" into columns!')
         print('Simple Sample Summary for %s'%self.filename)
         print('Sample Volume:')
         print(s[self.acctcol].sum(axis=0))
