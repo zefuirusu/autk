@@ -7,7 +7,7 @@ Import config files at `./MS-Office-UI` into Microsoft Excel/Word, and you'll ge
 Read account data from Trial Balance and calculate target sum amount, then get a sample of specific account, from the General Ledger.
 Three files needed:
 - Trial Balance exported from E-Audit.
-- General Ledger exported from E-Audi.
+- General Ledger exported from E-Audit.
 - A text file containing account id list which you want to inspect.
 ### 2.2
 ## 3.File Handling Assistant
