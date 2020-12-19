@@ -27,6 +27,7 @@ class PreScan:
                     pass
         return
     def scan(self):
+        import os
         import re
         from openpyxl import load_workbook
         from pandas import read_excel
@@ -35,19 +36,24 @@ class PreScan:
             wb=load_workbook(i,keep_vba=True)
             shtli=wb.sheetnames
             # print(shtli)
+            print('='*5)
+            print(i.split(os.sep)[-1])
             for j in shtli:
                 if re.search('审定',j) !=None:
                     print(j)
-                    ws=wb.get_sheet_by_name(j)
-                    print(ws)
-                    for n in range(19,25):
-                        for m in range(1,10):
-                            print(ws.cell(n,1).value)
-                            # print(read_excel(i,sheet_name=j).iloc[19,1])
+                    d=read_excel(i,sheet_name=j)
+                    # ws=wb.get_sheet_by_name(j)
+                    # print(ws)
+                    for n in range(0,d.shape[0]):
+                        # for m in range(1,10):
+                        #     print(ws.cell(n,1).value)
+                        print(d.iloc[n,1])
                         continue
                     pass
                 else:
                     # print('failed!')
                     pass
+                print('%s is finished.'%j)
+            print('-'*5)
             continue
         return
