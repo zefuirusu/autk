@@ -16,8 +16,8 @@ cht2=ChartAccount('./inputData/西安余额表.xlsx')
 gl1=Gele('./inputData/北京序时账-202001-10.xlsx',shtna='bjgl10',title=0)
 gl2=Gele('./inputData/西安序时账-202001-10.xlsx',shtna='xagl10',title=0)
 
-lg1='./s_log/bj_sam_log.txt'
-lg2='./s_log/xa_sam_log.txt'
+lg1='./logfiles/bj_sam_log.txt'
+lg2='./logfiles/xa_sam_log.txt'
 # start testing:
 def bj_sample():
     s1=AuSample(gl1,cht1,sdir1,acctli_dir=acctlidir1,logdir=lg1)
