@@ -21,7 +21,7 @@ class ChartAccount: # Chart of Account
         Get all data of the input Chart of Account from the Excel file.
         '''
         from pandas import read_excel
-        return read_excel(self.path,sheet_name=self.sheetname,header=self.title)
+        return read_excel(self.path,sheet_name=self.sheetname,header=self.title,engine='openpyxl')
     def getAcct(self,account):
         '''
         Get Account Data.

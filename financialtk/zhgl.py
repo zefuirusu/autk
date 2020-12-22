@@ -47,11 +47,11 @@ class Gele: # GeneralLedger
         return load_workbook(self.fdir).sheetnames
     def getcol(self):
         from pandas import read_excel
-        col=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title).columns
+        col=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title,engine='openpyxl').columns
         return list(col)
     def getdata(self):
         from pandas import read_excel
-        d1=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title)
+        d1=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title,engine='openpyxl')
         # print(d1.columns)
         # self.columns=list(d1.columns)
         # d1.dtypes[5]='string'
