@@ -19,44 +19,86 @@ class AuSample:
     List drcrdesc is the columns for [Debit_Amount,Credit_Amount] in Gele (General Ledger).
     无论是序时账还是余额表,发生额的名字都叫['借方','贷方'].
     '''
-    def __init__(self,gl_object,chart_object,savedir,acctli_dir='./accountList.txt',logdir='./sampleLog.txt',acquired_rate=0.81,drcrdesc=[r'借方',r'贷方']):
+    def __init__(self,gl_object,chart_object,savedir,acctli_dir='./accountList.txt',logdir='./sampleLog.txt',acquired_rate=0.81,drcrdesc=[r'借方发生金额',r'贷方发生金额']):
         '''
         Get sample according to GL and TB.
         self.gl is an instance of class Gele and self.chart is an instance of class ChartAccount.
+        parameters:(gl_object,chart_object,savedir,acctli_dir,logdir,acquired_rate,drcrdesc)
+        余额表是['借方发生','贷方发生']
+        序时账是['借方发生金额','贷方发生金额']
         '''
         self.gl=gl_object
         self.chart=chart_object
-        self.logdir=logdir
         self.savedir=savedir
-        with open(acctli_dir,mode='r',encoding='utf-8') as f:
-            li=f.readlines()
-            li=''.join(li).split('\n')
-            li=set(li)
-            li=list(li)
-            if '\n' in li:
-                li.remove('\n')
-            else:
+        self.logdir=logdir
+        if acctli_dir != None:
+            with open(acctli_dir,mode='r',encoding='utf-8') as f:
+                li=f.readlines()
+                li=''.join(li).split('\n')
+                li=set(li)
+                li=list(li)
+                if '\n' in li:
+                    li.remove('\n')
+                else:
+                    pass
+                if '' in li:
+                    li.remove('')
+                else:
+                    pass
+                li.sort(reverse=False) # reverse=False 升序.
+                self.acctli=li
                 pass
-            if '' in li:
-                li.remove('')
-            else:
-                pass
-            li.sort(reverse=False) # reverse=False 升序.
-            self.acctli=li
-            pass
-        # print(self.acctli)
+            # print(self.acctli)
         self.acquired_rate=acquired_rate
         self.drcrdesc=drcrdesc
         return
     def logw(self,logline):
         wtlog(logline,self.logdir)
         return
+    def matsample(self,inAcct,mater_level=20000):
+        '''
+        get sample according to materiality.
+        parameters:inAcct,mater_level
+        '''
+        from pandas import DataFrame,Series
+        theAcct=self.gl.filter(inAcct.accid,r'科目编号') # 系统导出的序时账/余额表里是"科目编号",有时候从被审计单位系统导出的GL为“科目编码".
+        acct_data=self.chart.getAcct(inAcct) # 从余额表获取发生额,用以计算抽样比例.
+        # acct_sum=DataFrame({self.drcrdesc[0]:acct_data[2],self.drcrdesc[1]:acct_data[3]},index=[inAcct.accid],columns=self.drcrdesc)
+        acct_sum=Series([acct_data[2],acct_data[3]],name=inAcct.accid,index=self.drcrdesc) # acct_sum是acct_data的一部分.
+        # acct_sum=theAcct[self.drcrdesc].sum(axis=0) # 被指定的科目借方贷方求和.这里要修改,要从余额表读取此数.
+        def sidesample(dcr):
+            if acct_sum[dcr] != 0: # acct_sum[dcr] !=0的情况.
+                if acct_sum[dcr]<0:
+                    logline=dcr+' of %s is negative,so need attention.'%(inAcct.accid)
+                    print(logline)
+                    dcr_sample=theAcct[theAcct[dcr]<=-mater_level]
+                else: # acct_sum[dcr]>0的情况.
+                    dcr_sample=theAcct[theAcct[dcr]>=mater_level]
+                    sam_rate=dcr_sample[dcr].sum(axis=0)/acct_sum[dcr]
+                    logline=dcr+'sam_rate:%s'%sam_rate
+                    print(logline)
+                    self.logw(logline)
+            else: #acct_sum[dcr]==0:
+                logline='%s :no need to sample.'%dcr
+                print(logline)
+                self.logw(logline)
+                dcr_sample=DataFrame([],columns=theAcct.columns)
+            return dcr_sample
+        def getside():
+            for i in self.drcrdesc:
+                side=sidesample(i)
+                yield side
+        from pandas import concat
+        final_sample=concat(getside(),axis=0,join='outer',ignore_index=True)
+        final_sample=final_sample.reset_index(drop=True)
+        return final_sample
     def getSample(self,inAcct):
         '''
+        parameters:inAcct
         获取某科目的借方/贷方样本.
         '''
         from pandas import DataFrame,Series
-        theAcct=self.gl.filter(inAcct.accid,r'科目编码') # 系统导出的序时账/余额表里是"科目编号".
+        theAcct=self.gl.filter(inAcct.accid,r'科目编号') # 系统导出的序时账/余额表里是"科目编号",有时候从被审计单位系统导出的GL为“科目编码".
         acct_data=self.chart.getAcct(inAcct) # 从余额表获取发生额,用以计算抽样比例.
         # acct_sum=DataFrame({self.drcrdesc[0]:acct_data[2],self.drcrdesc[1]:acct_data[3]},index=[inAcct.accid],columns=self.drcrdesc)
         acct_sum=Series([acct_data[2],acct_data[3]],name=inAcct.accid,index=self.drcrdesc) # acct_sum是acct_data的一部分.

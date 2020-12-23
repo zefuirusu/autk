@@ -14,7 +14,10 @@ class Acct:
         初始化，传入科目名称，科目编码，增加方向，账户类别。
         '''
         self.name=name # 科目名称
-        self.accid=str(accid) # 科目编码
+        try:
+            self.accid=str(int(accid)) # 科目编码
+        except:
+            self.accid=str(accid)
         # self.isdr=True # 借方主导的科目,共同类科目也归入此类。
         # self.iscr=-self.isdr # 贷方主导的科目
         # self.cata='' # account catagory
@@ -167,8 +170,9 @@ class Gele: # GeneralLedger
         account is an instance object of class Acct.
         得到某科目的所有记录,默认不含对方科目.
         '''
-        regitem=r'^'+account.accid+r'.*'
-        km=self.filter(regitem,r'科目编码') # km is the Chinese Phonetical Alphabets "Ke Mu".
+        regitem=r'^'+str(account.accid)+r'.*'
+        print(regitem)
+        km=self.filter(regitem,r'科目编号') # km is the Chinese Phonetical Alphabets "Ke Mu".
         idli=list(km['glid'].drop_duplicates())
         def itersearch(idli):
             for i in idli:
@@ -182,7 +186,7 @@ class Gele: # GeneralLedger
         else:
             resu=km
         return resu
-    def sample(self,acct_id,filterIdCol,acquired_rate=0.81,drcrdesc=[r'借方',r'贷方']):
+    def sample(self,acct_id,filterIdCol,acquired_rate=0.81,drcrdesc=[r'借方发生金额',r'贷方发生金额']):
         '''
         'acct_id',short for 'account id number', can be regular expression to filter in the column of 'filterIdCol'.
         'acquired_rate' is the accumulate sum rate that is required by the manager.
@@ -259,7 +263,7 @@ class Gele: # GeneralLedger
         from pandas import ExcelWriter
         wter=ExcelWriter(savedir,engine='openpyxl')
         wter.book=wb
-        s1=self.sample(account.accid,filterIdCol,acquired_rate=0.81,drcrdesc=[r'借方',r'贷方'])
+        s1=self.sample(account.accid,filterIdCol,acquired_rate=0.81,drcrdesc=[r'借方发生金额',r'贷方发生金额'])
         s1.to_excel(wter,sheet_name=account.name)
         wter.save()
         wter.close()

@@ -2,7 +2,15 @@
 # coding=utf-8
 '''
 Plan before sampling.
+Materiality
+tolerance
 '''
+class Materiality:
+    '''
+    重要性水平
+    '''
+    def __init__(self):
+        pass
 class PreScan:
     def __init__(self,wshtdir):
         '''
