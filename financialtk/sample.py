@@ -60,6 +60,9 @@ class AuSample:
         get sample according to materiality.
         parameters:inAcct,mater_level
         '''
+        logline='=='+str(inAcct.accid)+':'+str(inAcct.name)+'=='
+        print(logline)
+        self.logw(logline)
         from pandas import DataFrame,Series
         theAcct=self.gl.filter(inAcct.accid,r'科目编号') # 系统导出的序时账/余额表里是"科目编号",有时候从被审计单位系统导出的GL为“科目编码".
         acct_data=self.chart.getAcct(inAcct) # 从余额表获取发生额,用以计算抽样比例.
@@ -69,15 +72,21 @@ class AuSample:
         def sidesample(dcr):
             if acct_sum[dcr] != 0: # acct_sum[dcr] !=0的情况.
                 if acct_sum[dcr]<0:
+                    dcr_sample=theAcct[theAcct[dcr]<=-mater_level]
                     logline=dcr+' of %s is negative,so need attention.'%(inAcct.accid)
                     print(logline)
-                    dcr_sample=theAcct[theAcct[dcr]<=-mater_level]
                 else: # acct_sum[dcr]>0的情况.
                     dcr_sample=theAcct[theAcct[dcr]>=mater_level]
                     sam_rate=dcr_sample[dcr].sum(axis=0)/acct_sum[dcr]
                     logline=dcr+'sam_rate:%s'%sam_rate
                     print(logline)
                     self.logw(logline)
+                if dcr_sample.shape[0]==0:
+                    logline='no sample got for%s'%str(inAcct.name+inAcct.accid)+dcr
+                    self.logw(logline)
+                    print(logline)
+                else:
+                    pass
             else: #acct_sum[dcr]==0:
                 logline='%s :no need to sample.'%dcr
                 print(logline)
@@ -91,6 +100,7 @@ class AuSample:
         from pandas import concat
         final_sample=concat(getside(),axis=0,join='outer',ignore_index=True)
         final_sample=final_sample.reset_index(drop=True)
+        self.logw('-----')
         return final_sample
     def getSample(self,inAcct):
         '''
