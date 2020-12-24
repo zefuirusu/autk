@@ -5,9 +5,9 @@
     1. AuSample类初始化时的部分属性没有得到充分利用,需要后期升级.
     2. AuSample.multiSample()和AuSample.getSample(inAcct)都是对金额抽样,而非对数量抽样,将来要更新一个对数量抽样的方法.
 '''
-from autk.zhchart import ChartAccount
-from autk.zhgl import Gele,Acct
-from autk.logwriter import wtlog
+from autk.financialtk.zhchart import ChartAccount
+from autk.financialtk.zhgl import Gele,Acct
+from autk.financialtk.logwriter import wtlog
 
 class AuSample:
     '''

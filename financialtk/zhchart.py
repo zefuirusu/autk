@@ -13,7 +13,7 @@ class Acct:
         # self.iscr=-self.isdr # 贷方主导的科目
         # self.cata='' # account catagory
 '''
-from autk.zhgl import Acct
+from autk.financialtk.zhgl import Acct
 class ChartAccount: # Chart of Account
     '''
     Chart of Account is a table where you can get reference from Account ID to Account Name.
