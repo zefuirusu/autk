@@ -123,6 +123,9 @@ class Gele: # GeneralLedger
         ftable=concat(tableli,axis=0,join='outer')
         return ftable
     def salaryana(self):
+        '''
+        职工薪酬计提和分配的核查.
+        '''
         salary_id=r'2211'
         expense_id=['6601','6602','5001','5301','2211','1604']
         def transReg(accid):
