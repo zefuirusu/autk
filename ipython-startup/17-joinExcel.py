@@ -3,7 +3,7 @@
 import os
 import re
 import openpyxl as ox
-from findfile import find
+from autk.fileAssistant.findfile import find
 from pandas.core.frame import DataFrame
 #
 def compareli(li1=[],li2=[]):
@@ -39,7 +39,7 @@ def prejoin():
         print('sheets:',shtli)
         for j in shtli:
             print('\t','sheetName:',j)
-            print('\t'*2,'sheetCols:',pd.read_excel(i,sheet_name=j).columns)
+            print('\t'*2,'sheetCols:',pd.read_excel(i,sheet_name=j,engine='openpyxl').columns)
         print('-'*5)
 #
 def joinsheet(indir,outdir=os.path.abspath(os.curdir),shtli=None,keep=True,title=0,fill=False):
@@ -59,7 +59,7 @@ def joinsheet(indir,outdir=os.path.abspath(os.curdir),shtli=None,keep=True,title
     import pandas as pd
     d=pd.DataFrame([])
     for i in shtli:
-        d_fake=pd.read_excel(indir,sheet_name=i,header=title)
+        d_fake=pd.read_excel(indir,sheet_name=i,header=title,engine='openpyxl')
         if keep==True:
             d_fake['fromWhichSheet']=[str(i)]*d_fake.shape[0]
         else:
@@ -94,9 +94,9 @@ def joinsheetplus(bookli=os.listdir(os.path.abspath(os.curdir)),outdir=os.path.a
     for i in bookli:
         dir_fake=os.path.abspath(i)
         if shtna==None:
-            d_fake=pd.read_excel(dir_fake,header=title)
+            d_fake=pd.read_excel(dir_fake,header=title,engine='openpyxl')
         else:
-            d_fake=pd.read_excel(dir_fake,sheet_name=shtna,header=title)
+            d_fake=pd.read_excel(dir_fake,sheet_name=shtna,header=title,engine='openpyxl')
         if keep==True:
             d_fake['fromWhichBook']=[str(i)]*d_fake.shape[0]
         else:
@@ -128,7 +128,7 @@ def joinbook(bookli=os.listdir(os.path.abspath(os.curdir)),outdir=os.path.abspat
         else:
             pass
     for i in bkli:
-        b=pd.read_excel(i,sheet_name=shtna,title=0)
+        b=pd.read_excel(i,sheet_name=shtna,title=0,engine='openpyxl')
         b.to_excel(wter,sheet_name=str(i))
     wter.save()
 #
