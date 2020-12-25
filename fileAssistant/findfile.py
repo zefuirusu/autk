@@ -86,31 +86,31 @@ def startloop():
 if __name__=='__main__':
 # set the directory to search:
     # fdir=r'D:\\skandha\\a-Project\\TangShanProject'
-    fdir=os.path.abspath(os.curdir)
-# define the search mode:
-    mth=input(r'>>> whether in match mode(y/n; default no.):')
-    if mth == r'y':
-        mth=True
-        print('you must match the whole string.')
-    else:
-        mth=False
-        print('no need to match the whole string.')
-    print('\n'*1)
-    #
-# type in search string:
-    item=input(r'>>> type in regular expression to search:')
-# start searching:
-    while True:
-        print('\n','-'*3,r'Search Description','-'*5)
-        print(r'search item:',item)
-        print(r'search in this path as project root directory:',fdir)
-        print('-'*3,r'Search Description','-'*5,'\n')
-        startloop()
-        item=input(r'>>> type in regular expression to search:')
-        if item==r'exit' or len(item)==0:
-            break
-        else:
-            # print('\n')
-            continue
+    #fdir=os.path.abspath(os.curdir)
+## define the search mode:
+    #mth=input(r'>>> whether in match mode(y/n; default no.):')
+    #if mth == r'y':
+    #    mth=True
+    #    print('you must match the whole string.')
+    #else:
+    #    mth=False
+    #    print('no need to match the whole string.')
+    #print('\n'*1)
+    ##
+## type in search string:
+    #item=input(r'>>> type in regular expression to search:')
+## start searching:
+    #while True:
+    #    print('\n','-'*3,r'Search Description','-'*5)
+    #    print(r'search item:',item)
+    #    print(r'search in this path as project root directory:',fdir)
+    #    print('-'*3,r'Search Description','-'*5,'\n')
+    #    startloop()
+    #    item=input(r'>>> type in regular expression to search:')
+    #    if item==r'exit' or len(item)==0:
+    #        break
+    #    else:
+    #        # print('\n')
+    #        continue
     pass
     # input("Press <enter> to close the window...")
