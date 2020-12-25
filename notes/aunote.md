@@ -7,4 +7,8 @@ Taking notes is a good habbit/choice when participating in an auditing project n
 4. 在序时账中筛选上述glid,对[借方发生额!=0]的记录汇总分析,按[科目名称,科目编码]分类汇总.
 - 注意 序时账除了[借方发生额,贷方发生额]之外,必须有[科目编码,glid,月份]三个字段.
 - 职工薪酬计提和分配的差异算法大同小异.
+## 对序时账摘要分析的算法
+1. 分词分析并统计词频
+2. 输出结果,保存到文件.
+代码详见`./zhaiyAna_byJieba.py`
 
