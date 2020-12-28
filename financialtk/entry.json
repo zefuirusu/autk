@@ -1,0 +1,30 @@
+{
+    "glid":"",
+    "date":"",
+    "debit":[
+        {
+            "accid":"",
+            "accna":"",
+            "amount":""
+        },
+        {
+            "accid":"",
+            "accna":"",
+            "amount":""
+        }
+    ],
+    "credit":[
+        {
+            "accid":"",
+            "accna":"",
+            "amount":""
+        },
+        {
+            "accid":"",
+            "accna":"",
+            "amount":""
+        }
+
+    ]
+
+}

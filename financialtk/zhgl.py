@@ -54,14 +54,24 @@ class Gele: # GeneralLedger
         from pandas import read_excel
         col=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title,engine='openpyxl').columns
         return list(col)
-    def getdata(self):
+    def getdata(self,fillna=False):
         from pandas import read_excel
         d1=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title,engine='openpyxl')
+        if fillna==True:
+            d1=d1.fillna(float(0.0))
+        else:
+            pass
         # print(d1.columns)
         # self.columns=list(d1.columns)
         # d1.dtypes[5]='string'
         # print(d1.dtypes)
         return d1
+    def getgldata(self):
+        '''
+        Get data of General Ledgers and add the column 'glid'.
+        '''
+        from autk.financialtk.journal import EntryRecord,JEntry
+        pass
     # @classmethod
     def filter(self,regitem,label=r'',match=False):
         '''

@@ -1,6 +1,7 @@
 # Financial Leasing
 Also known as Modern Leasing or Equipment Leasing.
 融资租赁.
+[reference link](http://www.chinaacc.com/new/635_649_/2009_11_16_le831487161119002960.shtml)
 ## 术语
 未确认融资费用（unacknowledged financial charges;Unsettled Financing Expenses）
 未确认融资费用:最低租赁付款额-最低租赁付款额的现值。
