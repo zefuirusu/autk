@@ -77,7 +77,7 @@ class JoinExcel:
                 if fill==self.fill:
                     d_fake=d_fake.fillna(method='pad')
                     pass
-                else: fill==False
+                else: # fill==False
                     pass
                 d_fake=d_fake.drop_duplicates().reset_index(drop=True)
                 yield d_fake
