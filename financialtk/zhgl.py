@@ -54,24 +54,55 @@ class Gele: # GeneralLedger
         from pandas import read_excel
         col=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title,engine='openpyxl').columns
         return list(col)
-    def getdata(self,fillna=False):
+    def getdata(self,fillna=False): # get raw data without column "glid".
         from pandas import read_excel
         d1=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title,engine='openpyxl')
         if fillna==True:
             d1=d1.fillna(float(0.0))
         else:
             pass
-        # print(d1.columns)
-        # self.columns=list(d1.columns)
-        # d1.dtypes[5]='string'
-        # print(d1.dtypes)
         return d1
-    def getgldata(self):
+    def get_yield_record(self):
         '''
         Get data of General Ledgers and add the column 'glid'.
         '''
-        from autk.financialtk.journal import EntryRecord,JEntry
-        pass
+        from autk.financialtk.journal import EntryRecord
+        data=self.getdata(fillna=True)
+        def get_journal_entry(indf):
+            for i in indf.iterrows():
+                yield i
+        def get_entries(df_iterrows_element):
+            for i in df_iterrows_element:
+                entry_record=EntryRecord(i)
+                if entry_record.__dict__ != {}:
+                    yield entry_record
+                else:
+                    pass
+        return get_entries(get_journal_entry(data))
+    def getgldata(self):
+        from pandas import DataFrame
+        entry_record=self.get_yield_record()
+        def get_record_detail():
+            for i in entry_record:
+                yield i.__dict__
+        return DataFrame(get_record_detail())
+    def entry_yield(self):
+        '''
+        Yield each Journal Entry.
+        '''
+        from autk.financialtk.journal import JEntry,EntryRecord
+        data=self.getgldata()
+        def yield_glid(data):
+            glid_li=data['glid'].drop_duplicates()
+            glid_li=list(glid_li)
+            for i in glid_li:
+                one_entry_df=data[data['glid']==i]
+                yield [i,one_entry_df]
+                # for j in one_entry_df.iterrows():
+                #     yield EntryRecord(j)
+        for j in yield_glid(data):
+            yield JEntry(j[0],j[1])
+        # return yield_glid(data)
     # @classmethod
     def filter(self,regitem,label=r'',match=False):
         '''
