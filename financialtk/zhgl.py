@@ -36,9 +36,11 @@ class Gele: # GeneralLedger
         self.sheetname=shtna
         self.title=title
         self.glname=str(self.fdir.split(os.sep)[-1])
+        # from pandas import read_excel
+        # self.cols=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title,engine='openpyxl').columns
+        # self.cols=['凭证日期', '字', '号', '摘要', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
         # glid 是GL的主键。
-        self.cols=['凭证日期', '字', '号', '摘要', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
-        self.colsk=['凭证日期', '字', '号', '摘要', 'glid', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
+        # self.colsk=['凭证日期', '字', '号', '摘要', 'glid', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
         print('Before GL initialized，column "glid" should be added.')
         print('=====\nGL name:%s'%self.glname)
         print('GL path:\n',self.fdir)
@@ -48,7 +50,7 @@ class Gele: # GeneralLedger
     def getshtli(self):
         from openpyxl import load_workbook
         return load_workbook(self.fdir).sheetnames
-    def getcol(self):
+    def getcols(self):
         from pandas import read_excel
         col=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title,engine='openpyxl').columns
         return list(col)
