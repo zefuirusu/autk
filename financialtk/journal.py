@@ -2,7 +2,7 @@
 # coding=utf-8
 class EntryRecord:
     '''
-    Must be E-Audit output general ledgers of Excel.
+    Input file must be E-Audit output general ledgers of Excel.
     ['凭证日期', '字', '号', '摘要', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
     '''
     def __init__(self,df_iterrows_element,glid_cols=[0,1,2]):
@@ -53,6 +53,9 @@ class EntryRecord:
             pass
         pass
 class JEntry:
+    '''
+    Journal Entry.
+    '''
     # __slots__=('glid','date','scan','debit','credit') # static limit of S ?
     def __init__(self,glid,one_entry_df):
         dr_sum=one_entry_df['dr_amount'].sum(axis=0)
@@ -61,9 +64,9 @@ class JEntry:
             print('OK! Debit = Credit!')
         else:
             print('Woc! Dr and Cr not balenced!')
-        self.glid=glid # glid是序时账唯一索引,即主键
-        self.date=self.glid[0:10] # 记账日期
-        self.scan=one_entry_df['scan'] # 摘要
+        self.glid=glid # glid is the unique id of JEntry.
+        self.date=self.glid[0:10] # date of the Journal Entry Recording.
+        self.scan=one_entry_df['scan'] # summary or comments of each EntryRecord.
         self.debit=[]
         self.credit=[]
         for i in one_entry_df.iterrows():
