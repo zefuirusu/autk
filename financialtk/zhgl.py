@@ -298,7 +298,7 @@ class Gele: # GeneralLedger
         final_sample=concat([dr,cr],axis=0,join='outer',ignore_index=True)
         final_sample=final_sample.reset_index(drop=True)
         return final_sample
-    def wsample(self,account,savedir):
+    def wsample(self,filterIdCol,account,savedir):
         '''
         account is an instance object of class Acct with attributes of 'accid' and 'name'.
         '''
