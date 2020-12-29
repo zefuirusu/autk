@@ -62,54 +62,60 @@ class Gele: # GeneralLedger
         else:
             pass
         return d1
-    def get_yield_record(self):
+    def iterate_record(self):
         '''
-        Get data of General Ledgers and add the column 'glid'.
+        Iterate record of raw data of General Ledgers and add the column 'glid'.
+        Return a generator of EntryRecord, of which pure GL(with new column 'glid') consists.
+        This method requires 'self.getdata(self,fillna=True)' and is required by 'self.getgldata(self)'.
         '''
         from autk.financialtk.journal import EntryRecord
         data=self.getdata(fillna=True)
-        def get_journal_entry(indf):
+        def start_record_iteration(indf):
             for i in indf.iterrows():
                 yield i
-        def get_entries(df_iterrows_element):
+        def get_entry_records(df_iterrows_element):
             for i in df_iterrows_element:
                 entry_record=EntryRecord(i)
                 if entry_record.__dict__ != {}:
                     yield entry_record
                 else:
                     pass
-        return get_entries(get_journal_entry(data))
+        return get_entry_records(start_record_iteration(data))
     def getgldata(self):
+        '''
+        Get General Ledger Data with column 'glid' added.
+        This method requires 'self.iterate_record(self)'.
+        '''
         from pandas import DataFrame
-        entry_record=self.get_yield_record()
+        entry_record=self.iterate_record()
         def get_record_detail():
             for i in entry_record:
                 yield i.__dict__
         return DataFrame(get_record_detail())
-    def entry_yield(self):
+    def get_journal_entries(self):
         '''
-        Yield each Journal Entry.
+        Iterate each filteration of GL (returned by 'self.getgldata(self)') with 'glid'.
+        Return a generator of JEntry(Journal Entry).
+        This method requires 'self.getgldata(self)' and is (planned to be) required by 'self.getAccGl(self,account,pure=True)'.
         '''
         from autk.financialtk.journal import JEntry,EntryRecord
         data=self.getgldata()
-        def yield_glid(data):
+        def iterate_gl_filter(data):
             glid_li=data['glid'].drop_duplicates()
             glid_li=list(glid_li)
             for i in glid_li:
                 one_entry_df=data[data['glid']==i]
                 yield [i,one_entry_df]
-                # for j in one_entry_df.iterrows():
-                #     yield EntryRecord(j)
-        for j in yield_glid(data):
+        for j in iterate_gl_filter(data):
             yield JEntry(j[0],j[1])
-        # return yield_glid(data)
     # @classmethod
     def filter(self,regitem,label=r'',match=False):
         '''
-        filter the specific column of the table by regular expression.
+        Filter the specific column of the table by regular expression.
         '''
         import re
         indf=self.getdata()
+        # indf=self.getgldata() # Do not use the return of self.getgldata() as the input of this method.
         reg=re.compile(regitem)
         fli=[]
         for i in list(indf[label].drop_duplicates()):
@@ -118,11 +124,9 @@ class Gele: # GeneralLedger
             else:
                 b=re.match(reg,str(i))
             if b != None:
-#                 print(b,i)
                 fli.append(i)
             else:
                 pass
-#         print(fli)
         from pandas import DataFrame,concat
         ftableli=[]
         for j in fli:
@@ -130,7 +134,6 @@ class Gele: # GeneralLedger
             ftableli.append(ftable_fake)
             continue
         if len(ftableli)==0:
-            # print('No result filtered.')
             ftable=DataFrame([],index=[],columns=self.getcol())
             pass
         else:
@@ -149,18 +152,13 @@ class Gele: # GeneralLedger
             else:
                 b=re.match(reg,str(i))
             if b != None:
-#                 print(b,i)
                 fli.append(i)
             else:
                 pass
-#         print(fli)
         from pandas import DataFrame,concat
-        # ftable=DataFrame([])
         tableli=[]
         for j in fli:
             ftable_fake=indf[indf[label]==j]
-#             print(ftable_fake)
-            # ftable=concat([ftable,ftable_fake],join='outer',axis=0)
             tableli.append(ftable_fake)
             continue
         ftable=concat(tableli,axis=0,join='outer')
