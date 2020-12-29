@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
-def wtlog(logline,logdir):
+def wtlog(logline,logdir='./log_default.txt'):
     '''
     writing printing log file.
     logline is what you write and logdir is the log file location.

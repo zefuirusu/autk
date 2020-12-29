@@ -59,11 +59,15 @@ class JEntry:
     # __slots__=('glid','date','scan','debit','credit') # static limit of S ?
     def __init__(self,glid,one_entry_df):
         dr_sum=one_entry_df['dr_amount'].sum(axis=0)
+        dr_sum=float(dr_sum)
         cr_sum=one_entry_df['cr_amount'].sum(axis=0)
+        cr_sum=float(cr_sum)
         if dr_sum-cr_sum>=-0.009 and dr_sum-cr_sum<=0.009:
-            print('OK! Debit = Credit!')
+            pass
+            # print('OK! Debit = Credit!')
         else:
-            print('Woc! Dr and Cr not balenced!')
+            print('%s ! Dr/Cr not balenced!'%glid)
+            print('dr/cr:',dr_sum,'/',cr_sum)
         self.glid=glid # glid is the unique id of JEntry.
         self.date=self.glid[0:10] # date of the Journal Entry Recording.
         self.scan=one_entry_df['scan'] # summary or comments of each EntryRecord.
