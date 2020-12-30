@@ -1,5 +1,10 @@
 # AuNotes
 Taking notes is a good habbit/choice when participating in an auditing project near the end of the year.
+This file is the list of link references.
+## Reference Links List
+[在建工程](https://zhuanlan.zhihu.com/p/148759446)
+[融资租赁](http://www.chinaacc.com/new/635_649_/2009_11_16_le831487161119002960.shtml)
+
 ## 折旧计提分配差异查验算法概述
 1. 从余额表中找到相应的会计科目[成本费用类,累计折旧],获取其[科目编码,费用类借方发生额,累计折旧贷方发生额].
 2. 先计算其计提分配的总数是否相等,如总数相等则结束分析.
