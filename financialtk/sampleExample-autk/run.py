@@ -23,7 +23,6 @@ def bj_sample():
     s1=AuSample(gl1,cht1,sdir1,acctli_dir=acctlidir1,logdir=lg1)
     s1.multiSample()
     return
-# 到这里了:Name: 150142
 def xa_sample():
     s2=AuSample(gl2,cht2,sdir2,acctli_dir=acctlidir2,logdir=lg2)
     s2.multiSample()
