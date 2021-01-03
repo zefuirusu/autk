@@ -9,8 +9,16 @@ class Materiality:
     '''
     重要性水平
     '''
-    def __init__(self):
+    def __init__(self,xldir):
+        self.xldir=xldir
+        self.metadata=self.loadxl()
         pass
+    def loadxl(self):
+        from pandas import read_excel
+        m=read_excel(self.xldir,sheet_name='materiality',header=0,engine='openpyxl')
+        m=dict(zip(m.iloc[:,0],m.iloc[:,1]))
+        return m
+
 class PreScan:
     def __init__(self,wshtdir):
         '''
@@ -65,3 +73,4 @@ class PreScan:
             print('-'*5)
             continue
         return
+#

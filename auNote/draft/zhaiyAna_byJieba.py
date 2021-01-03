@@ -4,7 +4,7 @@ from pandas import read_excel
 import re
 from autk.financialtk.logwriter import wtlog
 def get_zhaiy(indir):
-    d=read_excel(indir,header=3)
+    d=read_excel(indir,header=3,engine='openpyxl')
     print(d.columns)
     z=d['摘要']
     z=list(z)
@@ -41,7 +41,7 @@ def test_jieba(zhaiyao,logdir='./jieba_log.txt'):
     return # word_count
 if __name__=='__main__':
     from threading import Thread
-    testdir='../bori/testSample/data/testGL-2020-930.xlsx'
+    testdir='./joinGL-bjXinLeiNeng-1-10月-output2020-1228.xlsx'
     # th1=Thread(test_thulac(get_zhaiy(testdir)))
     # th1.start()
     th2=Thread(test_jieba(get_zhaiy(testdir)))
