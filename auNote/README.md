@@ -6,6 +6,7 @@ This file is the list of link references.
 - [在建工程](https://zhuanlan.zhihu.com/p/148759446)
 - [融资租赁](http://www.chinaacc.com/new/635_649_/2009_11_16_le831487161119002960.shtml)
 ### Management Accounting
+
 ### Auditing
 - [存货底稿](https://zhuanlan.zhihu.com/p/84144157)
 - [审计重要性水平计算基准及百分比选择总结](https://bbs.esnai.com/thread-5419178-1-1.html)
