@@ -24,7 +24,9 @@ class ChartAccount: # Chart of Account
         self.path=chadir
         self.sheetname=shtna
         self.title=title
-        self.cols=['核', '科目编号', '科目名称', '数据类型', '科目方向', '期初', '借方发生', '贷方发生', '期末']
+        # self.cols=['核', '科目编号', '科目名称', '数据类型', '科目方向', '期初', '借方发生', '贷方发生', '期末']
+        from pandas import read_excel
+        self.cols=read_excel(self.path,sheet_name=self.sheetname,header=self.title,engine='openpyxl').columns
         pass
     def getdata(self):
         '''
