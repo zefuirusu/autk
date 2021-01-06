@@ -33,18 +33,6 @@ class AuSample:
         self.logdir=logdir
         if acctli_dir != None:
             with open(acctli_dir,mode='r',encoding='utf-8') as f:
-                li=f.readlines()
-                li=''.join(li).split('\n')
-                li=set(li)
-                li=list(li)
-                if '\n' in li:
-                    li.remove('\n')
-                else:
-                    pass
-                if '' in li:
-                    li.remove('')
-                else:
-                    pass
                 li.sort(reverse=False) # reverse=False 升序.
                 self.acctli=li
                 pass
@@ -218,3 +206,16 @@ class AuSample:
             self.logw('==end:%s=='%acct.accid)
         wter.close()
         return
+class genSample:
+    def __init__(self,gldir,shtna,title=0,method='pm'):
+        self.gldir=gldir
+        self.sheetname=shtna
+        self.title=title
+        self.method=method
+    def iterate_data(self):
+        '''
+        iterate rows and return EntryRecord data.
+        '''
+        from pandas import read_excel
+        from autk.financialtk.journal import EntryRecord
+    pass
