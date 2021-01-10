@@ -4,7 +4,7 @@ import re
 from numpy import nan
 from pandas import read_excel,DataFrame,concat
 class Acct:
-    def __init__(self,accna='MainRevenue',accid=r'6001'):
+    def __init__(self,accid=r'6001',accna='MainRevenue'):
         '''
         class of Account.
         Acct is short for Account, with two main attributes, 'name' and 'accid'.
@@ -16,9 +16,9 @@ class Acct:
         self.top_accid=self.accid[0:4]
         self.accna=name # name of the account, Account Name
         self.start_balance=None
-        dr_amount=None
-        cr_amount=None
-        end_balance=None
+        self.dr_amount=None
+        self.cr_amount=None
+        self.end_balance=None
         pass
     pass
 class ChartAccount:

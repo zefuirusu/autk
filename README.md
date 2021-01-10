@@ -32,3 +32,6 @@ When you need to print a large sum of `Portable Document Format(PDF)` Files with
 ## 4.Ipython Start-up Configuration
 `ipython` is a marvellous shell.
 By configuring python scripts at `~/.ipython/profile_default/startup` you can initialize some `General Ledger Class` to speed up your work with `Microsoft Office Excel` files.
+## Namo Amitabha
+```cpp
+```

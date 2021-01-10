@@ -23,11 +23,6 @@ class EntryRecord:
                 elif isinstance(element,str):
                     element=element
             return element
-        def iterate_id(ids):
-            for i in ids:
-                yield i
-                continue
-            pass
         def re_match(in_string,what):
             import re
             what=transType(what)
