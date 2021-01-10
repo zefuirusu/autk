@@ -3,13 +3,19 @@ Auditing Toolkit for auditors who are working hard but suffering a lot near the 
 ## 1.Microsoft Office Customized User Interface
 Import config files at `./MS-Office-UI` into Microsoft Excel/Word, and you'll get a pretty UI which benefits your work.
 ## 2.GL Processing
-### 2.1 Automatic Sampling
+### 2.1 Deploy
+```bash
+#!/usr/bin/bash
+git clone https://github.com/zefuirusu/autk.git ./autk
+cp -r ./autk ~/.local/lib/python/site-packages/
+```
+### 2.2 Automatic Sampling
 Read account data from Trial Balance and calculate target sum amount, then get a sample of specific account, from the General Ledger.
 Three files needed:
 - Trial Balance exported from E-Audit.
 - General Ledger exported from E-Audit.
 - A text file containing account id list which you want to inspect.
-### 2.2
+### 2.3
 ## 3.File Handling Assistant
 ### 3.1 File Searching Tool
 Find file on your local disk with `Regular Expression`.

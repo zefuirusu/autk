@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
+import re
+from numpy import nan
+from pandas import read_excel,DataFrame,concat
 class EntryRecord:
     def __init__(self,df_iterrows_element,glid_cols=[0,1,2]):
         self.index=list(df_iterrows_element[1].index)
