@@ -10,6 +10,7 @@ This file is the list of link references.
 ### Auditing
 - [存货底稿](https://zhuanlan.zhihu.com/p/84144157)
 - [审计重要性水平计算基准及百分比选择总结](https://bbs.esnai.com/thread-5419178-1-1.html)
+- [函证的替代测试](http://shuo.news.esnai.com/article/202004/201554.shtml)
     - 如果审计后重要性水平的基准金额变小，意味着重要性变小，一般会用审计后的基准数据来修改重要性水平；
     - 如果果审计后重要性水平的基准金额变大，如果大的不是特别离谱，出于谨慎性原则一般不需要修改重要性水平，因为此时工作已经按计划的重要性水平执行，工作是做多了而不是做少了.
 - [审计中重要性水平是如何应用的](https://www.zhihu.com/question/354188659)
