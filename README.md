@@ -35,3 +35,5 @@ By configuring python scripts at `~/.ipython/profile_default/startup` you can in
 ## Namo Amitabha
 ```cpp
 ```
+## Others
+[copy whole sheet in Excel with openpyxl](https://blog.csdn.net/d9394952/article/details/88236217)
