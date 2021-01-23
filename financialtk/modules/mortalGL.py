@@ -140,6 +140,7 @@ class MGL:
     def get_raw_data(self):
         from pandas import read_excel
         self.data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
+        return self.data
         pass
     def iterate_record(self):
         self.get_raw_data()
