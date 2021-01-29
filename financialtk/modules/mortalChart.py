@@ -25,7 +25,7 @@ class ChartAccount:
     '''
     Chart of Account is a table where you can get reference from Account ID to Account Name.
     '''
-    def __init(self,fpath,shtna,title=0):
+    def __init__(self,fpath,shtna,title=0):
         self.fpath=fpath
         self.shtna=shtna
         self.title=title
