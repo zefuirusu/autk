@@ -33,11 +33,11 @@ class EntryRecord:
             for i in df_iterrows_element[1].index:
                 series_element=df_iterrows_element[1][i]
                 series_element_index=transType(i)
-                if re_match('.*日期.*',series_element_index) != None: 
+                if re_match('.*日期.*',series_element_index) != None:
                     id_list.append(series_element)
-                elif re_match('.*字.*',series_element_index) != None:
-                    id_list.append(series_element)
-                elif re_match('.*号.*',series_element_index) != None: 
+                elif re_match('.*字.*',series_element_index) != None: 
+                    id_list.append(series_element) 
+                elif re_match('.*号.*',series_element_index) != None:
                     id_list.append(series_element)
                 continue
             return id_list
@@ -81,6 +81,9 @@ class EntryRecord:
         from pandas import DataFrame
         return [self.glid,DataFrame(self.__dict__)]
     pass
+# class JsonEntryRecord(EntryRecord):
+#     def __init__(self,df_iterrows_element,glid_cols=[0,1,2]):
+#         pass
 class JEntry:
     '''
     Journal Entry.
@@ -137,6 +140,17 @@ class MGL:
     def load_df(self,in_df):
         self.data=in_df
         pass
+    def iterate_jsfile(self,jspath):
+        import re
+        import json
+        from pandas import Series,concat
+        with open(jspath,mode='r',encoding='utf-8') as f:
+            jslines=f.readlines()
+            pass
+        for i in jslines:
+            js_record=re.sub(re.compile(r'\s*$'),'',i)
+            yield json.loads(js_record,encoding='utf-8')
+        pass
     def get_raw_data(self):
         from pandas import read_excel
         self.data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
@@ -145,8 +159,12 @@ class MGL:
     def iterate_record(self):
         self.get_raw_data()
         for i in self.data.iterrows():
-            yield EntryRecorb(i)
+            yield EntryRecord(i)
         pass
+    def iterate_json_record(self):
+        self.get_raw_data()
+        for i in self.data.iterrows():
+            yield dict(i[1])
     def filter(self,regitem,label=r'',match=False):
         '''
         Filter the specific column of the table by regular expression.
@@ -177,3 +195,5 @@ class MGL:
         else:
             ftable=concat(ftableli,axis=0,join='outer')
         return ftable
+    def rand_sample(self):
+        pass
