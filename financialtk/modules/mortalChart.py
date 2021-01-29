@@ -40,3 +40,33 @@ class ChartAccount:
     def get_raw_data(self):
         self.raw_data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
         return self.raw_data
+    def filter(self,regitem,label=r'',match=False):
+        '''
+        Filter the specific column of the table by regular expression.
+        '''
+        import re
+        self.get_raw_data()
+        indf=self.raw_data
+        reg=re.compile(regitem)
+        fli=[]
+        for i in list(indf[label].drop_duplicates()):
+            if match==False:
+                b=re.search(reg,str(i))
+            else:
+                b=re.match(reg,str(i))
+            if b != None:
+                fli.append(i)
+            else:
+                pass
+        from pandas import DataFrame,concat
+        ftableli=[]
+        for j in fli:
+            ftable_fake=indf[indf[label]==j]
+            ftableli.append(ftable_fake)
+            continue
+        if len(ftableli)==0:
+            ftable=DataFrame([],index=[],columns=self.getcol())
+            pass
+        else:
+            ftable=concat(ftableli,axis=0,join='outer')
+        return ftable
