@@ -29,6 +29,7 @@ class ChartAccount:
         self.fpath=fpath
         self.shtna=shtna
         self.title=title
+        self.cols=None
         pass
     def get_cols(self):
         if self.cols == None:
