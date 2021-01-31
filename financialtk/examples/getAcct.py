@@ -4,12 +4,6 @@ from pandas import ExcelWriter
 from autk.financialtk.modules.mortalGL import MGL
 import os
 import threading
-basedir='./2020'
-fileli=[]
-for i in os.listdir(basedir):
-    fileli.append(os.path.join(basedir,i))
-    continue
-# print(fileli)
 acct_li=[
     '2202',
     '1123',
@@ -51,12 +45,6 @@ def parse_excel(xldir):
         continue
     wter.save()
     pass
-for i in fileli:
-    print(i)
-    # parse_excel(i)
-    pass
-    continue
-pass
 class ParseThread(threading.Thread):
     def __init__(self,xldir,name=None):
         self.xldir=xldir
@@ -66,6 +54,12 @@ class ParseThread(threading.Thread):
         print(threading.current_thread().name)
         parse_excel(self.xldir)
         pass
+basedir='./2020'
+fileli=[]
+for i in os.listdir(basedir):
+    fileli.append(os.path.join(basedir,i))
+    continue
+# print(fileli)
 for i in fileli:
     t=ParseThread(i,name=i.split(os.sep)[-1])
     t.start()
