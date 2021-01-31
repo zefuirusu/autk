@@ -144,6 +144,32 @@ class MGL:
         self.data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
         return self.data
         pass
+    def set_glid(self,glid_index):
+        if self.data is None:
+            print('You need load data first!')
+            self.get_raw_data()
+            pass
+        else:
+            def get_glid_li():
+                for i in self.data.iterrows():
+                    row=i[1]
+                    glid=[]
+                    for j in glid_index:
+                        a_index=row[j]
+                        a_index=str(a_index)
+                        glid.append(a_index)
+                    glid='-'.join(glid)
+                    # i['glid']=glid
+                    d=dict(row)
+                    d['glid']=glid
+                    # yield {glid:row}
+                    yield d
+            data=DataFrame(get_glid_li())
+            self.load_df(data)
+            print(self.data.shape)
+            return data
+            pass
+        pass
     def get_cols(self):
         if self.data is not None:
             return list(self.data.columns)
@@ -211,6 +237,8 @@ class MGL:
                 else:
                     b=re.match(reg,key_str)
                 if b is not None:
+                    # glid=r'-'.join([row_data['账簿编码'],row_data['期间年'],row_data['期间月'],row_data['凭证编码']])
+                    # yield {glid,row_data}
                     yield row_data
                     pass
                 else:
@@ -229,7 +257,8 @@ class MGL:
         Filter the specific column of the table by regular expression.
         '''
         import re
-        self.get_raw_data()
+        # self.get_raw_data()
+        # self.set_glid()
         indf=self.data
         reg=re.compile(regitem)
         fli=[]
@@ -254,6 +283,16 @@ class MGL:
         else:
             ftable=concat(ftableli,axis=0,join='outer')
         return ftable
+    def getAcct(self,accid_item,accid_label='科目编码'):
+        '''
+        Get all and full records about given 'accid'.
+        '''
+        # self.set_glid()
+        id_li=list(self.filter(accid_item,accid_label)['glid'].drop_duplicates())
+        def get_relevant_row():
+            for i in id_li:
+                yield self.data[self.data['glid']==i]
+        return concat(get_relevant_row(),axis=0,join='outer')
     def rand_sample(self,ss=None, percent=None, replace=False, weights=None, random_state=None, axis=None):
         '''
         DataFrame.sample(n=None, frac=None, replace=False, weights=None, random_state=None, axis=None)
