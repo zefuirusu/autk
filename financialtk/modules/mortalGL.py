@@ -131,19 +131,29 @@ class MGL:
         self.shtna=shtna
         self.title=title
         self.data=None
+        self.sample_data=None
         pass
-    def get_cols(self):
-        if self.data != None:
-            return self.data.columns
-        else:
-            return None
     def load_df(self,in_df):
         self.data=in_df
         pass
+    def get_raw_data(self):
+        '''
+        get original DataFrame data.
+        '''
+        from pandas import read_excel
+        self.data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
+        return self.data
+        pass
+    def get_cols(self):
+        if self.data is not None:
+            return list(self.data.columns)
+        else:
+            self.get_raw_data()
+            return list(self.data.columns)
     def iterate_jsfile(self,jspath):
         import re
         import json
-        from pandas import Series,concat
+        # from pandas import Series,concat
         with open(jspath,mode='r',encoding='utf-8') as f:
             jslines=f.readlines()
             pass
@@ -151,20 +161,61 @@ class MGL:
             js_record=re.sub(re.compile(r'\s*$'),'',i)
             yield json.loads(js_record,encoding='utf-8')
         pass
-    def get_raw_data(self):
-        from pandas import read_excel
-        self.data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
-        return self.data
-        pass
     def iterate_record(self):
-        self.get_raw_data()
-        for i in self.data.iterrows():
-            yield EntryRecord(i)
+        '''
+        iterate rows of self.data(DataFrame) and yield data of EntryRecord object.
+        '''
+        # self.get_raw_data()
+        if self.data is not None:
+            for i in self.data.iterrows():
+                yield EntryRecord(i)
+                continue
+            pass
+        else:
+            pass
         pass
     def iterate_json_record(self):
-        self.get_raw_data()
-        for i in self.data.iterrows():
-            yield dict(i[1])
+        '''
+        iterate rows of self.data(DataFrame) and yield data of json(python dict) of format.
+        '''
+        # self.get_raw_data()
+        if self.data is not None:
+            for i in self.data.iterrows():
+                yield dict(i[1])
+                continue
+            pass
+        else:
+            pass
+    def iterate_filter(self,regitem,label=r'',match=False):
+        '''
+        iterate row_data of self.data and yield.
+        '''
+        import re
+        def start_iterate():
+            reg=re.compile(regitem)
+            indf=self.data
+            for i in self.data.iterrows():
+                row_index=i[0]
+                row_data=i[1]
+                key_str=str(row_data[label])
+                if match==False:
+                    b=re.search(reg,key_str)
+                else:
+                    b=re.match(reg,key_str)
+                if b is not None:
+                    yield row_data
+                    pass
+                else:
+                    # yield None
+                    pass
+                continue
+            pass
+        if self.data is not None:
+            return start_iterate()
+        else:
+            self.get_raw_data()
+            return start_iterate()
+            pass
     def filter(self,regitem,label=r'',match=False):
         '''
         Filter the specific column of the table by regular expression.
@@ -179,7 +230,7 @@ class MGL:
                 b=re.search(reg,str(i))
             else:
                 b=re.match(reg,str(i))
-            if b != None:
+            if b is not None:
                 fli.append(i)
             else:
                 pass
@@ -195,5 +246,19 @@ class MGL:
         else:
             ftable=concat(ftableli,axis=0,join='outer')
         return ftable
-    def rand_sample(self):
+    def rand_sample(self,ss=None, percent=None, replace=False, weights=None, random_state=None, axis=None):
+        '''
+        DataFrame.sample(n=None, frac=None, replace=False, weights=None, random_state=None, axis=None)
+        parameters:
+            ss:sample_size;
+            percent:percentage of total to sample;
+            axis: 0 for rows_sampling and 1 for colums_sampling;
+        '''
+        if self.data is not None:
+            self.sample_data=self.data.sample(n=ss, frac=percent, replace=False, weights=None, random_state=None, axis=None)
+            return self.sample_data
+        else:
+            self.get_raw_data()
+            self.sample_data=self.data.sample(n=ss, frac=percent, replace=False, weights=None, random_state=None, axis=None)
+            return self.sample_data
         pass
