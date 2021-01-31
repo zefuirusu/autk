@@ -172,6 +172,10 @@ class MGL:
                 continue
             pass
         else:
+            self.get_raw_data()
+            for i in self.data.iterrows():
+                yield EntryRecord(i)
+                continue
             pass
         pass
     def iterate_json_record(self):
@@ -185,6 +189,10 @@ class MGL:
                 continue
             pass
         else:
+            self.get_raw_data()
+            for i in self.data.iterrows():
+                yield dict(i[1])
+                continue
             pass
     def iterate_filter(self,regitem,label=r'',match=False):
         '''
