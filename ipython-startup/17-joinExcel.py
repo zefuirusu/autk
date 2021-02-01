@@ -4,6 +4,7 @@ import os
 import re
 import openpyxl as ox
 from autk.fileAssistant.findfile import find
+import pandas as pd
 from pandas.core.frame import DataFrame
 #
 def compareli(li1=[],li2=[]):
@@ -128,7 +129,7 @@ def joinbook(bookli=os.listdir(os.path.abspath(os.curdir)),outdir=os.path.abspat
         else:
             pass
     for i in bkli:
-        b=pd.read_excel(i,sheet_name=shtna,title=0,engine='openpyxl')
+        b=pd.read_excel(i,sheet_name=shtna,header=title,engine='openpyxl')
         b.to_excel(wter,sheet_name=str(i))
     wter.save()
 #

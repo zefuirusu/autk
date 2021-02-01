@@ -278,7 +278,7 @@ class MGL:
             ftableli.append(ftable_fake)
             continue
         if len(ftableli)==0:
-            ftable=DataFrame([],index=[],columns=self.getcol())
+            ftable=DataFrame([],index=[],columns=self.get_cols())
             pass
         else:
             ftable=concat(ftableli,axis=0,join='outer')
