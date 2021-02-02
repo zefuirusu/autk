@@ -134,25 +134,36 @@ class MGL:
         self.sample_data=None
         pass
     def load_df(self,in_df):
+        '''
+        Load outsource DataFrame data and return Nothing.
+        '''
         self.data=in_df
-        return self.data
+        # return self.data
+        pass
+    def load_raw_data(self):
+        '''
+        Load original DataFrame data and return Nothing.
+        '''
+        self.data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
         pass
     def get_raw_data(self):
         '''
-        get original DataFrame data.
+        Get and return original DataFrame data.
+        This method does not LOAD original DataFrame data.
         '''
         from pandas import read_excel
-        self.data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
-        return self.data
+        data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
+        return data
         pass
     def set_glid(self,glid_index):
         '''
         parameters:
-            glid_index, values, not index.
+            glid_index, values, not index numbers.
         '''
         if self.data is None:
             print('You need load data first!')
-            self.get_raw_data()
+            self.load_raw_data()
+            print('Oh, raw data has been loaded.')
             pass
         else:
             def get_glid_li():
@@ -171,7 +182,7 @@ class MGL:
                     yield d
             data=DataFrame(get_glid_li())
             self.load_df(data)
-            print(self.data.shape)
+            print('glid is set.',self.data.shape)
             return data
             pass
         pass
@@ -179,7 +190,7 @@ class MGL:
         if self.data is not None:
             return list(self.data.columns)
         else:
-            self.get_raw_data()
+            self.load_raw_data()
             return list(self.data.columns)
     def iterate_jsfile(self,jspath):
         import re
@@ -196,14 +207,14 @@ class MGL:
         '''
         iterate rows of self.data(DataFrame) and yield data of EntryRecord object.
         '''
-        # self.get_raw_data()
+        # self.load_raw_data()
         if self.data is not None:
             for i in self.data.iterrows():
                 yield EntryRecord(i)
                 continue
             pass
         else:
-            self.get_raw_data()
+            self.load_raw_data()
             for i in self.data.iterrows():
                 yield EntryRecord(i)
                 continue
@@ -213,14 +224,14 @@ class MGL:
         '''
         iterate rows of self.data(DataFrame) and yield data of json(python dict) of format.
         '''
-        # self.get_raw_data()
+        # self.load_raw_data()
         if self.data is not None:
             for i in self.data.iterrows():
                 yield dict(i[1])
                 continue
             pass
         else:
-            self.get_raw_data()
+            self.load_raw_data()
             for i in self.data.iterrows():
                 yield dict(i[1])
                 continue
@@ -255,7 +266,7 @@ class MGL:
         if self.data is not None:
             return start_iterate()
         else:
-            self.get_raw_data()
+            self.load_raw_data()
             return start_iterate()
             pass
     def filter(self,regitem,label=r'',match=False,write=False):
@@ -263,7 +274,7 @@ class MGL:
         Filter the specific column of the table by regular expression.
         '''
         import re
-        # self.get_raw_data()
+        # self.load_raw_data()
         # self.set_glid()
         indf=self.data
         reg=re.compile(regitem)
@@ -316,7 +327,7 @@ class MGL:
             self.sample_data=self.data.sample(n=ss, frac=percent, replace=False, weights=None, random_state=None, axis=None)
             return self.sample_data
         else:
-            self.get_raw_data()
+            self.load_raw_data()
             self.sample_data=self.data.sample(n=ss, frac=percent, replace=False, weights=None, random_state=None, axis=None)
             return self.sample_data
         pass
