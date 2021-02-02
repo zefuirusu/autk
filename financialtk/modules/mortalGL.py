@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 # coding=utf-8
+'''
+EntryRecord: EntryRecord;
+JEntry: Journal Entry;
+MGL: Mortal General Ledger.
+'''
 import re
 from numpy import nan
 from pandas import read_excel,DataFrame,concat
@@ -269,7 +274,7 @@ class MGL:
             self.load_raw_data()
             return start_iterate()
             pass
-    def filter(self,regitem,label=r'',match=False,write=False):
+    def filter(self,regitem,label=r'',match=False,over_write=False):
         '''
         Filter the specific column of the table by regular expression.
         '''
@@ -278,34 +283,46 @@ class MGL:
         # self.set_glid()
         indf=self.data
         reg=re.compile(regitem)
-        fli=[]
-        for i in list(indf[label].drop_duplicates()):
-            if match==False:
-                b=re.search(reg,str(i))
-            else:
-                b=re.match(reg,str(i))
-            if b is not None:
-                fli.append(i)
-            else:
-                pass
+        # fli=[]
+        def iterate_labels():
+            '''
+            Iterate and filter labels.
+            '''
+            for i in list(indf[label].drop_duplicates()):
+                if match==False:
+                    b=re.search(reg,str(i))
+                else:
+                    b=re.match(reg,str(i))
+                if b is not None:
+                    # fli.append(i)
+                    yield i
+                else:
+                    pass
         from pandas import DataFrame,concat
-        ftableli=[]
-        for j in fli:
-            ftable_fake=indf[indf[label]==j]
-            ftableli.append(ftable_fake)
-            continue
+        # ftableli=[]
+        # for j in fli:
+        def get_filter_tables():
+            '''
+            Filter and yield self.data by labels got so as to concatenate.
+            '''
+            for j in iterate_labels():
+                ftable_fake=indf[indf[label]==j]
+                # ftableli.append(ftable_fake)
+                yield ftable_fake
+                continue
         if len(ftableli)==0:
             ftable=DataFrame([],index=[],columns=self.get_cols())
             pass
         else:
-            ftable=concat(ftableli,axis=0,join='outer')
+            # ftable=concat(ftableli,axis=0,join='outer')
+            ftable=concat(get_filter_tables(),axis=0,join='inner')
             pass
-        if write == False:
+        if over_write == False:
             return ftable
         else:
             self.load_df(ftable)
             return self.data
-    def getAcct(self,accid_item,accid_label='科目编码'):
+    def getAcct(self,accid_item,accid_label='科目编码',over_write=False):
         '''
         Get all and full records about given 'accid'.
         '''
@@ -314,14 +331,20 @@ class MGL:
         def get_relevant_rows():
             for i in id_li:
                 yield self.data[self.data['glid']==i]
-        return concat(get_relevant_rows(),axis=0,join='outer')
-    def rand_sample(self,ss=None, percent=None, replace=False, weights=None, random_state=None, axis=None):
+        acct_data= concat(get_relevant_rows(),axis=0,join='outer')
+        if over_write == False:
+            return acct_data
+        else:
+            self.load_df(acct_data)
+            return self.data
+    def rand_sample(self,ss=None, percent=None, replace=False, weights=None, random_state=None, axis=None,over_write=False):
         '''
         DataFrame.sample(n=None, frac=None, replace=False, weights=None, random_state=None, axis=None)
         parameters:
             ss:sample_size;
             percent:percentage of total to sample;
             axis: 0 for rows_sampling and 1 for colums_sampling;
+            over_write: if True, self.sample_data will be over_write and therefore replaced. Currently, this parameter does nothing, once rand_sample(), self.sample_data will be over written.
         '''
         if self.data is not None:
             self.sample_data=self.data.sample(n=ss, frac=percent, replace=False, weights=None, random_state=None, axis=None)
