@@ -135,6 +135,7 @@ class MGL:
         pass
     def load_df(self,in_df):
         self.data=in_df
+        return self.data
         pass
     def get_raw_data(self):
         '''
@@ -145,6 +146,10 @@ class MGL:
         return self.data
         pass
     def set_glid(self,glid_index):
+        '''
+        parameters:
+            glid_index, values, not index.
+        '''
         if self.data is None:
             print('You need load data first!')
             self.get_raw_data()
@@ -223,6 +228,7 @@ class MGL:
     def iterate_filter(self,regitem,label=r'',match=False):
         '''
         iterate row_data of self.data and yield.
+        yield row_data as Series.
         '''
         import re
         def start_iterate():
@@ -252,7 +258,7 @@ class MGL:
             self.get_raw_data()
             return start_iterate()
             pass
-    def filter(self,regitem,label=r'',match=False):
+    def filter(self,regitem,label=r'',match=False,write=False):
         '''
         Filter the specific column of the table by regular expression.
         '''
@@ -282,17 +288,22 @@ class MGL:
             pass
         else:
             ftable=concat(ftableli,axis=0,join='outer')
-        return ftable
+            pass
+        if write == False:
+            return ftable
+        else:
+            self.load_df(ftable)
+            return self.data
     def getAcct(self,accid_item,accid_label='科目编码'):
         '''
         Get all and full records about given 'accid'.
         '''
         # self.set_glid()
         id_li=list(self.filter(accid_item,accid_label)['glid'].drop_duplicates())
-        def get_relevant_row():
+        def get_relevant_rows():
             for i in id_li:
                 yield self.data[self.data['glid']==i]
-        return concat(get_relevant_row(),axis=0,join='outer')
+        return concat(get_relevant_rows(),axis=0,join='outer')
     def rand_sample(self,ss=None, percent=None, replace=False, weights=None, random_state=None, axis=None):
         '''
         DataFrame.sample(n=None, frac=None, replace=False, weights=None, random_state=None, axis=None)
