@@ -310,7 +310,8 @@ class MGL:
                 # ftableli.append(ftable_fake)
                 yield ftable_fake
                 continue
-        if len(ftableli)==0:
+        if len(list(get_filter_tables()))==0:
+        # if len(ftableli)==0:
             ftable=DataFrame([],index=[],columns=self.get_cols())
             pass
         else:
