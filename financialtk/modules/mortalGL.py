@@ -316,7 +316,7 @@ class MGL:
             pass
         else:
             # ftable=concat(ftableli,axis=0,join='outer')
-            ftable=concat(get_filter_tables(),axis=0,join='inner')
+            ftable=concat(get_filter_tables(),axis=0,join='outer')
             pass
         if over_write == False:
             return ftable
