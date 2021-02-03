@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
+'''
+Get data of 2202/1123/1221/2241 from GL and export to Excel.
+'''
 from pandas import ExcelWriter
 from autk.financialtk.modules.mortalGL import MGL
 import os
