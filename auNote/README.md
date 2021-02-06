@@ -27,3 +27,8 @@ This file is the list of link references.
 1. 分词分析并统计词频
 2. 输出结果,保存到文件.
 3. 代码详见`./zhaiyAna_byJieba.py`
+### 2.3 货币资金流向分析
+- 筛选序时账数据，获取与银行存款有关的所有完整凭证数据`class CashEntryRecord(MGL)`，并验证借贷方合计是否平衡；将上述数据分为两部分：`CashOutEntry(MGL)`(depth=0)和`CashInEntry(MGL)`(depth=0)，两者都以`glid`字段唯一标识每一个`class EntryRecord`；
+- 现金流出分析
+    - 对`CashOutEntry`进行数据透视，统计本期借方发生额的分布情况；
+    - 在序时账中索引`CashOutEntry.glid_list`，得到`class CashOutEntry(depth=1)`并数据透视，统计本期贷方发生额分布情况；

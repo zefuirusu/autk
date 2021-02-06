@@ -137,6 +137,16 @@ class MGL:
         self.title=title
         self.data=None
         self.sample_data=None
+        if self.data is not None:
+            if 'glid' in self.data.columns:
+                self.glid_list=list(self.data['glid'].drop_duplicates())
+                pass
+            else:
+                self.glid_list=[]
+                pass
+            pass
+        else:
+            self.glid_list=None
         pass
     def load_df(self,in_df):
         '''
@@ -187,6 +197,7 @@ class MGL:
                     yield d
             data=DataFrame(get_glid_li())
             self.load_df(data)
+            self.glid_list=list(self.data['glid'].drop_duplicates())
             print('glid is set.',self.data.shape)
             return data
             pass
