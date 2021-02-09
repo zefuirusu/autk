@@ -4,6 +4,7 @@
 Acct是对Account的抽象,会计账户;
 Gele是对General Ledger的抽象,序时账.
 '''
+from autk.financialtk.modules.mortalGL import MGL
 class Acct:
     '''
     Acct is short for Account, with two main attributes, 'name' and 'accid'.
@@ -21,7 +22,7 @@ class Acct:
         # self.isdr=True # 借方主导的科目,共同类科目也归入此类。
         # self.iscr=-self.isdr # 贷方主导的科目
         # self.cata='' # account catagory
-class Gele: # GeneralLedger
+class Gele(MGL): # GeneralLedger
     '''
     General Ledgers in a sheet from an Excel Workbook.
     Default sheet name is '表页-1'.
@@ -36,6 +37,8 @@ class Gele: # GeneralLedger
         self.sheetname=shtna
         self.title=title
         self.glname=str(self.fdir.split(os.sep)[-1])
+        self.data=None
+        self.sample_data=None
         # from pandas import read_excel
         # self.cols=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title,engine='openpyxl').columns
         # self.cols=['凭证日期', '字', '号', '摘要', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
@@ -47,7 +50,7 @@ class Gele: # GeneralLedger
         print('GL sheet:\t',self.sheetname)
         # print('GL columns:\n',self.cols)
         return
-    def getshtli(self):
+    def getshtli(self): 
         from openpyxl import load_workbook
         return load_workbook(self.fdir).sheetnames
     def getcols(self):
@@ -62,7 +65,7 @@ class Gele: # GeneralLedger
         else:
             pass
         return d1
-    def iterate_record(self):
+    def iterate_entry_record(self):
         '''
         Iterate record of raw data of General Ledgers and add the column 'glid'.
         Return a generator of EntryRecord, of which pure GL(with new column 'glid') consists.
@@ -84,10 +87,10 @@ class Gele: # GeneralLedger
     def getgldata(self):
         '''
         Get General Ledger Data with column 'glid' added.
-        This method requires 'self.iterate_record(self)'.
+        This method requires 'self.iterate_entry_record(self)'.
         '''
         from pandas import DataFrame
-        entry_record=self.iterate_record()
+        entry_record=self.iterate_entry_record()
         def get_record_detail():
             for i in entry_record:
                 yield i.__dict__
@@ -109,7 +112,7 @@ class Gele: # GeneralLedger
         for j in iterate_gl_filter(data):
             yield JEntry(j[0],j[1])
     # @classmethod
-    def filter(self,regitem,label=r'',match=False):
+    def zh_filter(self,regitem,label=r'',match=False):
         '''
         Filter the specific column of the table by regular expression.
         '''
@@ -139,30 +142,30 @@ class Gele: # GeneralLedger
         else:
             ftable=concat(ftableli,axis=0,join='outer')
         return ftable
-    def refilter(self,indf,regitem,label=r'',match=False):
-        '''
-        filter the specific column of a input table by regular expression.
-        '''
-        import re
-        reg=re.compile(regitem)
-        fli=[]
-        for i in list(indf[label].drop_duplicates()):
-            if match==False:
-                b=re.search(reg,str(i))
-            else:
-                b=re.match(reg,str(i))
-            if b != None:
-                fli.append(i)
-            else:
-                pass
-        from pandas import DataFrame,concat
-        tableli=[]
-        for j in fli:
-            ftable_fake=indf[indf[label]==j]
-            tableli.append(ftable_fake)
-            continue
-        ftable=concat(tableli,axis=0,join='outer')
-        return ftable
+    # def refilter(self,indf,regitem,label=r'',match=False):
+    #     '''
+    #     filter the specific column of a input table by regular expression.
+    #     '''
+    #     import re
+    #     reg=re.compile(regitem)
+    #     fli=[]
+    #     for i in list(indf[label].drop_duplicates()):
+    #         if match==False:
+    #             b=re.search(reg,str(i))
+    #         else:
+    #             b=re.match(reg,str(i))
+    #         if b != None:
+    #             fli.append(i)
+    #         else:
+    #             pass
+    #     from pandas import DataFrame,concat
+    #     tableli=[]
+    #     for j in fli:
+    #         ftable_fake=indf[indf[label]==j]
+    #         tableli.append(ftable_fake)
+    #         continue
+    #     ftable=concat(tableli,axis=0,join='outer')
+    #     return ftable
     def salaryana(self):
         '''
         职工薪酬计提和分配的核查.
@@ -171,14 +174,14 @@ class Gele: # GeneralLedger
         expense_id=['6601','6602','5001','5301','2211','1604']
         def transReg(accid):
             return str(r'^')+str(accid)+str(r'.*')
-        s1=self.filter(transReg(salary_id),label=r'科目编号')
+        s1=self.zh_filter(transReg(salary_id),label=r'科目编号')
         # s1=self.refilter(s1,'0','借方发生金额')
         s1=s1[s1['借方发生金额']==0.0]
         eli=[]
         for i in expense_id:
             print('-·'*5)
             print('filtering %s'%i)
-            e1=self.filter(transReg(i),label=r'科目编号')
+            e1=self.zh_filter(transReg(i),label=r'科目编号')
             if e1.shape[0]==0:
                 print('no results after filter: %s'%i)
                 pass
@@ -216,11 +219,11 @@ class Gele: # GeneralLedger
         '''
         regitem=r'^'+str(account.accid)+r'.*'
         print(regitem)
-        km=self.filter(regitem,r'科目编号') # km is the Chinese Phonetical Alphabets "Ke Mu".
+        km=self.zh_filter(regitem,r'科目编号') # km is the Chinese Phonetical Alphabets "Ke Mu".
         idli=list(km['glid'].drop_duplicates())
         def itersearch(idli):
             for i in idli:
-                yield self.filter(i,'glid')
+                yield self.zh_filter(i,'glid')
                 continue
             pass
         if pure == True:
@@ -229,8 +232,9 @@ class Gele: # GeneralLedger
             pass
         else:
             resu=km
+        self.data=resu
         return resu
-    def sample(self,acct_id,filterIdCol,acquired_rate=0.81,drcrdesc=[r'借方发生金额',r'贷方发生金额']):
+    def accum_sample(self,acct_id,filterIdCol,acquired_rate=0.81,drcrdesc=[r'借方发生金额',r'贷方发生金额']):
         '''
         'acct_id',short for 'account id number', can be regular expression to filter in the column of 'filterIdCol'.
         'acquired_rate' is the accumulate sum rate that is required by the manager.
@@ -297,17 +301,21 @@ class Gele: # GeneralLedger
         from pandas import concat
         final_sample=concat([dr,cr],axis=0,join='outer',ignore_index=True)
         final_sample=final_sample.reset_index(drop=True)
+        self.sample_data=final_sample
         return final_sample
-    def wsample(self,filterIdCol,account,savedir):
+    def write_sample(self,filterIdCol,account,savedir):
         '''
         account is an instance object of class Acct with attributes of 'accid' and 'name'.
         '''
-        from openpyxl import load_workbook
+        from openpyxl import load_workbook,Workbook
+        wb=Workbook()
+        wb.save(savedir)
+        wb.close()
         wb=load_workbook(savedir)
         from pandas import ExcelWriter
         wter=ExcelWriter(savedir,engine='openpyxl')
         wter.book=wb
-        s1=self.sample(account.accid,filterIdCol,acquired_rate=0.81,drcrdesc=[r'借方发生金额',r'贷方发生金额'])
+        s1=self.accum_sample(account.accid,filterIdCol,acquired_rate=0.81,drcrdesc=[r'借方发生金额',r'贷方发生金额'])
         s1.to_excel(wter,sheet_name=account.name)
         wter.save()
         wter.close()

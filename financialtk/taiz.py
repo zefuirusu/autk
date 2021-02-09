@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # coding=utf-8
-class findata:
+class BookData:
+    '''
+    Book data.
+    '''
     # __slots__=('fdir','shtna','title')
     def __init__(self,infoli=[]):
         '''
@@ -13,7 +16,7 @@ class findata:
             self.shtna=infoli[1]
             self.title=infoli[2]
         return
-class taiz:
+class Taiz:
     def __init__(self,sourcedata):
         self.srdata=sourcedata
         self.regtitle=['省份','地市','区域']

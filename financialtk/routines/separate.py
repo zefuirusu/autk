@@ -24,8 +24,9 @@ def separate_tb(tb_df,key_col,savedir='./separate_tb.xlsx'):
     wter=ExcelWriter(savedir,book=load_workbook(savedir),engine='openpyxl')
     for i in get_entity_tb():
         i[1].to_excel(wter,sheet_name=i[0])
+        wter.save()
         continue
-    wter.save()
+    # wter.save()
     wter.close()
     pass
 if __name__=='__main__':

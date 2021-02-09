@@ -3,7 +3,7 @@
 '''
 Account Stated 明细账
 '''
-class ActStated:
+class AcctStated:
     def __init__(self,fdir,shtna=r'表页-1',title=3):
         from os import sep
         self.path=fdir

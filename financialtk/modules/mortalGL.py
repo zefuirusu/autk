@@ -8,26 +8,25 @@ MGL: Mortal General Ledger.
 import re
 from numpy import nan
 from pandas import read_excel,DataFrame,concat
+def transType(element):
+    '''
+    transfer an float/integer object into string.
+    '''
+    if element is nan:
+    # if isinstance(element,type(nan)):
+        print('woc!!! %s is nan!'%element )
+        element=str(int(0))
+    else:
+        if isinstance(element,float):
+            element=str(int(element))
+        elif isinstance(element,int):
+            element=str(element)
+        elif isinstance(element,str):
+            element=element
+    return element
 class EntryRecord:
     def __init__(self,df_iterrows_element,glid_cols=[0,1,2]):
         self.index=list(df_iterrows_element[1].index)
-        from numpy import nan
-        def transType(element):
-            '''
-            transfer an float/integer object into string.
-            '''
-            if element is nan:
-            # if isinstance(element,type(nan)):
-                print('woc!!! %s is nan!'%element )
-                element=str(int(0))
-            else:
-                if isinstance(element,float):
-                    element=str(int(element))
-                elif isinstance(element,int):
-                    element=str(element)
-                elif isinstance(element,str):
-                    element=element
-            return element
         def re_match(in_string,what):
             import re
             what=transType(what)
@@ -187,7 +186,8 @@ class MGL:
                     glid=[]
                     for j in glid_index:
                         a_index=row[j]
-                        a_index=str(a_index)
+                        # a_index=str(a_index)
+                        a_index=transType(a_index)
                         glid.append(a_index)
                     glid='-'.join(glid)
                     # i['glid']=glid
@@ -202,6 +202,9 @@ class MGL:
             return data
             pass
         pass
+    def getshtli(self): 
+        from openpyxl import load_workbook
+        return load_workbook(self.fpath).sheetnames
     def get_cols(self):
         if self.data is not None:
             return list(self.data.columns)
@@ -223,7 +226,6 @@ class MGL:
         '''
         iterate rows of self.data(DataFrame) and yield data of EntryRecord object.
         '''
-        # self.load_raw_data()
         if self.data is not None:
             for i in self.data.iterrows():
                 yield EntryRecord(i)
