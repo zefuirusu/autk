@@ -6,7 +6,7 @@ from openpyxl import load_workbook
 from pandas import read_excel,concat
 from autk.fileAssistant.findfile import find
 class JoinExcel:
-    def __init__(self,inpath,title=3,keep=True,fill=False,savedir=os.path.abspath(os.curdir)):
+    def __init__(self,inpath,title=0,keep=True,fill=False,savedir=os.path.abspath(os.curdir)):
         self.inpath=inpath
         self.flij=find(r'\.xlsx',self.inpath)[0] # file list to join
         self.title=title
