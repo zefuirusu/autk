@@ -127,7 +127,7 @@ class MGL:
     '''
     Mortal General Ledger, a template class of General Ledger.
     '''
-    def __init__(self,fpath,shtna,title=0):
+    def __init__(self,fpath='',shtna='Sheet1',title=0):
         '''
         Three key elements of an General Ledger File is the path, sheet name and the column title location.
         '''
