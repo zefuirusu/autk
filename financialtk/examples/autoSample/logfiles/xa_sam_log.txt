@@ -265,3 +265,23 @@ target_sum(Dr/Cr):
 --55042贷方--
 贷方 of 55042 is negative,so need attention.
 ==end:55042==
+==multiSample==
+==multiSample==
+==multiSample==
+==multiSample==
+==multiSample==
+==multiSample==
+==multiSample==
+==multiSample==
+==multiSample==
+==multiSample==
+==multiSample==
+==start:1001==
+==multiSample==
+==start:1001==
+==multiSample==
+==start:1001==
+==multiSample==
+==start:1001==
+==multiSample==
+==start:1001==

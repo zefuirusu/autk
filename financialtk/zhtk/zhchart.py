@@ -63,6 +63,6 @@ class ChartAccount: # Chart of Account
         data=data.loc[:,self.cols[1:3]]
         data=data.drop_duplicates()
         data=dict(zip(data.iloc[:,0],data.iloc[:,1]))
-        resu=data[float(acct_id)]
+        resu=data[str(acct_id)]
         return resu
     #
