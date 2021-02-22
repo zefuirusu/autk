@@ -136,6 +136,7 @@ class MGL:
         self.title=title
         self.data=None
         self.sample_data=None
+        self.gl_matrix=None
         if self.data is not None:
             if 'glid' in self.data.columns:
                 self.glid_list=list(self.data['glid'].drop_duplicates())
@@ -159,6 +160,28 @@ class MGL:
         Load original DataFrame data and return Nothing.
         '''
         self.data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
+        pass
+    def get_gl_matrix(self,over_write=False,drcr=['借方本币','贷方本币']):
+        '''
+        Get a matrix of General Ledger.
+        '''
+        if self.data is not None:
+            if 'glid' in self.data.columns:
+                self.data['drcr_value']=self.data[drcr[0]]-self.data[drcr[1]]
+                gl_matrix=self.data.pivot_table(values=['drcr_value'],index=['glid'],columns=['科目编码'])
+                if over_write==True:
+                    self.gl_matrix=gl_matrix
+                else:
+                    pass
+                return gl_matrix
+                pass
+            else:
+                print('Woc! glid is not set.')
+                # self.set_glid([])
+                pass
+        else:
+            print('Woc! raw data is not loaded. Load it and set glid first.')
+            # self.load_raw_data()
         pass
     def get_raw_data(self):
         '''
