@@ -359,16 +359,22 @@ class MGL:
         else:
             self.load_df(ftable)
             return self.data
-    def getAcct(self,accid_item,accid_label='科目编码',over_write=False):
+    def getAcct(self,accid_item,accid_label='科目编码',over_write=False,pure=False):
         '''
         Get all and full records about given 'accid'.
+        glid must be set first.
         '''
         # self.set_glid()
-        id_li=list(self.filter(accid_item,accid_label)['glid'].drop_duplicates())
         def get_relevant_rows():
             for i in id_li:
                 yield self.data[self.data['glid']==i]
-        acct_data= concat(get_relevant_rows(),axis=0,join='outer')
+        if pure==True:
+            acct_data=self.filter(accid_item,accid_label,match=False,over_write=False)
+            pass
+        else:
+            id_li=list(self.filter(accid_item,accid_label,match=False,over_write=False)['glid'].drop_duplicates())
+            acct_data=concat(get_relevant_rows(),axis=0,join='outer')
+            pass
         if over_write == False:
             return acct_data
         else:
