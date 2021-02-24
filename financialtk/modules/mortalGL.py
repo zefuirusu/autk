@@ -127,13 +127,14 @@ class MGL:
     '''
     Mortal General Ledger, a template class of General Ledger.
     '''
-    def __init__(self,fpath='',shtna='Sheet1',title=0):
+    def __init__(self,fpath='',shtna='Sheet1',title=0,glid_index=[]):
         '''
         Three key elements of an General Ledger File is the path, sheet name and the column title location.
         '''
         self.fpath=fpath
         self.shtna=shtna
         self.title=title
+        self.glid_index=glid_index
         self.data=None
         self.sample_data=None
         self.gl_matrix=None
@@ -161,6 +162,15 @@ class MGL:
         '''
         self.data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
         pass
+    def getshtli(self): 
+        from openpyxl import load_workbook
+        return load_workbook(self.fpath).sheetnames
+    def get_cols(self):
+        if self.data is not None:
+            return list(self.data.columns)
+        else:
+            self.load_raw_data()
+            return list(self.data.columns)
     def get_gl_matrix(self,over_write=False,drcr=['借方本币','贷方本币']):
         '''
         Get a matrix of General Ledger.
@@ -192,10 +202,10 @@ class MGL:
         data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
         return data
         pass
-    def set_glid(self,glid_index):
+    def set_glid(self,glid_index=self.glid_index):
         '''
         parameters:
-            glid_index, values, not index numbers.
+            glid_index, values, not numbers.
         '''
         if self.data is None:
             print('You need load data first!')
@@ -225,15 +235,6 @@ class MGL:
             return data
             pass
         pass
-    def getshtli(self): 
-        from openpyxl import load_workbook
-        return load_workbook(self.fpath).sheetnames
-    def get_cols(self):
-        if self.data is not None:
-            return list(self.data.columns)
-        else:
-            self.load_raw_data()
-            return list(self.data.columns)
     def iterate_jsfile(self,jspath):
         import re
         import json
@@ -365,7 +366,7 @@ class MGL:
         glid must be set first.
         '''
         # self.set_glid()
-        def get_relevant_rows():
+        def get_relevant_rows(id_li):
             # self.set_glid()
             for i in id_li:
                 yield self.data[self.data['glid']==i]
@@ -373,8 +374,9 @@ class MGL:
             acct_data=self.filter(accid_item,accid_label,match=False,over_write=False)
             pass
         else:
+            self.set_glid()
             id_li=list(self.filter(accid_item,accid_label,match=False,over_write=False)['glid'].drop_duplicates())
-            acct_data=concat(get_relevant_rows(),axis=0,join='outer')
+            acct_data=concat(get_relevant_rows(id_li),axis=0,join='outer')
             pass
         if over_write == False:
             return acct_data
