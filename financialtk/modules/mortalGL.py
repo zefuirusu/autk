@@ -366,6 +366,7 @@ class MGL:
         '''
         # self.set_glid()
         def get_relevant_rows():
+            # self.set_glid()
             for i in id_li:
                 yield self.data[self.data['glid']==i]
         if pure==True:
