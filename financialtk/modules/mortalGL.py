@@ -202,11 +202,15 @@ class MGL:
         data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
         return data
         pass
-    def set_glid(self,glid_index=self.glid_index):
+    def set_glid(self,glid_index=[]):
         '''
         parameters:
             glid_index, values, not numbers.
         '''
+        if glid_index==[]:
+            glid_index=self.glid_index
+        else:
+            pass
         if self.data is None:
             print('You need load data first!')
             self.load_raw_data()
@@ -365,7 +369,10 @@ class MGL:
         Get all and full records about given 'accid'.
         glid must be set first.
         '''
-        # self.set_glid()
+        if 'glid' in self.get_cols():
+            pass
+        else:
+            self.set_glid(self.glid_index)
         def get_relevant_rows(id_li):
             # self.set_glid()
             for i in id_li:
@@ -374,7 +381,7 @@ class MGL:
             acct_data=self.filter(accid_item,accid_label,match=False,over_write=False)
             pass
         else:
-            self.set_glid()
+            # self.set_glid()
             id_li=list(self.filter(accid_item,accid_label,match=False,over_write=False)['glid'].drop_duplicates())
             acct_data=concat(get_relevant_rows(id_li),axis=0,join='outer')
             pass
