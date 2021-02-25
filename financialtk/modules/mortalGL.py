@@ -207,9 +207,16 @@ class MGL:
         parameters:
             glid_index, values, not numbers.
         '''
-        if glid_index==[]:
+        if glid_index is []:
             glid_index=self.glid_index
         else:
+            pass
+        if glid_index is []:
+            print("Pass glid_index as argument first!")
+            return
+        else:
+            print("OK, glid_index is not empty.")
+            print('glid_index:%s'%glid_index)
             pass
         if self.data is None:
             print('You need load data first!')
