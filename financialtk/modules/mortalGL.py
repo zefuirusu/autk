@@ -16,6 +16,7 @@ def transType(element):
     # if isinstance(element,type(nan)):
         print('woc!!! %s is nan!'%element )
         element=str(int(0))
+        print("It's ok, nan has been transformed into string.")
     else:
         if isinstance(element,float):
             element=str(int(element))
@@ -210,6 +211,7 @@ class MGL:
         if glid_index is []:
             glid_index=self.glid_index
         else:
+            self.glid_index=glid_index
             pass
         if glid_index is []:
             print("Pass glid_index as argument first!")
