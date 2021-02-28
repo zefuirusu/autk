@@ -128,7 +128,7 @@ class MGL:
     '''
     Mortal General Ledger, a template class of General Ledger.
     '''
-    def __init__(self,fpath='',shtna='Sheet1',title=0,glid_index=[]):
+    def __init__(self,fpath='',shtna='Sheet1',title=0,glid_index=[],auto=False):
         '''
         Three key elements of an General Ledger File is the path, sheet name and the column title location.
         '''
@@ -138,6 +138,7 @@ class MGL:
         self.glid_index=glid_index
         self.data=None
         self.sample_data=None
+        self.entry_info=None
         self.gl_matrix=None
         if self.data is not None:
             if 'glid' in self.data.columns:
@@ -150,6 +151,17 @@ class MGL:
         else:
             self.glid_list=None
         pass
+        if auto == True:
+            self.load_raw_data()
+            if self.glid_index == []:
+                return
+            else:
+                self.set_glid(self.glid_index)
+                pass
+            pass
+        else:
+            print('You need load data.')
+            pass
     def load_df(self,in_df):
         '''
         Load outsource DataFrame data and return Nothing.
@@ -162,6 +174,8 @@ class MGL:
         Load original DataFrame data and return Nothing.
         '''
         self.data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
+        if 'glid' in self.data.columns :
+            self.glid_list=list(self.data['glid'].drop_duplicates())
         pass
     def getshtli(self): 
         from openpyxl import load_workbook
@@ -170,8 +184,12 @@ class MGL:
         if self.data is not None:
             return list(self.data.columns)
         else:
-            self.load_raw_data()
-            return list(self.data.columns)
+            # self.load_raw_data()
+            # return list(self.data.columns)
+            cols=list(self.get_raw_data().columns)
+            print('data has not been loaded. columns in worksheet are:')
+            print(cols)
+            return cols
     def get_gl_matrix(self,over_write=False,drcr=['借方本币','贷方本币']):
         '''
         Get a matrix of General Ledger.
@@ -188,7 +206,12 @@ class MGL:
                 pass
             else:
                 print('Woc! glid is not set.')
-                # self.set_glid([])
+                if self.glid_index != []:
+                    self.set_glid(self.glid_index)
+                    pass
+                else:
+                    print('Set glid_index first!')
+                    return
                 pass
         else:
             print('Woc! raw data is not loaded. Load it and set glid first.')
@@ -209,11 +232,14 @@ class MGL:
             glid_index, values, not numbers.
         '''
         if glid_index is []:
+            print("Pass glid_index as argument first!")
             glid_index=self.glid_index
         else:
             self.glid_index=glid_index
+            print('self.glid_index is set to:',glid_index)
             pass
-        if glid_index is []:
+        print(glid_index)
+        if glid_index == []:
             print("Pass glid_index as argument first!")
             return
         else:
@@ -328,9 +354,14 @@ class MGL:
         '''
         Filter the specific column of the table by regular expression.
         '''
-        import re
+        if self.data is None:
+            print('Load data first!')
+            pass
+        else:
+            print('Start filtering......')
         # self.load_raw_data()
         # self.set_glid()
+        # import re
         indf=self.data
         reg=re.compile(regitem)
         # fli=[]
@@ -416,3 +447,9 @@ class MGL:
             self.sample_data=self.data.sample(n=ss, frac=percent, replace=False, weights=None, random_state=None, axis=None)
             return self.sample_data
         pass
+    def woc(self):
+        if self.data is None:
+            print('Load data first!')
+            return
+        else:
+            pass
