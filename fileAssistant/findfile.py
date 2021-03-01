@@ -46,17 +46,17 @@ class Walkder:
         pass
     pass
 def skfind(item,search_dir=os.path.abspath(os.curdir),match=False):
-    # print('start time:',get_time_info())
     print('start time:',datetime.datetime.now())
+    # print('start time:',get_time_info())
     w1=Walkder(item=item,search_dir=search_dir,match=match)
     w1.start_search()
     resu=[list(w1.resu_files),list(w1.resu_dirs)]
-    print('---files:---')
-    for i in resu[0]:
-        print(i)
-    print('---folders:---')
-    for j in resu[1]:
-        print((j))
-    # print('end time:',get_time_info())
+    # print('---files:---')
+    # for i in resu[0]:
+    #     print(i)
+    # print('---folders:---')
+    # for j in resu[1]:
+    #     print((j))
     print('end time:',datetime.datetime.now())
+    # print('end time:',get_time_info())
     return resu
