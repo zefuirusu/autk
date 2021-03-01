@@ -15,10 +15,16 @@ def get_time_str(woc=False):
         pass
     else:
         pass
-    if woc == False:
-        timestr='-'.join(['-'.join(time_list[0:3]),'_'.join(time_list[3:6])])
+    if len(time_list[2])==1:
+        time_list[2]='0'+time_list[2]
+        pass
     else:
-        timestr=''.join(time_list[0:6])
+        pass
+    if woc == False:
+        timestr='-'.join(['_'.join(time_list[0:3]),'_'.join(time_list[3:6])])
+    else:
+        timestr='-'.join([''.join(time_list[0:3]),''.join(time_list[3:6])])
+        # timestr=''.join(time_list[0:6])
     return timestr
 class TarSheet:
     def __init__(self,bookpath,sheetname,title):
@@ -80,11 +86,12 @@ class JoinExcel:
         self.tar_sheet_list=tar_sheet_list
         pass
     def read_tarsht(self):
+        '''
+        Add MultiRead object into self.thread_list, and then Start/Join the thread to the main thread.
+        '''
         for tar_sheet in self.tar_sheet_list:
             mr=MultiRead(tar_sheet)
             self.thread_list.append(mr)
-            # d=read_excel(tar_sheet.bookpath,sheet_name=tar_sheet.sheetname,header=tar_sheet.title,engine='openpyxl')
-            # mr.start()
             pass
         print(self.thread_list)
         for i in self.thread_list:
@@ -99,14 +106,17 @@ class JoinExcel:
             sheetname:
                 Name of the Sheet in the exporting Excel Workbook.
         '''
+        print('start join_to_sheet...',get_time_str())
         savename=''.join([self.prefix,bookname,self.suffix,r'.xlsx'])
         savepath=os.path.join(self.savedir,savename)
         self.read_tarsht()
         d=concat(self.data_list,axis=0,join='outer')
         if write == True:
             d.to_excel(savepath)
+            print('finish join_to_sheet!',get_time_str())
             pass
         else:
+            print('finish join_to_sheet!',get_time_str())
             return d
     def join_to_book(self,bookname='join',split=True,write=False):
         '''
@@ -117,6 +127,7 @@ class JoinExcel:
                 If true,save to different sheets of the Excel Workbook.
                 Else, save to single sheet of the Excel Workbook.
         '''
+        print('start join_to_book...',get_time_str())
         savename=''.join([self.prefix,bookname,self.suffix,r'.xlsx'])
         savepath=os.path.join(self.savedir,savename)
         self.read_tarsht()
@@ -136,6 +147,7 @@ class JoinExcel:
                     return
                 n+=1
                 continue
+            print('finish join_to_book!',get_time_str())
             pass
         else:
             d=concat(self.data_list,axis=0,join='outer')
@@ -146,11 +158,14 @@ class JoinExcel:
                 wter=ExcelWriter(path=savepath,engine='openpyxl')
                 wter.book=wb
                 d.to_excel(wter,sheet_name='join_to_book')
+                print('finish join_to_book!',get_time_str())
                 pass
             else:
+                print('finish join_to_book!',get_time_str())
                 return d
         pass
 if __name__=='__main__':
+    print(get_time_str())
     print(get_time_str(woc=True))
-    print(get_time_str(woc=False))
+    print(['get_time_str','TarSheet','JoinExcel'])
     pass
