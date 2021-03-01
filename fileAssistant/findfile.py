@@ -51,6 +51,12 @@ def skfind(item,search_dir=os.path.abspath(os.curdir),match=False):
     w1=Walkder(item=item,search_dir=search_dir,match=match)
     w1.start_search()
     resu=[list(w1.resu_files),list(w1.resu_dirs)]
+    print('---files:---')
+    for i in resu[0]:
+        print(i)
+    print('---folders:---')
+    for j in resu[1]:
+        print((j))
     # print('end time:',get_time_info())
     print('end time:',datetime.datetime.now())
     return resu
