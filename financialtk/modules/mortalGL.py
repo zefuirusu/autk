@@ -231,7 +231,7 @@ class MGL:
         parameters:
             glid_index, values, not numbers.
         '''
-        if glid_index is []:
+        if glid_index == []:
             print("Pass glid_index as argument first!")
             glid_index=self.glid_index
         else:
