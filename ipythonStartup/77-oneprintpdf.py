@@ -64,7 +64,7 @@ def wtprtlog(logline):
         f.write('\n')
     return
 # start to print pdf files in a directory.
-def start():
+def start_print():
     '''
     start printing the files in the given directory one after another.
     '''
@@ -99,3 +99,7 @@ def start():
     print(r'-'*5,'\n')
     print(finishword ,'\n')
 #
+if __name__=='__main__':
+    print('functions in oneprintpdf:')
+    print(['start_print'])
+    pass

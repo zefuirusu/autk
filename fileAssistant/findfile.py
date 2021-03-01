@@ -1,116 +1,56 @@
 #!/usr/bin/env python
 # coding=utf-8
-'''
-run this script and search file on your disk with regular expression.
-Find files with Regular Expression：正则表达式搜索本地文件/文件夹
-'''
-# import time
+import re
 import os
-print('Current Directory:')
-print(os.path.abspath(os.curdir))
-#
-def find(item,fdir=os.path.abspath(os.curdir),match=False):
-    '''
-    Find the file you need in a directory.
-    Regular Expression is supported.
-    '''
-    # import os
-    import re
-    rs_file=[]
-    rs_dir=[]
-    for i,j,k in os.walk(fdir):
-        for na in k:
-            if match==True:
-                regitem=re.compile(item)
-                d=re.match(regitem,na)
-                if d is not None:
-                    rs_file.append(os.path.abspath(os.path.join(i,na)))
-            else:
-                regitem=re.compile(item)
-                d=re.search(regitem,na)
-                if d is not None:
-                    real_na=os.path.join(i,na)
-                    # real_na=re.sub(re.compile(r'\s+'),r'',real_na)
-                    rs_file.append(os.path.abspath(real_na))
-        for fpath in j:
-            if match==True:
-                regitem=re.compile(item)
-                d=re.match(regitem,fpath)
-                if d is not None:
-                    full_fpath=os.path.abspath(fpath)
-                    # full_fpath=re.sub(re.compile(r'\s+'),r'',full_fpath)
-                    rs_dir.append(full_fpath)
-                    # rs_dir.append(fpath)
-            else:
-                regitem=re.compile(item)
-                d=re.search(regitem,fpath)
-                if d is not None:
-                    rs_dir.append(os.path.abspath(os.path.join(i,fpath)))
-                    # rs_dir.append(fpath)
-    if rs_file==[]:
-        print(r"Can't find any files!")
-    else:
+import datetime
+import threading
+from autk import wtlog,get_time_info
+class Walkder:
+    def __init__(self,item,search_dir=os.path.abspath(os.curdir),match=False):
+        self.search_dir=search_dir
+        self.match=match
+        self.item=item
+        self.regitem=re.compile(self.item)
+        self.resu_files=None
+        self.resu_dirs=None
         pass
-    if rs_dir==[]:
-        print(r"Can't find any folders!")
-    else:
+    def one_match(self,compare_target):
+        if self.match==False:
+            return re.search(self.regitem,compare_target)
+        else:
+            return re.match(self.regitem,compare_target)
         pass
-    rs=[rs_file,rs_dir]
-    return rs
-#
-def startloop():
-    resu=find(item,fdir,match=mth)
-    print('='*5,'files found:','='*5)
-    ct=1
-    for i in resu[0]:
-        singlefile=[i.split(os.sep)[-1],i]
-        print('-->',ct,'-'*10)
-        print('\t',singlefile[0])
-        print('\t'*2,singlefile[1])
-        ct+=1
-    #
-    print('='*5,'file search finished!','='*5)
-    print('='*5,'folders found:','='*5)
-    ct=1
-    for i in resu[1]:
-        # singlefile=[i.split(os.sep)[-1],i]
-        print('-->',ct,'-'*10)
-        print('\t',i)
-        # print(singlefile[0])
-        # print(singlefile[1])
-        ct+=1
-    #
-    print('='*5,'folders search finished!','='*5)
-    return
-#
-if __name__=='__main__':
-# set the directory to search:
-    # fdir=r'D:\\skandha\\a-Project\\TangShanProject'
-    #fdir=os.path.abspath(os.curdir)
-## define the search mode:
-    #mth=input(r'>>> whether in match mode(y/n; default no.):')
-    #if mth == r'y':
-    #    mth=True
-    #    print('you must match the whole string.')
-    #else:
-    #    mth=False
-    #    print('no need to match the whole string.')
-    #print('\n'*1)
-    ##
-## type in search string:
-    #item=input(r'>>> type in regular expression to search:')
-## start searching:
-    #while True:
-    #    print('\n','-'*3,r'Search Description','-'*5)
-    #    print(r'search item:',item)
-    #    print(r'search in this path as project root directory:',fdir)
-    #    print('-'*3,r'Search Description','-'*5,'\n')
-    #    startloop()
-    #    item=input(r'>>> type in regular expression to search:')
-    #    if item==r'exit' or len(item)==0:
-    #        break
-    #    else:
-    #        # print('\n')
-    #        continue
+    def get_files(self):
+        for i,j,k in os.walk(self.search_dir):
+            for file_name in k:
+                if self.one_match(file_name) is not None:
+                    yield os.path.abspath(os.path.join(i,file_name))
+        pass
+    def get_dirs(self):
+        for i,j,k in os.walk(self.search_dir):
+            for file_path in j:
+                if self.one_match(file_path) is not None:
+                    yield os.path.abspath(file_path)
+        pass
+    def start_search(self):
+        def th1():
+            self.resu_files=self.get_files()
+        def th2():
+            self.resu_dirs=self.get_dirs()
+        t1=threading.Thread(target=th1)
+        t2=threading.Thread(target=th2)
+        t1.start()
+        t1.join()
+        t2.start()
+        t2.join()
+        pass
     pass
-    # input("Press <enter> to close the window...")
+def skfind(item,search_dir=os.path.abspath(os.curdir),match=False):
+    # print('start time:',get_time_info())
+    print('start time:',datetime.datetime.now())
+    w1=Walkder(item=item,search_dir=search_dir,match=match)
+    w1.start_search()
+    resu=[list(w1.resu_files),list(w1.resu_dirs)]
+    # print('end time:',get_time_info())
+    print('end time:',datetime.datetime.now())
+    return resu

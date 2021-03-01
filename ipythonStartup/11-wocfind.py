@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 import re
 import os
+import datetime
+from autk import get_time_info
 #
 def wtlog(logline,logdir):
     '''
@@ -20,6 +22,8 @@ def skfind(item,fdir=os.path.abspath(os.curdir),match=False):
     return a multi-dimensional list like:
     results=[file list, folder list]
     '''
+    # print('start time:',get_time_info())
+    print('start time:',datetime.datetime.now())
     # import os
     import re
     rs_file=[]
@@ -64,6 +68,8 @@ def skfind(item,fdir=os.path.abspath(os.curdir),match=False):
     # else:
     #     pass
     rs=[rs_file,rs_dir]
+    # print('end time:',get_time_info())
+    print('end time:',datetime.datetime.now())
     return rs
 #
 tpdir=r'D:\skandha\a-Project\zhongTang'

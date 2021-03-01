@@ -31,4 +31,6 @@ def startprj(prj_name,basedir=os.path.abspath(os.curdir)):
         os.mkdir(os.path.join(prj_dir,i))
     pass
 if __name__=='__main__':
+    print('functions in 10-project:')
+    print(['startprj'])
     pass

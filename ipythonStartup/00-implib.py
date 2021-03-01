@@ -7,3 +7,4 @@ import shutil
 # import pandas as pd
 # import openpyxl as ox
 #
+print('imports:',['re','os','shutil'])

@@ -91,5 +91,4 @@ class GL(object):
                 yield gl.filter(i,'glid')
         resu=pd.concat(itersearch(idli),axis=0,join='outer')
         return resu
-
 #
