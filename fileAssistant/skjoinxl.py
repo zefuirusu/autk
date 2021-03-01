@@ -73,13 +73,12 @@ class JoinExcel:
             pass
         self.tar_sheet_list=list(yield_tars())
         return self.tar_sheet_list
-        def load_sheets(self,tar_sheet_list):
-        '''
-        Target Sheet list must be instance of class TarSheet.
-        '''
+    def load_sheets(self,tar_sheet_list):
+    '''
+    Target Sheet list must be instance of class TarSheet.
+    '''
         self.tar_sheet_list=tar_sheet_list
         pass
-    def get_tarsheets(self,)
     def read_tarsht(self):
         for tar_sheet in self.tar_sheet_list:
             mr=MultiRead(tar_sheet)
