@@ -154,9 +154,11 @@ class MGL:
         if auto == True:
             self.load_raw_data()
             if self.glid_index == []:
+                print('glid_index is not set, raw data has been loaded without glid set.')
                 return
             else:
                 self.set_glid(self.glid_index)
+                print('Oh, data with glid is automatically loaded.')
                 pass
             pass
         else:
