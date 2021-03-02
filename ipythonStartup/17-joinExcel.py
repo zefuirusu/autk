@@ -3,7 +3,7 @@
 import os
 import re
 import openpyxl as ox
-from autk.fileAssistant.findfile import find
+from autk.fileAssistant.findfile import skfind
 import pandas as pd
 from pandas.core.frame import DataFrame
 #
@@ -32,7 +32,7 @@ def compareli(li1=[],li2=[]):
     return resu
 #
 def prejoin():
-    f=find(r'\.xlsx',os.path.abspath(os.curdir))[0]
+    f=skfind(r'\.xlsx',os.path.abspath(os.curdir))[0]
     for i in f:
         print('='*5)
         print('bookName:',i.split(os.sep)[-1])
