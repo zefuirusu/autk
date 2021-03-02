@@ -420,7 +420,7 @@ class MGL:
         self.data=self.data_copy
         self.data_copy=None
         return data
-    def adv_filter(self.condition_df,match=False):
+    def adv_filter(self,condition_df,match=False):
         '''
         condition_df is a pandas.core.frame.DataFrame class.
         '''
