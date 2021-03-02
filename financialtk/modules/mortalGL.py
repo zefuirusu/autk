@@ -360,6 +360,7 @@ class MGL:
         if self.data is None:
             print('Load data first!')
             self.load_raw_data()
+            print('Raw data loaded.')
             pass
         else:
             print('Start filtering......')
