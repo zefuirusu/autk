@@ -421,7 +421,7 @@ class MGL:
         self.data=self.data_copy
         self.data_copy=None
         return data
-    def adv_filter(self,condition_df,match=False):
+    def adv_filter(self,condition_df,match=False,show=False):
         '''
         condition_df is a pandas.core.frame.DataFrame class.
         '''
@@ -443,8 +443,14 @@ class MGL:
             for i in get_multi_condition():
                 data=self.multi_filter(i,match=match)
                 yield data
-        data=concat(get_multi_data(),axis=0,join='outer')
-        return data
+        if show==False:
+            data=concat(get_multi_data(),axis=0,join='outer')
+            return data
+        else:
+            for i in get_multi_data():
+                print(i)
+                continue
+            return
     def getAcct(self,accid_item,accid_label='科目编码',over_write=False,pure=False):
         '''
         Get all and full records about given 'accid'.
