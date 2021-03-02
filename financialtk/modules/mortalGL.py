@@ -358,10 +358,10 @@ class MGL:
         '''
         if self.data is None:
             print('Load data first!')
+            self.load_raw_data()
             pass
         else:
             print('Start filtering......')
-        # self.load_raw_data()
         # self.set_glid()
         # import re
         indf=self.data
