@@ -11,7 +11,7 @@ def wcp(frdir,todir=os.path.abspath(os.curdir),nickName=get_time_info()):
     works well with the find function.
     '''
     pass
-    file_name='-'.join([nickName,str(frdir.split(os.sep)[-1]))])
+    file_name='-'.join([nickName,str(frdir.split(os.sep)[-1])])
     destination_dir=os.path.abspath(os.path.join(todir,file_name))
     try:
         shutil.copy(frdir,destination_dir)
