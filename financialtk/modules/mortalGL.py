@@ -411,7 +411,7 @@ class MGL:
     def multi_filter(self,conditions,match=False): # ,over_write=False):
         # print('Warning! Multi-filter must change self.data! You need reload.')
         self.data_copy=self.data
-        for conditon in conditons:
+        for conditions in conditions:
             item=re.compile(condition[0])
             label=str(condition[1])
             self.filter(item,label,match=match,over_write=True)
