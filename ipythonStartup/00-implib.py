@@ -5,9 +5,9 @@ import os
 import sys
 import shutil
 sys.path.append(os.path.abspath(os.curdir))
-from .financialtk.modules.mortalGL import MGL
-from .fileAssistant.skjoinxl import JoinExcel,get_time_str
-# from .financialtk.zhtk.logwriter import wtlog
+from autk.financialtk.modules.mortalGL import MGL
+from autk.fileAssistant.skjoinxl import JoinExcel,get_time_str
+# from autk.financialtk.zhtk.logwriter import wtlog
 print('imports:',['re','os','shutil'])
 print('with autk, get those quick functions:')
 print(['mgl','joinxl','wtlog','get_time_str'])
