@@ -138,6 +138,7 @@ class MGL:
         self.glid_index=glid_index
         self.data=None
         self.sample_data=None
+        self.data_copy=None
         self.entry_info=None
         self.gl_matrix=None
         if self.data is not None:
@@ -407,13 +408,40 @@ class MGL:
             self.load_df(ftable)
             return self.data
     def multi_filter(self,conditions,match=False): # ,over_write=False):
-        print('Warning! Multi-filter must change self.data! You need reload.')
+        # print('Warning! Multi-filter must change self.data! You need reload.')
+        self.data_copy=self.data
         for conditon in conditons:
             item=re.compile(condition[0])
             label=str(condition[1])
             self.filter(item,label,match=match,over_write=True)
             continue
-        return self.data
+        data=self.data
+        self.data=self.data_copy
+        self.data_copy=None
+        return data
+    def adv_filter(self.condition_df,match=False):
+        '''
+        condition_df is a pandas.core.frame.DataFrame class.
+        '''
+        def get_multi_condition():
+            for i in condition_df.iterrows():
+                row=i[1]
+                conditions=[]
+                for j in row.index:
+                    conditions.append([j,row[j]])
+                    continue
+                yield conditions
+                continue
+            pass
+        # condition_list=list(get_multi_condition())
+        # def once_filter(conditons):
+        #     data=self.multi_filter(conditions,match=match)
+        def get_multi_data():
+            for i in get_multi_condition():
+                data=self.multi_filter(i,match=match)
+                yield data
+        data=concat(get_multi_data(),axis=0,join='outer')
+        return data
     def getAcct(self,accid_item,accid_label='科目编码',over_write=False,pure=False):
         '''
         Get all and full records about given 'accid'.
