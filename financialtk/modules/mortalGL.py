@@ -410,6 +410,7 @@ class MGL:
             return self.data
     def multi_filter(self,conditions,match=False): # ,over_write=False):
         # print('Warning! Multi-filter must change self.data! You need reload.')
+        print('multi_filter condition:',conditions)
         self.data_copy=self.data
         for condition in conditions:
             item=re.compile(condition[0])
@@ -434,7 +435,8 @@ class MGL:
                 yield conditions
                 continue
             pass
-        # condition_list=list(get_multi_condition())
+        condition_list=list(get_multi_condition())
+        print(condition_list)
         # def once_filter(conditons):
         #     data=self.multi_filter(conditions,match=match)
         def get_multi_data():
