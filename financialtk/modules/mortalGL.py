@@ -429,7 +429,7 @@ class MGL:
                 row=i[1]
                 conditions=[]
                 for j in row.index:
-                    conditions.append([j,row[j]])
+                    conditions.append([row[j],j])
                     continue
                 yield conditions
                 continue
