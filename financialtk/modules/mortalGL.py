@@ -406,6 +406,14 @@ class MGL:
         else:
             self.load_df(ftable)
             return self.data
+    def multi_filter(self,conditions,match=False): # ,over_write=False):
+        print('Warning! Multi-filter must change self.data! You need reload.')
+        for conditon in conditons:
+            item=re.compile(condition[0])
+            label=str(condition[1])
+            self.filter(item,label,match=match,over_write=True)
+            continue
+        return self.data
     def getAcct(self,accid_item,accid_label='科目编码',over_write=False,pure=False):
         '''
         Get all and full records about given 'accid'.
