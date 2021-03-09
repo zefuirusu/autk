@@ -33,7 +33,7 @@ class Gele(MGL): # GeneralLedger
     def __init__(self,fdir='',shtna=r'表页-1',title=3):
         import os
         self.fdir=fdir
-        self.path=fdir
+        self.fpath=fdir
         self.sheetname=shtna
         self.title=title
         self.glname=str(self.fdir.split(os.sep)[-1])
