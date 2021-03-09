@@ -12,6 +12,7 @@ def transType(element):
     '''
     transfer an float/integer object into string.
     '''
+    # return str(object=element)
     # print('this number to be transformed:',element)
     if element is nan:
     # if isinstance(element,type(nan)):
@@ -22,17 +23,25 @@ def transType(element):
         return element
     else:
         # if isinstance(element,float):
-        if element is float and element is not nan:
+        if element is float:
             element=str(int(element))
             return element
-        elif isinstance(element,int):
-            element=str(element)
-            return element
-        elif isinstance(element,str):
-            element=element
-            return element
+        # elif isinstance(element,int):
         else:
-            return str(int(0))
+            if element is int:
+                element=str(element)
+                return element
+        # elif isinstance(element,str):
+            else:
+                if element is str:
+                    element=element
+                    return element
+                else:
+                    print('what?',element)
+                    print(type(element))
+                    # return str(int(0))
+                    # return str(int(element))
+                    return element
 class EntryRecord:
     def __init__(self,df_iterrows_element,glid_cols=[0,1,2]):
         self.index=list(df_iterrows_element[1].index)
@@ -270,8 +279,9 @@ class MGL:
                     for j in glid_index:
                         a_index=row[j]
                         # a_index=str(a_index)
-                        a_index=transType(a_index)
-                        glid.append(a_index)
+                        # a_index=transType(a_index)
+                        glid.append(transType(a_index))
+                    print(glid)
                     glid='-'.join(glid)
                     # i['glid']=glid
                     d=dict(row)
