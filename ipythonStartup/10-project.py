@@ -29,7 +29,7 @@ def startprj(prj_name,basedir=os.path.abspath(os.curdir)):
     prj_dir=os.path.join(basedir,prj_name)
     os.mkdir(prj_dir)
     for i in top_dir:
-        print('creating $i'%i)
+        print('creating %s'%i)
         os.mkdir(os.path.join(prj_dir,i))
     pass
 if __name__=='__main__':
