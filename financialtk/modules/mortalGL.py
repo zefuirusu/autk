@@ -12,19 +12,27 @@ def transType(element):
     '''
     transfer an float/integer object into string.
     '''
+    # print('this number to be transformed:',element)
     if element is nan:
     # if isinstance(element,type(nan)):
         print('woc!!! %s is nan!'%element )
-        element=str(int(0))
+        element=str(int('0'))
         print("It's ok, nan has been transformed into string.")
+        print(element)
+        return element
     else:
-        if isinstance(element,float):
+        # if isinstance(element,float):
+        if element is float and element is not nan:
             element=str(int(element))
+            return element
         elif isinstance(element,int):
             element=str(element)
+            return element
         elif isinstance(element,str):
             element=element
-    return element
+            return element
+        else:
+            return str(int(0))
 class EntryRecord:
     def __init__(self,df_iterrows_element,glid_cols=[0,1,2]):
         self.index=list(df_iterrows_element[1].index)
