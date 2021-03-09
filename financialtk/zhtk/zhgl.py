@@ -35,6 +35,7 @@ class Gele(MGL): # GeneralLedger
         self.fdir=fdir
         self.fpath=fdir
         self.sheetname=shtna
+        self.shtna=shtna
         self.title=title
         self.glname=str(self.fdir.split(os.sep)[-1])
         self.data=None
