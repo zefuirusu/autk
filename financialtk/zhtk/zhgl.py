@@ -9,7 +9,7 @@ class Acct:
     '''
     Acct is short for Account, with two main attributes, 'name' and 'accid'.
     '''
-    def __init__(self,name='主营业务收入',accid=r'6001'):
+    def __init__(self,accid=r'6001',name='主营业务收入'):
         '''
         class of Account.
         初始化，传入科目名称，科目编码，增加方向，账户类别。
