@@ -22,11 +22,12 @@ class Acct:
         class of Account.
         初始化，传入科目名称，科目编码，增加方向，账户类别。
         '''
+        self.accid=accid
         self.name=name # 科目名称
-        try:
-            self.accid=str(int(accid)) # 科目编码
-        except:
-            self.accid=str(accid)
+        # try:
+        #     self.accid=str(int(accid)) # 科目编码
+        # except:
+        #     self.accid=str(accid)
         # self.isdr=True # 借方主导的科目,共同类科目也归入此类。
         # self.iscr=-self.isdr # 贷方主导的科目
         # self.cata='' # account catagory

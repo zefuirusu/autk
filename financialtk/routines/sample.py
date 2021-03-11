@@ -107,8 +107,8 @@ class AuSample:
         获取某科目的借方/贷方样本.
         '''
         from pandas import DataFrame,Series
-        theAcct=self.gl.zh_filter(inAcct.accid,r'科目编码') # 系统导出的序时账/余额表里是"科目编号",有时候从被审计单位系统导出的GL为“科目编码".
-        # theAcct=self.gl.zh_filter(inAcct.accid,r'科目编号') # 系统导出的序时账/余额表里是"科目编号",有时候从被审计单位系统导出的GL为“科目编码".
+        theAcct=self.gl.zh_filter(inAcct.accid,r'科目编号') # 系统导出的序时账/余额表里是"科目编号",有时候从被审计单位系统导出的GL为“科目编码".
+        # theAcct=self.gl.zh_filter(inAcct.accid,r'科目编码') # 系统导出的序时账/余额表里是"科目编号",有时候从被审计单位系统导出的GL为“科目编码".
         print('this acccout:')
         print(theAcct)
         acct_data=self.chart.getAcct(inAcct) # 从余额表获取发生额,用以计算抽样比例.
@@ -129,7 +129,7 @@ class AuSample:
             对借方/贷方某方向抽样.
             dcr is one of ['借方','贷方']
             '''
-            logline=''.join(['--',inAcct.accid,dcr,'--'])
+            logline=''.join(['--',str(inAcct.accid),dcr,'--'])
             print(logline)
             self.logw(logline)
             if acct_sum[dcr] ==0:
@@ -190,7 +190,7 @@ class AuSample:
             acct=Acct(i,self.chart.getna(i))
             # th=MultiThread(acct,self)
             # self.thread_li.append(th)
-            print('==start:%s=='%acct.accid)
+            print('==start:%s=='%str(acct.accid))
             self.logw('==start:%s=='%acct.accid)
             m_sample=self.getSample(acct) # one of the multi-samples.
             # try:
@@ -218,7 +218,7 @@ class AuSample:
                 # print(m_sample) # 查看样本
                 wter.save()
             # yield m_sample
-            print('==end:%s=='%acct.accid)
+            print('==end:%s=='%str(acct.accid))
             self.logw('==end:%s=='%acct.accid)
         wter.close()
         return
@@ -253,7 +253,7 @@ class MultiThread(threading.Thread):
         threading.Thread.__init__(self,name=self.acct)
         pass
     def run(self):
-        print('==start:%s=='%self.acct.accid)
+        print('==start:%s=='%str(self.acct.accid))
         self.sample_obj.logw('==start:%s=='%self.acct.accid)
         m_sample=self.sample_obj.getSample(self.acct) # one of the multi-samples.
         if m_sample.shape[0]==0:
@@ -262,10 +262,10 @@ class MultiThread(threading.Thread):
             self.sample_obj.logw(no_sample_line)
             pass
         else:
-            m_sample.to_excel(self.wter,sheet_name=str(self.acct.accid+self.acct.name))
+            m_sample.to_excel(self.wter,sheet_name=''.join([str(self.acct.accid),str(self.acct.name)]))
             # self.wter.save()
-        print('==end:%s=='%self.acct.accid)
-        self.sample_obj.logw('==end:%s=='%self.acct.accid)
+        print('==end:',str(self.acct.accid),'==')
+        self.sample_obj.logw('==end:%s=='%str(self.acct.accid))
         pass
 class genSample:
     def __init__(self,gldir,shtna,title=0,method='pm'):

@@ -127,7 +127,7 @@ class Gele(MGL): # GeneralLedger
         import re
         indf=self.get_raw_data()
         # indf=self.getgldata() # Do not use the return of self.getgldata() as the input of this method.
-        reg=re.compile(regitem)
+        reg=re.compile(str(regitem))
         fli=[]
         for i in list(indf[label].drop_duplicates()):
             if match==False:
