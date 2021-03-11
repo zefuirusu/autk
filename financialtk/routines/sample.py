@@ -5,6 +5,7 @@
     2. AuSample.multiSample()和AuSample.getSample(inAcct)都是对金额抽样,而非对数量抽样,将来要更新一个对数量抽样的方法.
 '''
 import re
+import threading
 from autk.financialtk.zhtk.zhchart import ChartAccount,Acct
 from autk.financialtk.zhtk.zhgl import Gele
 from autk.financialtk.zhtk.logwriter import wtlog
@@ -24,6 +25,7 @@ class AuSample:
         Get sample according to GL and TB.
         self.gl is an instance of class Gele and self.chart is an instance of class ChartAccount.
         parameters:(gl_object,chart_object,savedir,acctli_dir,logdir,acquired_rate,drcrdesc)
+        To start, call self.multiSample.
         余额表是['借方发生','贷方发生']
         序时账是['借方发生金额','贷方发生金额']
         '''
@@ -44,6 +46,7 @@ class AuSample:
         self.acquired_rate=acquired_rate
         self.drcrdesc=drcrdesc
         print(self.acctli)
+        self.thread_li=[]
         return
     def rm_space(self,instr):
         return re.sub(re.compile(r'\n.*$'),'',instr)
@@ -172,7 +175,6 @@ class AuSample:
         return final_sample
     def multiSample(self):
         '''
-        在savedir处的Excel文件必须事先创建.
         '''
         print('%d accounts to sample in total.'%len(self.acctli))
         from openpyxl import load_workbook,Workbook
@@ -186,6 +188,8 @@ class AuSample:
         self.logw('==multiSample==')
         for i in self.acctli:
             acct=Acct(i,self.chart.getna(i))
+            # th=MultiThread(acct,self)
+            # self.thread_li.append(th)
             print('==start:%s=='%acct.accid)
             self.logw('==start:%s=='%acct.accid)
             m_sample=self.getSample(acct) # one of the multi-samples.
@@ -205,7 +209,7 @@ class AuSample:
             #     pass
             if m_sample.shape[0]==0:
                 self.logw('no sample for this account:')
-                no_sample_line=str(acct.accid)+'\t'+str(acct.name)
+                no_sample_line=''.join([str(acct.accid),'\t',str(acct.name)])
                 self.logw(no_sample_line)
                 pass
             else:
@@ -218,6 +222,51 @@ class AuSample:
             self.logw('==end:%s=='%acct.accid)
         wter.close()
         return
+    def start_multi_sample(self):
+        self.logw('multi-thread multiSample start....')
+        print('multi-thread multiSample start....')
+        print('%d accounts to sample in total.'%len(self.acctli))
+        from openpyxl import load_workbook,Workbook
+        from pandas import ExcelWriter
+        wb=Workbook()
+        wb.save(self.savedir)
+        wb.close()
+        wb=load_workbook(self.savedir)
+        wter=ExcelWriter(self.savedir,engine='openpyxl')
+        wter.book=wb
+        self.logw('==multiSample==')
+        for i in self.acctli:
+            acct=Acct(i,self.chart.getna(i))
+            th=MultiThread(acct,self,wter)
+            self.thread_li.append(th)
+            continue
+        for i in self.thread_li:
+            i.start()
+        for i in self.thread_li:
+            i.join()
+        wter.save()
+class MultiThread(threading.Thread):
+    def __init__(self,acct,sample_obj,wter):
+        self.acct=acct
+        self.sample_obj=sample_obj
+        self.wter=wter
+        threading.Thread.__init__(self,name=self.acct)
+        pass
+    def run(self):
+        print('==start:%s=='%self.acct.accid)
+        self.sample_obj.logw('==start:%s=='%self.acct.accid)
+        m_sample=self.sample_obj.getSample(self.acct) # one of the multi-samples.
+        if m_sample.shape[0]==0:
+            self.sample_obj.logw('no sample for this account:')
+            no_sample_line=''.join([str(self.acct.accid),'\t',str(self.acct.name)])
+            self.sample_obj.logw(no_sample_line)
+            pass
+        else:
+            m_sample.to_excel(self.wter,sheet_name=str(self.acct.accid+self.acct.name))
+            # self.wter.save()
+        print('==end:%s=='%self.acct.accid)
+        self.sample_obj.logw('==end:%s=='%self.acct.accid)
+        pass
 class genSample:
     def __init__(self,gldir,shtna,title=0,method='pm'):
         self.gldir=gldir

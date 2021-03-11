@@ -23,7 +23,8 @@ class SampleThread(threading.Thread):
     def run(self):
         # auto_sample=AuSample(self.gldir,self.chartdir,self.savedir,acctli_dir=self.acctli_dir,logdir=self.logdir,drcrdesc=['借方发生','贷方发生'])
         auto_sample=AuSample(self.gldir,self.chartdir,self.savedir,acctli_dir=self.acctli_dir,logdir=self.logdir,drcrdesc=['借方','贷方'])
-        auto_sample.multiSample()
+        # auto_sample.multiSample()
+        auto_sample.start_multi_sample()
         pass
 # start testing:
 def bj_sample():
