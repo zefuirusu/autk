@@ -30,37 +30,37 @@ class Gele(MGL): # GeneralLedger
     Gele.sample()方法是有缺陷的,对某方向上累计金额未0的科目无效,会报错,原因在于acct_sum的计算会遇到0/0的情况.
     Gele.sample()的bug已经修复,但有个不足之处,从算法上讲,该抽样的"目标累计金额"是根据序时账GL的发生额计算出的,其实由于账务系统可能存在同账户金额互相转的情况,可能存在GL发生额大于实际发生额的情况,解决之道是从余额表TB获取计算"目标累计金额",如此可获得准确的该账户借方/贷方的发生额.
     '''
-    def __init__(self,fdir='',shtna=r'表页-1',title=3):
+    def __init__(self,fpath='',shtna=r'表页-1',title=3,glid_index=[],auto=False):
         import os
-        self.fdir=fdir
-        self.fpath=fdir
+        self.fpath=fpath
         self.sheetname=shtna
         self.shtna=shtna
         self.title=title
-        self.glname=str(self.fdir.split(os.sep)[-1])
+        self.glname=str(self.fpath.split(os.sep)[-1])
+        self.glid_index=glid_index
         self.data=None
         self.sample_data=None
         # from pandas import read_excel
-        # self.cols=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title,engine='openpyxl').columns
+        # self.cols=read_excel(self.fpath,sheet_name=self.sheetname,header=self.title,engine='openpyxl').columns
         # self.cols=['凭证日期', '字', '号', '摘要', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
         # glid 是GL的主键。
         # self.colsk=['凭证日期', '字', '号', '摘要', 'glid', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
         print('Before GL initialized，column "glid" should be added.')
         print('=====\nGL name:%s'%self.glname)
-        print('GL path:\n',self.fdir)
+        print('GL path:\n',self.fpath)
         print('GL sheet:\t',self.sheetname)
         # print('GL columns:\n',self.cols)
         return
     def getshtli(self): 
         from openpyxl import load_workbook
-        return load_workbook(self.fdir).sheetnames
+        return load_workbook(self.fpath).sheetnames
     def getcols(self):
         from pandas import read_excel
-        col=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title,engine='openpyxl').columns
+        col=read_excel(self.fpath,sheet_name=self.sheetname,header=self.title,engine='openpyxl').columns
         return list(col)
     def getdata(self,fillna=False): # get raw data without column "glid".
         from pandas import read_excel
-        d1=read_excel(self.fdir,sheet_name=self.sheetname,header=self.title,engine='openpyxl')
+        d1=read_excel(self.fpath,sheet_name=self.sheetname,header=self.title,engine='openpyxl')
         if fillna==True:
             d1=d1.fillna(float(0.0))
         else:
@@ -243,7 +243,7 @@ class Gele(MGL): # GeneralLedger
         Finally return a pandas.DataFrame as a sample.
         '''
         from pandas import read_excel
-        # gl=read_excel(self.fdir,sheet_name=self.sheetname)
+        # gl=read_excel(self.fpath,sheet_name=self.sheetname)
         gl=self.getdata()
         # regitem=r'^'+str(acct_id)+r'.*'
         regitem=str(acct_id)

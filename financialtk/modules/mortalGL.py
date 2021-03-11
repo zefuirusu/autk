@@ -8,11 +8,12 @@ MGL: Mortal General Ledger.
 import re
 from numpy import nan
 from pandas import read_excel,DataFrame,concat
+# from modin.pandas import read_excel,DataFrame,concat
 def transType(element):
     '''
     transfer an float/integer object into string.
     '''
-    # return str(object=element)
+    return str(object=element)
     # print('this number to be transformed:',element)
     if element is nan:
     # if isinstance(element,type(nan)):
@@ -258,7 +259,7 @@ class MGL:
             self.glid_index=glid_index
             print('self.glid_index is set to:',glid_index)
             pass
-        print(glid_index)
+        # print(glid_index)
         if glid_index == []:
             print("Pass glid_index as argument first!")
             return
@@ -281,7 +282,7 @@ class MGL:
                         # a_index=str(a_index)
                         # a_index=transType(a_index)
                         glid.append(transType(a_index))
-                    print(glid)
+                    # print(glid)
                     glid='-'.join(glid)
                     # i['glid']=glid
                     d=dict(row)
