@@ -3,8 +3,8 @@
 # import sys
 # sys.path.append('../../../../autk')
 import threading
-from autk.financialtk.zhtk.zhchart import ChartAccount
-from autk.financialtk.zhtk.zhgl import Gele,Acct
+from autk.financialtk.zhtk.zhchart import ChartAccount,Acct
+from autk.financialtk.zhtk.zhgl import Gele
 from autk.financialtk.routines.sample import AuSample
 
 def start_sample(gldir,chartdir,savedir,acctli_dir,logdir):
@@ -22,7 +22,7 @@ class SampleThread(threading.Thread):
         pass
     def run(self):
         # auto_sample=AuSample(self.gldir,self.chartdir,self.savedir,acctli_dir=self.acctli_dir,logdir=self.logdir,drcrdesc=['借方发生','贷方发生'])
-        auto_sample=AuSample(self.gldir,self.chartdir,self.savedir,acctli_dir=self.acctli_dir,logdir=self.logdir)
+        auto_sample=AuSample(self.gldir,self.chartdir,self.savedir,acctli_dir=self.acctli_dir,logdir=self.logdir,drcrdesc=['借方','贷方'])
         auto_sample.multiSample()
         pass
 # start testing:

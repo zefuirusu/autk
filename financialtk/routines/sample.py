@@ -1,13 +1,12 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/usr/bin/env python # coding=utf-8
 '''
 说明:
     1. AuSample类初始化时的部分属性没有得到充分利用,需要后期升级.
     2. AuSample.multiSample()和AuSample.getSample(inAcct)都是对金额抽样,而非对数量抽样,将来要更新一个对数量抽样的方法.
 '''
 import re
-from autk.financialtk.zhtk.zhchart import ChartAccount
-from autk.financialtk.zhtk.zhgl import Gele,Acct
+from autk.financialtk.zhtk.zhchart import ChartAccount,Acct
+from autk.financialtk.zhtk.zhgl import Gele
 from autk.financialtk.zhtk.logwriter import wtlog
 
 class AuSample:
@@ -33,7 +32,7 @@ class AuSample:
         self.savedir=savedir
         self.logdir=logdir
         def rm_space(instr):
-            return re.sub(re.compile(r'\n.*$'),'',instr)
+            return self.rm_space(instr)
         if acctli_dir != None:
             with open(acctli_dir,mode='r',encoding='utf-8') as f:
                 li=f.readlines()
@@ -44,7 +43,10 @@ class AuSample:
             print(self.acctli)
         self.acquired_rate=acquired_rate
         self.drcrdesc=drcrdesc
+        print(self.acctli)
         return
+    def rm_space(self,instr):
+        return re.sub(re.compile(r'\n.*$'),'',instr)
     def logw(self,logline):
         wtlog(logline,self.logdir)
         return
@@ -57,7 +59,8 @@ class AuSample:
         print(logline)
         self.logw(logline)
         from pandas import DataFrame,Series
-        theAcct=self.gl.zh_filter(inAcct.accid,r'科目编号') # 系统导出的序时账/余额表里是"科目编号",有时候从被审计单位系统导出的GL为“科目编码".
+        # theAcct=self.gl.zh_filter(inAcct.accid,r'科目编号') # 系统导出的序时账/余额表里是"科目编号",有时候从被审计单位系统导出的GL为“科目编码".
+        theAcct=self.gl.zh_filter(inAcct.accid,r'科目编码') # 系统导出的序时账/余额表里是"科目编号",有时候从被审计单位系统导出的GL为“科目编码".
         acct_data=self.chart.getAcct(inAcct) # 从余额表获取发生额,用以计算抽样比例.
         # acct_sum=DataFrame({self.drcrdesc[0]:acct_data[2],self.drcrdesc[1]:acct_data[3]},index=[inAcct.accid],columns=self.drcrdesc)
         acct_sum=Series([acct_data[2],acct_data[3]],name=inAcct.accid,index=self.drcrdesc) # acct_sum是acct_data的一部分.
@@ -102,7 +105,11 @@ class AuSample:
         '''
         from pandas import DataFrame,Series
         theAcct=self.gl.zh_filter(inAcct.accid,r'科目编码') # 系统导出的序时账/余额表里是"科目编号",有时候从被审计单位系统导出的GL为“科目编码".
+        # theAcct=self.gl.zh_filter(inAcct.accid,r'科目编号') # 系统导出的序时账/余额表里是"科目编号",有时候从被审计单位系统导出的GL为“科目编码".
+        print('this acccout:')
+        print(theAcct)
         acct_data=self.chart.getAcct(inAcct) # 从余额表获取发生额,用以计算抽样比例.
+        print('acct_data:\n',acct_data)
         # acct_sum=DataFrame({self.drcrdesc[0]:acct_data[2],self.drcrdesc[1]:acct_data[3]},index=[inAcct.accid],columns=self.drcrdesc)
         acct_sum=Series([acct_data[2],acct_data[3]],name=inAcct.accid,index=self.drcrdesc) # acct_sum是acct_data的一部分.
         # acct_sum=theAcct[self.drcrdesc].sum(axis=0) # 被指定的科目借方贷方求和.这里要修改,要从余额表读取此数.
@@ -178,7 +185,7 @@ class AuSample:
         wter.book=wb
         self.logw('==multiSample==')
         for i in self.acctli:
-            acct=Acct(self.chart.getna(i),i)
+            acct=Acct(i,self.chart.getna(i))
             print('==start:%s=='%acct.accid)
             self.logw('==start:%s=='%acct.accid)
             m_sample=self.getSample(acct) # one of the multi-samples.
@@ -198,7 +205,7 @@ class AuSample:
             #     pass
             if m_sample.shape[0]==0:
                 self.logw('no sample for this account:')
-                no_sample_line=acct.accid+'\t'+acct.name
+                no_sample_line=str(acct.accid)+'\t'+str(acct.name)
                 self.logw(no_sample_line)
                 pass
             else:

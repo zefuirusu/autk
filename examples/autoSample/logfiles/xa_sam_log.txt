@@ -285,3 +285,711 @@ target_sum(Dr/Cr):
 ==start:1001==
 ==multiSample==
 ==start:1001==
+==multiSample==
+==start:现金==
+==multiSample==
+==start:现金==
+==multiSample==
+==start:现金==
+==multiSample==
+==start:现金==
+==multiSample==
+==start:现金==
+target_sum(Dr/Cr):
+0.0	0.0
+--现金借方--
+借方 :no need to sample.
+--现金贷方--
+贷方 :no need to sample.
+no sample for this account:
+现金	1001
+==end:现金==
+==start:  工商银行==
+target_sum(Dr/Cr):
+0.0	0.0
+--  工商银行借方--
+借方 :no need to sample.
+--  工商银行贷方--
+贷方 :no need to sample.
+no sample for this account:
+  工商银行	10021
+==end:  工商银行==
+==start:  个人==
+target_sum(Dr/Cr):
+0.0	0.0
+--  个人借方--
+借方 :no need to sample.
+--  个人贷方--
+贷方 :no need to sample.
+no sample for this account:
+  个人	11331
+==end:  个人==
+==start:  单位==
+target_sum(Dr/Cr):
+0.0	0.0
+--  单位借方--
+借方 :no need to sample.
+--  单位贷方--
+贷方 :no need to sample.
+no sample for this account:
+  单位	11332
+==end:  单位==
+==start:    管理部门通用设备==
+target_sum(Dr/Cr):
+0.0	0.0
+--    管理部门通用设备借方--
+借方 :no need to sample.
+--    管理部门通用设备贷方--
+贷方 :no need to sample.
+no sample for this account:
+    管理部门通用设备	150112
+==end:    管理部门通用设备==
+==start:    管理部门运输工具==
+target_sum(Dr/Cr):
+0.0	0.0
+--    管理部门运输工具借方--
+借方 :no need to sample.
+--    管理部门运输工具贷方--
+贷方 :no need to sample.
+no sample for this account:
+    管理部门运输工具	150113
+==end:    管理部门运输工具==
+==start:    管理部门办公家具==
+target_sum(Dr/Cr):
+0.0	0.0
+--    管理部门办公家具借方--
+借方 :no need to sample.
+--    管理部门办公家具贷方--
+贷方 :no need to sample.
+no sample for this account:
+    管理部门办公家具	150114
+==end:    管理部门办公家具==
+==start:    管理部门电子设备==
+target_sum(Dr/Cr):
+0.0	0.0
+--    管理部门电子设备借方--
+借方 :no need to sample.
+--    管理部门电子设备贷方--
+贷方 :no need to sample.
+no sample for this account:
+    管理部门电子设备	150115
+==end:    管理部门电子设备==
+==start:    生产部门通用设备==
+target_sum(Dr/Cr):
+0.0	0.0
+--    生产部门通用设备借方--
+借方 :no need to sample.
+--    生产部门通用设备贷方--
+贷方 :no need to sample.
+no sample for this account:
+    生产部门通用设备	150132
+==end:    生产部门通用设备==
+==start:    生产部门办公家具==
+target_sum(Dr/Cr):
+0.0	0.0
+--    生产部门办公家具借方--
+借方 :no need to sample.
+--    生产部门办公家具贷方--
+贷方 :no need to sample.
+no sample for this account:
+    生产部门办公家具	150134
+==end:    生产部门办公家具==
+==start:    生产部门电子设备==
+target_sum(Dr/Cr):
+0.0	0.0
+--    生产部门电子设备借方--
+借方 :no need to sample.
+--    生产部门电子设备贷方--
+贷方 :no need to sample.
+no sample for this account:
+    生产部门电子设备	150135
+==end:    生产部门电子设备==
+==start:    研发部通用设备==
+target_sum(Dr/Cr):
+0.0	0.0
+--    研发部通用设备借方--
+借方 :no need to sample.
+--    研发部通用设备贷方--
+贷方 :no need to sample.
+no sample for this account:
+    研发部通用设备	1501C2
+==end:    研发部通用设备==
+==start:    研发部办公家具==
+target_sum(Dr/Cr):
+0.0	0.0
+--    研发部办公家具借方--
+借方 :no need to sample.
+--    研发部办公家具贷方--
+贷方 :no need to sample.
+no sample for this account:
+    研发部办公家具	1501C4
+==end:    研发部办公家具==
+==start:    研发部电子设备==
+target_sum(Dr/Cr):
+0.0	0.0
+--    研发部电子设备借方--
+借方 :no need to sample.
+--    研发部电子设备贷方--
+贷方 :no need to sample.
+no sample for this account:
+    研发部电子设备	1501C5
+==end:    研发部电子设备==
+==start:    预付生产设备款==
+target_sum(Dr/Cr):
+0.0	0.0
+--    预付生产设备款借方--
+借方 :no need to sample.
+--    预付生产设备款贷方--
+贷方 :no need to sample.
+no sample for this account:
+    预付生产设备款	160131
+==end:    预付生产设备款==
+==start:    预付老化室建造款==
+target_sum(Dr/Cr):
+0.0	0.0
+--    预付老化室建造款借方--
+借方 :no need to sample.
+--    预付老化室建造款贷方--
+贷方 :no need to sample.
+no sample for this account:
+    预付老化室建造款	160132
+==end:    预付老化室建造款==
+==start:  装修改造==
+target_sum(Dr/Cr):
+0.0	0.0
+--  装修改造借方--
+借方 :no need to sample.
+--  装修改造贷方--
+贷方 :no need to sample.
+no sample for this account:
+  装修改造	16032
+==end:  装修改造==
+==start:  老化柜组装==
+target_sum(Dr/Cr):
+0.0	0.0
+--  老化柜组装借方--
+借方 :no need to sample.
+--  老化柜组装贷方--
+贷方 :no need to sample.
+no sample for this account:
+  老化柜组装	16033
+==end:  老化柜组装==
+==start:  银行==
+target_sum(Dr/Cr):
+0.0	0.0
+--  银行借方--
+借方 :no need to sample.
+--  银行贷方--
+贷方 :no need to sample.
+no sample for this account:
+  银行	21012
+==end:  银行==
+==start:  个人==
+target_sum(Dr/Cr):
+0.0	0.0
+--  个人借方--
+借方 :no need to sample.
+--  个人贷方--
+贷方 :no need to sample.
+no sample for this account:
+  个人	21811
+==end:  个人==
+==start:  单位==
+target_sum(Dr/Cr):
+0.0	0.0
+--  单位借方--
+借方 :no need to sample.
+--  单位贷方--
+贷方 :no need to sample.
+no sample for this account:
+  单位	21812
+==end:  单位==
+==start:    应代扣缴个人养老金==
+target_sum(Dr/Cr):
+0.0	0.0
+--    应代扣缴个人养老金借方--
+借方 :no need to sample.
+--    应代扣缴个人养老金贷方--
+贷方 :no need to sample.
+no sample for this account:
+    应代扣缴个人养老金	218151
+==end:    应代扣缴个人养老金==
+==start:    应代扣缴个人医疗保险==
+target_sum(Dr/Cr):
+0.0	0.0
+--    应代扣缴个人医疗保险借方--
+借方 :no need to sample.
+--    应代扣缴个人医疗保险贷方--
+贷方 :no need to sample.
+no sample for this account:
+    应代扣缴个人医疗保险	218152
+==end:    应代扣缴个人医疗保险==
+==start:    应代扣缴个人住房公积金==
+target_sum(Dr/Cr):
+0.0	0.0
+--    应代扣缴个人住房公积金借方--
+借方 :no need to sample.
+--    应代扣缴个人住房公积金贷方--
+贷方 :no need to sample.
+no sample for this account:
+    应代扣缴个人住房公积金	218153
+==end:    应代扣缴个人住房公积金==
+==start:    应代扣缴个人失业保险==
+target_sum(Dr/Cr):
+0.0	0.0
+--    应代扣缴个人失业保险借方--
+借方 :no need to sample.
+--    应代扣缴个人失业保险贷方--
+贷方 :no need to sample.
+no sample for this account:
+    应代扣缴个人失业保险	218154
+==end:    应代扣缴个人失业保险==
+==start:    应代扣缴个人大病保险==
+target_sum(Dr/Cr):
+0.0	0.0
+--    应代扣缴个人大病保险借方--
+借方 :no need to sample.
+--    应代扣缴个人大病保险贷方--
+贷方 :no need to sample.
+no sample for this account:
+    应代扣缴个人大病保险	218155
+==end:    应代扣缴个人大病保险==
+==start:  其他应收款坏账==
+target_sum(Dr/Cr):
+0.0	0.0
+--  其他应收款坏账借方--
+借方 :no need to sample.
+--  其他应收款坏账贷方--
+贷方 :no need to sample.
+no sample for this account:
+  其他应收款坏账	55042
+==end:  其他应收款坏账==
+==multiSample==
+==start:现金==
+target_sum(Dr/Cr):
+0.0	0.0
+--现金借方--
+借方 :no need to sample.
+--现金贷方--
+贷方 :no need to sample.
+no sample for this account:
+现金	1001
+==end:现金==
+==start:  工商银行==
+target_sum(Dr/Cr):
+0.0	0.0
+--  工商银行借方--
+借方 :no need to sample.
+--  工商银行贷方--
+贷方 :no need to sample.
+no sample for this account:
+  工商银行	10021
+==end:  工商银行==
+==start:  个人==
+target_sum(Dr/Cr):
+0.0	0.0
+--  个人借方--
+借方 :no need to sample.
+--  个人贷方--
+贷方 :no need to sample.
+no sample for this account:
+  个人	11331
+==end:  个人==
+==start:  单位==
+target_sum(Dr/Cr):
+0.0	0.0
+--  单位借方--
+借方 :no need to sample.
+--  单位贷方--
+贷方 :no need to sample.
+no sample for this account:
+  单位	11332
+==end:  单位==
+==start:    管理部门通用设备==
+==multiSample==
+==start:现金==
+target_sum(Dr/Cr):
+0.0	0.0
+--现金借方--
+借方 :no need to sample.
+--现金贷方--
+贷方 :no need to sample.
+no sample for this account:
+现金	1001
+==end:现金==
+==start:  工商银行==
+target_sum(Dr/Cr):
+0.0	0.0
+--  工商银行借方--
+借方 :no need to sample.
+--  工商银行贷方--
+贷方 :no need to sample.
+no sample for this account:
+  工商银行	10021
+==end:  工商银行==
+==start:  个人==
+target_sum(Dr/Cr):
+0.0	0.0
+--  个人借方--
+借方 :no need to sample.
+--  个人贷方--
+贷方 :no need to sample.
+no sample for this account:
+  个人	11331
+==end:  个人==
+==start:  单位==
+==multiSample==
+==start:现金==
+target_sum(Dr/Cr):
+0.0	0.0
+--现金借方--
+借方 :no need to sample.
+--现金贷方--
+贷方 :no need to sample.
+no sample for this account:
+现金	1001
+==end:现金==
+==start:  工商银行==
+target_sum(Dr/Cr):
+0.0	0.0
+--  工商银行借方--
+借方 :no need to sample.
+--  工商银行贷方--
+贷方 :no need to sample.
+no sample for this account:
+  工商银行	10021
+==end:  工商银行==
+==start:  个人==
+==multiSample==
+==start:现金==
+==multiSample==
+==start:现金==
+target_sum(Dr/Cr):
+0.0	0.0
+--现金借方--
+借方 :no need to sample.
+--现金贷方--
+贷方 :no need to sample.
+no sample for this account:
+现金	1001
+==end:现金==
+==start:  工商银行==
+==multiSample==
+==start:现金==
+target_sum(Dr/Cr):
+0.0	0.0
+--现金借方--
+借方 :no need to sample.
+--现金贷方--
+贷方 :no need to sample.
+no sample for this account:
+现金	1001
+==end:现金==
+==start:  工商银行==
+==multiSample==
+==start:现金==
+target_sum(Dr/Cr):
+0.0	0.0
+--现金借方--
+借方 :no need to sample.
+--现金贷方--
+贷方 :no need to sample.
+no sample for this account:
+现金	1001
+==end:现金==
+==start:  工商银行==
+==multiSample==
+==start:1001==
+target_sum(Dr/Cr):
+276090.525	265038.04260000004
+--1001借方--
+借方sample_size:9;
+借方sam_rate:0.8214696973030856
+--1001贷方--
+贷方sample_size:39;
+贷方sam_rate:0.8152161322972281
+==end:1001==
+==start:10021==
+target_sum(Dr/Cr):
+12121597.8441	12691076.468400002
+--10021借方--
+借方sample_size:7;
+借方sam_rate:0.8279089167427431
+--10021贷方--
+贷方sample_size:66;
+贷方sam_rate:0.8105997277390101
+==end:10021==
+==start:11331==
+target_sum(Dr/Cr):
+24300.0	20250.0
+--11331借方--
+借方sample_size:3;
+借方sam_rate:0.8333333333333334
+--11331贷方--
+贷方sample_size:3;
+贷方sam_rate:1.0
+==end:11331==
+==start:11332==
+==multiSample==
+==start:1001==
+target_sum(Dr/Cr):
+276090.525	265038.04260000004
+--1001借方--
+借方sample_size:9;
+借方sam_rate:0.8214696973030856
+--1001贷方--
+贷方sample_size:39;
+贷方sam_rate:0.8152161322972281
+==end:1001==
+==start:10021==
+target_sum(Dr/Cr):
+12121597.8441	12691076.468400002
+--10021借方--
+借方sample_size:7;
+借方sam_rate:0.8279089167427431
+--10021贷方--
+贷方sample_size:66;
+贷方sam_rate:0.8105997277390101
+==end:10021==
+==start:11331==
+target_sum(Dr/Cr):
+24300.0	20250.0
+--11331借方--
+借方sample_size:3;
+借方sam_rate:0.8333333333333334
+--11331贷方--
+贷方sample_size:3;
+贷方sam_rate:1.0
+==end:11331==
+==start:11332==
+target_sum(Dr/Cr):
+38148.651	38488.8834
+--11332借方--
+借方sample_size:3;
+借方sam_rate:0.868619086950152
+--11332贷方--
+贷方sample_size:3;
+贷方sam_rate:0.9785332198023703
+==end:11332==
+==start:150112==
+target_sum(Dr/Cr):
+0.0	0.0
+--150112借方--
+借方 :no need to sample.
+--150112贷方--
+贷方 :no need to sample.
+no sample for this account:
+150112	    管理部门通用设备
+==end:150112==
+==start:150113==
+target_sum(Dr/Cr):
+0.0	0.0
+--150113借方--
+借方 :no need to sample.
+--150113贷方--
+贷方 :no need to sample.
+no sample for this account:
+150113	    管理部门运输工具
+==end:150113==
+==start:150114==
+target_sum(Dr/Cr):
+0.0	0.0
+--150114借方--
+借方 :no need to sample.
+--150114贷方--
+贷方 :no need to sample.
+no sample for this account:
+150114	    管理部门办公家具
+==end:150114==
+==start:150115==
+target_sum(Dr/Cr):
+3670.0857000000005	0.0
+--150115借方--
+借方sample_size:1;
+借方sam_rate:1.0
+--150115贷方--
+贷方 :no need to sample.
+==end:150115==
+==start:150132==
+target_sum(Dr/Cr):
+399192.42150000005	0.0
+--150132借方--
+借方sample_size:7;
+借方sam_rate:0.8553282302229277
+--150132贷方--
+贷方 :no need to sample.
+==end:150132==
+==start:150134==
+target_sum(Dr/Cr):
+0.0	0.0
+--150134借方--
+借方 :no need to sample.
+--150134贷方--
+贷方 :no need to sample.
+no sample for this account:
+150134	    生产部门办公家具
+==end:150134==
+==start:150135==
+target_sum(Dr/Cr):
+1254.4227	0.0
+--150135借方--
+借方sample_size:1;
+借方sam_rate:1.0
+--150135贷方--
+贷方 :no need to sample.
+==end:150135==
+==start:1501C2==
+target_sum(Dr/Cr):
+348371.685	0.0
+--1501C2借方--
+借方sample_size:4;
+借方sam_rate:0.8806583993759424
+--1501C2贷方--
+贷方 :no need to sample.
+==end:1501C2==
+==start:1501C4==
+target_sum(Dr/Cr):
+0.0	0.0
+--1501C4借方--
+借方 :no need to sample.
+--1501C4贷方--
+贷方 :no need to sample.
+no sample for this account:
+1501C4	    研发部办公家具
+==end:1501C4==
+==start:1501C5==
+target_sum(Dr/Cr):
+0.0	0.0
+--1501C5借方--
+借方 :no need to sample.
+--1501C5贷方--
+贷方 :no need to sample.
+no sample for this account:
+1501C5	    研发部电子设备
+==end:1501C5==
+==start:160131==
+target_sum(Dr/Cr):
+788411.0214	758106.54
+--160131借方--
+借方sample_size:13;
+借方sam_rate:0.8142486172504946
+--160131贷方--
+贷方sample_size:7;
+贷方sam_rate:0.8207791681892099
+==end:160131==
+==start:160132==
+target_sum(Dr/Cr):
+20160.252	0.0
+--160132借方--
+借方sample_size:1;
+借方sam_rate:1.0
+--160132贷方--
+贷方 :no need to sample.
+==end:160132==
+==start:16032==
+target_sum(Dr/Cr):
+28157.3901	54853.3215
+--16032借方--
+借方sample_size:2;
+借方sam_rate:1.0
+--16032贷方--
+贷方sample_size:1;
+贷方sam_rate:1.0
+==end:16032==
+==start:16033==
+target_sum(Dr/Cr):
+63975.66300000001	137863.90350000001
+--16033借方--
+借方sample_size:1;
+借方sam_rate:1.0
+--16033贷方--
+贷方sample_size:1;
+贷方sam_rate:1.0
+==end:16033==
+==start:21012==
+target_sum(Dr/Cr):
+0.0	3726000.0000000005
+--21012借方--
+借方 :no need to sample.
+--21012贷方--
+贷方sample_size:1;
+贷方sam_rate:1.0
+==end:21012==
+==start:21811==
+target_sum(Dr/Cr):
+282273.1983	282273.17400000006
+--21811借方--
+借方sample_size:1;
+借方sam_rate:0.9960114831773598
+--21811贷方--
+贷方sample_size:1;
+贷方sam_rate:0.9960115976164281
+==end:21811==
+==start:21812==
+target_sum(Dr/Cr):
+2990418.8472	2561763.753
+--21812借方--
+借方sample_size:3;
+借方sam_rate:0.8396817062436283
+--21812贷方--
+贷方sample_size:3;
+贷方sam_rate:0.8378992783726845
+==end:21812==
+==start:218151==
+target_sum(Dr/Cr):
+122107.03020000002	132444.70380000002
+--218151借方--
+借方sample_size:9;
+借方sam_rate:0.8927774315814947
+--218151贷方--
+贷方sample_size:9;
+贷方sam_rate:0.8109443723939982
+==end:218151==
+==start:218152==
+target_sum(Dr/Cr):
+33955.44300000001	36887.5944
+--218152借方--
+借方sample_size:9;
+借方sam_rate:0.9050832174388065
+--218152贷方--
+贷方sample_size:9;
+贷方sam_rate:0.8205960267227401
+==end:218152==
+==start:218153==
+target_sum(Dr/Cr):
+54718.740000000005	59530.950000000004
+--218153借方--
+借方sample_size:8;
+借方sam_rate:0.8396097936465642
+--218153贷方--
+贷方sample_size:9;
+贷方sam_rate:0.8228995169739438
+==end:218153==
+==start:218154==
+target_sum(Dr/Cr):
+1472.8311	1629.0720000000001
+--218154借方--
+借方sample_size:8;
+借方sam_rate:0.8376514455730872
+--218154贷方--
+贷方sample_size:9;
+贷方sam_rate:0.8439140811455845
+==end:218154==
+==start:218155==
+target_sum(Dr/Cr):
+730.9440000000001	791.8560000000001
+--218155借方--
+借方sample_size:8;
+借方sam_rate:0.8138297872340425
+--218155贷方--
+贷方sample_size:9;
+贷方sam_rate:0.8199672667757775
+==end:218155==
+==start:55042==
+target_sum(Dr/Cr):
+-73.71000000000001	-73.71000000000001
+--55042借方--
+借方 of 55042 is negative,so need attention.
+--55042贷方--
+贷方 of 55042 is negative,so need attention.
+==end:55042==

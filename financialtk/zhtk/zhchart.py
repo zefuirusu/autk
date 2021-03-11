@@ -13,7 +13,23 @@ class Acct:
         # self.iscr=-self.isdr # 贷方主导的科目
         # self.cata='' # account catagory
 '''
-from autk.financialtk.zhtk.zhgl import Acct
+class Acct:
+    '''
+    Acct is short for Account, with two main attributes, 'name' and 'accid'.
+    '''
+    def __init__(self,accid=r'6001',name='主营业务收入'):
+        '''
+        class of Account.
+        初始化，传入科目名称，科目编码，增加方向，账户类别。
+        '''
+        self.name=name # 科目名称
+        try:
+            self.accid=str(int(accid)) # 科目编码
+        except:
+            self.accid=str(accid)
+        # self.isdr=True # 借方主导的科目,共同类科目也归入此类。
+        # self.iscr=-self.isdr # 贷方主导的科目
+        # self.cata='' # account catagory
 class ChartAccount: # Chart of Account
     '''
     Chart of Account is a table where you can get reference from Account ID to Account Name.
@@ -37,6 +53,7 @@ class ChartAccount: # Chart of Account
     def getchart(self):
         data=self.getdata()
         data=data.loc[:,self.cols[1:3]].drop_duplicates()
+        print('chart:',data)
         return data
     def getAcct(self,account):
         '''
@@ -44,7 +61,7 @@ class ChartAccount: # Chart of Account
         "account" is an instance of class Acct, with attributes of name and accid.
         '''
         data=self.getdata()
-        acctData=data[data[self.cols[1]]==float(account.accid)]
+        acctData=data[data[self.cols[1]]==account.accid]
         start_balance=acctData.loc[:,self.cols[5]].sum(axis=0)
         dr_amount=acctData.loc[:,self.cols[6]].sum(axis=0)
         cr_amount=acctData.loc[:,self.cols[7]].sum(axis=0)

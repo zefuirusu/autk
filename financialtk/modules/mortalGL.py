@@ -155,8 +155,8 @@ class MGL:
         self.title=title
         self.glid_index=glid_index
         self.data=None
-        self.sample_data=None
         self.data_copy=None
+        self.sample_data=None
         self.entry_info=None
         self.gl_matrix=None
         if self.data is not None:
@@ -190,11 +190,14 @@ class MGL:
         self.data=in_df
         # return self.data
         pass
-    def load_raw_data(self):
+    def load_raw_data(self,fillna=False):
         '''
         Load original DataFrame data and return Nothing.
         '''
-        self.data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
+        if fillna==True:
+            self.data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl').fillna(float(0.0))
+        else:
+            self.data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
         if 'glid' in self.data.columns :
             self.glid_list=list(self.data['glid'].drop_duplicates())
         pass
@@ -238,13 +241,17 @@ class MGL:
             print('Woc! raw data is not loaded. Load it and set glid first.')
             # self.load_raw_data()
         pass
-    def get_raw_data(self):
+    def get_raw_data(self,fillna=False):
         '''
         Get and return original DataFrame data.
         This method does not LOAD original DataFrame data.
         '''
         from pandas import read_excel
         data=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
+        if fillna==True:
+            data=data.fillna(float(0.0))
+        else:
+            pass
         return data
         pass
     def set_glid(self,glid_index=[]):

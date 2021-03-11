@@ -5,23 +5,6 @@ Acct是对Account的抽象,会计账户;
 Gele是对General Ledger的抽象,序时账.
 '''
 from autk.financialtk.modules.mortalGL import MGL
-class Acct:
-    '''
-    Acct is short for Account, with two main attributes, 'name' and 'accid'.
-    '''
-    def __init__(self,accid=r'6001',name='主营业务收入'):
-        '''
-        class of Account.
-        初始化，传入科目名称，科目编码，增加方向，账户类别。
-        '''
-        self.name=name # 科目名称
-        try:
-            self.accid=str(int(accid)) # 科目编码
-        except:
-            self.accid=str(accid)
-        # self.isdr=True # 借方主导的科目,共同类科目也归入此类。
-        # self.iscr=-self.isdr # 贷方主导的科目
-        # self.cata='' # account catagory
 class Gele(MGL): # GeneralLedger
     '''
     General Ledgers in a sheet from an Excel Workbook.
@@ -30,37 +13,61 @@ class Gele(MGL): # GeneralLedger
     Gele.sample()方法是有缺陷的,对某方向上累计金额未0的科目无效,会报错,原因在于acct_sum的计算会遇到0/0的情况.
     Gele.sample()的bug已经修复,但有个不足之处,从算法上讲,该抽样的"目标累计金额"是根据序时账GL的发生额计算出的,其实由于账务系统可能存在同账户金额互相转的情况,可能存在GL发生额大于实际发生额的情况,解决之道是从余额表TB获取计算"目标累计金额",如此可获得准确的该账户借方/贷方的发生额.
     '''
-    def __init__(self,fpath='',shtna=r'表页-1',title=3,glid_index=[],auto=False):
-        import os
+    def __init__(self,fpath='',shtna=r'表页-1',title=3,glid_index=[],auto=False,drcrdesc=[r'借方发生金额',r'贷方发生金额']):
         self.fpath=fpath
-        self.sheetname=shtna
+        import os
+        self.glname=str(self.fpath.split(os.sep)[-1])
         self.shtna=shtna
         self.title=title
-        self.glname=str(self.fpath.split(os.sep)[-1])
         self.glid_index=glid_index
+        self.drcrdesc=drcrdesc
         self.data=None
+        self.data_copy=None
         self.sample_data=None
+        self.entry_info=None
+        self.gl_matrix=None
         # from pandas import read_excel
-        # self.cols=read_excel(self.fpath,sheet_name=self.sheetname,header=self.title,engine='openpyxl').columns
+        # self.cols=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl').columns
+        if self.data is not None:
+            if 'glid' in self.data.columns:
+                self.glid_list=list(self.data['glid'].drop_duplicates())
+                pass
+            else:
+                self.glid_list=[]
+                pass
+            pass
+        else:
+            self.glid_list=None
+        pass
+        if auto == True:
+            self.load_raw_data()
+            if self.glid_index == []:
+                print('glid_index is not set, raw data has been loaded without glid set.')
+                return
+            else:
+                self.set_glid(self.glid_index)
+                print('Oh, data with glid is automatically loaded.')
+                pass
+            pass
+        else:
+            print('You need load data.')
+            pass
         # self.cols=['凭证日期', '字', '号', '摘要', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
         # glid 是GL的主键。
         # self.colsk=['凭证日期', '字', '号', '摘要', 'glid', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率', '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
         print('Before GL initialized，column "glid" should be added.')
         print('=====\nGL name:%s'%self.glname)
         print('GL path:\n',self.fpath)
-        print('GL sheet:\t',self.sheetname)
+        print('GL sheet:\t',self.shtna)
         # print('GL columns:\n',self.cols)
         return
-    def getshtli(self): 
-        from openpyxl import load_workbook
-        return load_workbook(self.fpath).sheetnames
     def getcols(self):
         from pandas import read_excel
-        col=read_excel(self.fpath,sheet_name=self.sheetname,header=self.title,engine='openpyxl').columns
+        col=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl').columns
         return list(col)
-    def getdata(self,fillna=False): # get raw data without column "glid".
+    def get_raw_data(self,fillna=False): # get raw data without column "glid".
         from pandas import read_excel
-        d1=read_excel(self.fpath,sheet_name=self.sheetname,header=self.title,engine='openpyxl')
+        d1=read_excel(self.fpath,sheet_name=self.shtna,header=self.title,engine='openpyxl')
         if fillna==True:
             d1=d1.fillna(float(0.0))
         else:
@@ -70,10 +77,10 @@ class Gele(MGL): # GeneralLedger
         '''
         Iterate record of raw data of General Ledgers and add the column 'glid'.
         Return a generator of EntryRecord, of which pure GL(with new column 'glid') consists.
-        This method requires 'self.getdata(self,fillna=True)' and is required by 'self.getgldata(self)'.
+        This method requires 'self.get_raw_data(self,fillna=True)' and is required by 'self.getgldata(self)'.
         '''
         from autk.financialtk.journal import EntryRecord
-        data=self.getdata(fillna=True)
+        data=self.get_raw_data(fillna=True)
         def start_record_iteration(indf):
             for i in indf.iterrows():
                 yield i
@@ -118,7 +125,7 @@ class Gele(MGL): # GeneralLedger
         Filter the specific column of the table by regular expression.
         '''
         import re
-        indf=self.getdata()
+        indf=self.get_raw_data()
         # indf=self.getgldata() # Do not use the return of self.getgldata() as the input of this method.
         reg=re.compile(regitem)
         fli=[]
@@ -138,7 +145,7 @@ class Gele(MGL): # GeneralLedger
             ftableli.append(ftable_fake)
             continue
         if len(ftableli)==0:
-            ftable=DataFrame([],index=[],columns=self.getcol())
+            ftable=DataFrame([],index=[],columns=self.getcols())
             pass
         else:
             ftable=concat(ftableli,axis=0,join='outer')
@@ -213,9 +220,10 @@ class Gele(MGL): # GeneralLedger
                 # print(dr_sum)
                 # print(cr_sum)
         return 
-    def getAccGl(self,account,pure=True):
+    def getAcctGl(self,account,pure=True):
         '''
         account is an instance object of class Acct.
+        same as MGL.getAcct.
         得到某科目的所有记录,默认不含对方科目.
         '''
         regitem=r'^'+str(account.accid)+r'.*'
@@ -235,19 +243,24 @@ class Gele(MGL): # GeneralLedger
             resu=km
         self.data=resu
         return resu
-    def accum_sample(self,acct_id,filterIdCol,acquired_rate=0.81,drcrdesc=[r'借方发生金额',r'贷方发生金额']):
+    def accum_sample(self,acct_id,filterIdCol='科目编号',acquired_rate=0.81,drcrdesc=None):
         '''
         'acct_id',short for 'account id number', can be regular expression to filter in the column of 'filterIdCol'.
         'acquired_rate' is the accumulate sum rate that is required by the manager.
         'dr' is short for Debit while 'cr' for credit.
+        drcrdesc is default to [r'借方发生金额',r'贷方发生金额']
         Finally return a pandas.DataFrame as a sample.
         '''
+        if drcrdesc == None:
+            drcrdesc=self.drcrdesc
+        else:
+            pass
         from pandas import read_excel
-        # gl=read_excel(self.fpath,sheet_name=self.sheetname)
-        gl=self.getdata()
+        # gl=read_excel(self.fpath,sheet_name=self.shtna)
+        gl=self.get_raw_data()
         # regitem=r'^'+str(acct_id)+r'.*'
         regitem=str(acct_id)
-        theAcct=gl.filter(regitem,filterIdCol) # 筛出被抽样的科目.
+        theAcct=self.zh_filter(regitem,filterIdCol,match=True) # 筛出被抽样的科目.
         print('this account shape:',theAcct.shape)
         # from autk.zhchart import ChartAccount
         # chac=ChartAccount()
@@ -303,6 +316,7 @@ class Gele(MGL): # GeneralLedger
         final_sample=concat([dr,cr],axis=0,join='outer',ignore_index=True)
         final_sample=final_sample.reset_index(drop=True)
         self.sample_data=final_sample
+        print('sample sum:\n',self.sample_data[self.drcrdesc].sum(axis=0))
         return final_sample
     def write_sample(self,filterIdCol,account,savedir):
         '''
@@ -316,7 +330,7 @@ class Gele(MGL): # GeneralLedger
         from pandas import ExcelWriter
         wter=ExcelWriter(savedir,engine='openpyxl')
         wter.book=wb
-        s1=self.accum_sample(account.accid,filterIdCol,acquired_rate=0.81,drcrdesc=[r'借方发生金额',r'贷方发生金额'])
+        s1=self.accum_sample(account.accid,filterIdCol,acquired_rate=0.81,drcrdesc=self.drcrdesc)
         s1.to_excel(wter,sheet_name=account.name)
         wter.save()
         wter.close()
