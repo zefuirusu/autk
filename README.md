@@ -27,7 +27,7 @@ Audit Toolkit for those who works hard near the end of the year.
 #### 2.1.1 Quick Install Requirements
 To quickly install all these dependent libs, run:<br>
 ```
-pip3 install -r ./libs_require.txt -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
+pip3 install -r ./libs_require.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 #### 2.1.2 Recommended
 1. About virtual environment builder, `virtualenv` is recommended, run `sudo pacman -S python-virtualenv` to install.<br>
