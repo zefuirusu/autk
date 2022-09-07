@@ -1,7 +1,7 @@
 # Audit Toolkit
 ## 1. Description
 ### 1.1 What is AUTK
-Audit Toolkit for those who works hard near the end of the year.
+Audit Toolkit for those who are working hard near the end of the year.
 ### 1.2 Key Traits
 1. To perform audit procedures quickly.
 2. To enjoy your auditing work.
