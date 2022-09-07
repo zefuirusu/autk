@@ -12,15 +12,15 @@ Audit Toolkit for those who works hard near the end of the year.
 {
     "python_version":"python 3.8 at least",
     "libs_require":[
-        xlrd,
-        xlwt,
-        openpyxl,
-        numpy,
-        pandas
+        "xlrd",
+        "xlwt",
+        "openpyxl",
+        "numpy",
+        "pandas"
     ],
     "libs_optional":[
-        scipy,
-        sk-learn
+        "scipy",
+        "sk-learn"
     ]
 }
 ```
