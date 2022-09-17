@@ -30,8 +30,8 @@ class XlMap:
             setattr(self,k,json_str[k])
             continue
         pass
-    @classmethod
-    def from_list(cls,columns):
+    @staticmethod
+    def from_list(columns):
         print('create map from list: ',columns)
         xlmap=XlMap()
         xlmap._overwt_dict()
