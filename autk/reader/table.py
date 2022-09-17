@@ -3,10 +3,11 @@
 from copy import deepcopy
 from os.path import isfile,isdir
 from threading import Thread
-#  from openpyxl import load_workbook
+from openpyxl import load_workbook
 from xlrd import open_workbook
 from pandas import concat,DataFrame
 from autk.reader.xlfile import XlSheet
+from autk.parser.funcs import start_thread_list
 class ImmortalTable:
     '''
     ImmortalTable.
@@ -121,7 +122,7 @@ class ImmortalTable:
                 print('Initialized with Microsoft Excel file:',self.xlmeta)
             elif file_suffix=='xls':
                 print('Parsing xls file...')
-                self.__parse_xlsx(self.xlmeta)
+                self.__parse_xls(self.xlmeta)
                 print('Initialized with Microsoft Excel 2003 file:',self.xlmeta)
             pass
         elif isdir(self.xlmeta):
@@ -157,38 +158,54 @@ class ImmortalTable:
         This method can also parse "xls" file, through self.append_xl_by_meta;
         '''
         print('Parsing xlsx file...')
-        #  shtli=load_workbook(xlmeta).sheetnames
-        shtli=open_workbook(xlmeta).sheet_names()
+        shtli=load_workbook(xlmeta).sheetnames # openpyxl for xlsx
+        #  shtli=open_workbook(xlmeta).sheet_names() # xlrd for xls
         for sht in shtli:
             shmeta=[xlmeta,sht,self.common_title]
             self.append_xl_by_meta(shmeta)
         pass
     def __parse_xls(self,xlmeta): 
-        self.__parse_xlsx(xlmeta)
+        print('Parsing xls file...')
+        #  shtli=load_workbook(xlmeta).sheetnames # openpyxl for xlsx
+        shtli=open_workbook(xlmeta).sheet_names() # xlrd for xls
+        for sht in shtli:
+            shmeta=[xlmeta,sht,self.common_title]
+            self.append_xl_by_meta(shmeta)
         pass
     def __parse_dir(self,xlmeta): 
         '''
         xlmeta is a directory where many Microsoft Excel files exists;
         # self.xlmeta is a directory and title is 0 as default;
         '''
-        from os import listdir
+        from os import listdir,sep
         from os.path import join as osjoin
+        import re
         thread_list=[]
         file_li=listdir(xlmeta)
+        print('files to parse:\n',file_li)
         for file_name in file_li:
             file_path=osjoin(xlmeta,file_name)
-            thread_list.append(
-                Thread(
-                    target=self.__parse_xlsx,
-                    args=(file_path,),
-                    name=''.join(['parse_xlsx-',file_name])
+            ## to decide self.__parse_xls or self.__parse_xlsx
+            file_name=file_path.split(sep)[-1]
+            file_suffix=re.sub(r'^.*\.','',file_name)
+            if file_suffix=='xlsx':
+                thread_list.append(
+                    Thread(
+                        target=self.__parse_xlsx,
+                        args=(file_path,),
+                        name=''.join(['parse_xlsx-',file_name])
+                    )
                 )
-            )
+            elif file_suffix=='xls':
+                thread_list.append(
+                    Thread(
+                        target=self.__parse_xls,
+                        args=(file_path,),
+                        name=''.join(['parse_xls-',file_name])
+                    )
+                )
             continue
-        for t in thread_list:
-            t.start()
-        for t in thread_list:
-            t.join()
+        start_thread_list(thread_list)
         return
     def __parse_list(self,xlmeta): 
         '''
@@ -210,10 +227,7 @@ class ImmortalTable:
                 )
                 # self.append_xl_by_meta(meta)
                 continue
-            for t in thread_list:
-                t.start()
-            for t in thread_list:
-                t.join()
+            start_thread_list(thread_list)
         else:
             print('Error:dimension of xlmeta must be 1 or 2!')
         return
@@ -253,10 +267,7 @@ class ImmortalTable:
                     )
                     continue
                 continue
-            for t in thread_list:
-                t.start()
-            for t in thread_list:
-                t.join()
+            start_thread_list(thread_list)
             pass
         else:
             for file_path in xlmeta:
@@ -330,10 +341,8 @@ class ImmortalTable:
                 )
                 thread_list.append(t)
                 continue
-            for t in thread_list:
-                t.start()
-            for t in thread_list:
-                t.join()
+            start_thread_list(thread_list)
+            #  print('check_result:',check_result)
             if check_result==[True]*len(self.xlset):
                 self.update_columns(self.xlset[0].columns)
                 print('columns checked ok.')
@@ -467,10 +476,7 @@ class ImmortalTable:
                 )
             )
             continue
-        for t in thread_list:
-            t.start()
-        for t in thread_list:
-            t.join()
+        start_thread_list(thread_list)
         self.data=concat(self.__df_temp,axis=0,join='outer')
         if self.key_name in self.data.columns:
             self.key_list=list(self.data[self.key_name].drop_duplicates())
@@ -572,10 +578,7 @@ class ImmortalTable:
             )
             thread_list.append(t)
             continue
-        for t in thread_list:
-            t.start()
-        for t in thread_list:
-            t.join()       
+        start_thread_list(thread_list)
         return cal
     def save_xlset(self,save_path):
         from autk.parser.funcs import save_df
@@ -644,10 +647,7 @@ class ImmortalTable:
                 )
             )
             thread_list.append(t)
-        for t in thread_list:
-            t.start()
-        for t in thread_list:
-            t.join()
+        start_thread_list(thread_list)
         pass
     def filter(
         self,
@@ -746,10 +746,7 @@ class ImmortalTable:
                 )
             )
             thread_list.append(t)
-        for t in thread_list:
-            t.start()
-        for t in thread_list:
-            t.join()
+        start_thread_list(thread_list)
         resu=self.get_df_temp_data(
             over_write=over_write,
             type_xl=type_xl
@@ -875,10 +872,7 @@ class ImmortalTable:
             )
             thread_list.append(t)
             continue
-        for t in thread_list:
-            t.start()
-        for t in thread_list:
-            t.join()
+        start_thread_list(thread_list)
         from pandas import Series
         resu=Series(resu)
         resu=resu.drop_duplicates()
@@ -914,10 +908,7 @@ class ImmortalTable:
             )
             thread_list.append(t)
             continue
-        for t in thread_list:
-            t.start()
-        for t in thread_list:
-            t.join()
+        start_thread_list(thread_list)
         return sum(to_sum)
     def apply_df_func(self,df_apply_func,col_index,col_name):
         '''
@@ -978,10 +969,7 @@ class ImmortalTable:
                 )
             )
             thread_list.append(t)
-        for t in thread_list:
-            t.start()
-        for t in thread_list:
-            t.join()
+        start_thread_list(thread_list)
         pass
     ### nice idea but needs to improve;
     def apply_xl_func(
@@ -1019,10 +1007,7 @@ class ImmortalTable:
             )
             thread_list.append(t)
             continue
-        for t in thread_list:
-            t.start()
-        for t in thread_list:
-            t.join()
+        start_thread_list(thread_list)
         d=self.get_df_temp_data(over_write=over_write,type_xl=type_xl)
         self.__clear_temp()
         return d
@@ -1092,10 +1077,7 @@ class ImmortalTable:
                 )
             )
             thread_list.append(t)
-        for t in thread_list:
-            t.start()
-        for t in thread_list:
-            t.join()
+        start_thread_list(thread_list)
         pass
     def change_float_to_str(self,col_name):
         def __change_single(xl,col_name):
@@ -1114,10 +1096,7 @@ class ImmortalTable:
                 )
             )
             thread_list.append(t)
-        for t in thread_list:
-            t.start()
-        for t in thread_list:
-            t.join()
+        start_thread_list(thread_list)
         pass
     ### the following are not perfect !
     def filter_key_record(self,condition_matrix):

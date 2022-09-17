@@ -178,7 +178,7 @@ class XlSheet:
             col_index=self.xlmap.show[col_name]
             #  print(col_name,col_index)
             # FutureWarning: Support for multi-dimensional indexing (e.g. `obj[:, None]`) is deprecated and will be removed in a future version.  Convert to a numpy array before indexing instead:
-            col_name_in_file=df.columns[col_index]
+            col_name_in_file=df.columns.to_numpy()[col_index]
             self.colmap_info.append({
                 'col_name(xlmap)':col_name,
                 'col_index(xlmap)':col_index,

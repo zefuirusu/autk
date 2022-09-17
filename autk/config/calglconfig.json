@@ -1,0 +1,15 @@
+{
+    "shmeta":[null,"sheet0",0],
+    "keep_meta_info":false,
+    "key_index":["date","mark","jrid"],
+    "key_name":"glid",
+    "drcrdesc":["dr_amount","cr_amount"],
+    "accid_col":"accid",
+    "accna_col":"accna",
+    "date_col":"date",
+    "date_split_by":"-",
+    "top_accid_len":4,
+    "accna_split_by":"/",
+    "xlmap":null,
+    "use_map":false
+}

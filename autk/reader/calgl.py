@@ -151,7 +151,7 @@ class CalSheet(XlSheet):
                 date_str=row_series[self.xlmap.date_col]
             else:
                 date_str=row_series[date_col]
-            if isinstance(date_str,str) and date_str != '0.0':
+            if isinstance(date_str,str) and (date_str != '0.0' or date_str != 0.0):
                 month=transType(date_str.split(date_split_by)[1])
             else:
                 month='0'

@@ -7,12 +7,19 @@ class XlMap:
     col_name_in_xlmap(col_name=name of attribute) ---> col_index_in_xlmap(col_index=value of attribute) ---> col_name_in_actual_file (col_name=column_of_file[col_index])
     属性的排列顺序就是读取后表格的列顺序;
     '''
-    def __overwt_dict(self):
+    def _overwt_dict(self):
         self.__dict__={}
     def accept_json(self,json_str,over_write=False):
-        # self.if_index_map=if_index_map
+        '''
+        The passed argument 'json_str' indicates the location in the parsing xlsx file, of the column by its value of each key (representing the column name);
+        {
+            "column_name_1":location_number_1,
+            "column_name_2":location_number_2,
+            "column_name_3":location_number_3
+        }
+        '''
         if over_write==True:
-            self.__overwt_dict()
+            self._overwt_dict()
         for k in self.__dict__.keys():
             if k not in json_str.keys():
                 # those attributes not in json_str must be set to None;
@@ -23,9 +30,22 @@ class XlMap:
             setattr(self,k,json_str[k])
             continue
         pass
+    @classmethod
+    def from_list(cls,columns):
+        print('create map from list: ',columns)
+        xlmap=XlMap()
+        xlmap._overwt_dict()
+        xlmap.append_col_list(columns)
+        print('new map created:\n',xlmap.show)
+        return xlmap
     @property
     def name(self):
         return 'XlMap'
+    @property
+    def columns(self):
+        return list(
+            self.show.keys()
+        )
     @property
     def show(self):
         return self.__dict__
@@ -76,7 +96,7 @@ class MglMap(XlMap):
         self.exchange_name=10 # 外币名称
         self.drcr=None # 一个数字表示金额，正数为借方，负数为贷方
         pass
-    def __overwt_dict(self):
+    def _overwt_dict(self):
         self.__dict__={
             'glid':None,
             'accid':None,

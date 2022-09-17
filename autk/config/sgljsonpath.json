@@ -32,5 +32,22 @@
       "use_map":false,
       "auto_load":true,
       "nick_name":"mgl"
+    },
+    "mgl_3":{
+      "xlmeta":null,
+      "common_title":0,
+      "key_index":["date","mark","jrid"],
+      "key_name":"glid",
+      "drcrdesc":["dr_amount","cr_amount"],
+      "accid_col":"accid",
+      "accna_col":"accna",
+      "date_col":"date",
+      "date_split_by":"-",
+      "top_accid_len":4,
+      "accna_split_by":"/",
+      "sample_col":true,
+      "use_map":false,
+      "auto_load":true,
+      "nick_name":"mgl"
     }
 }

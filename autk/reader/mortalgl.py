@@ -70,8 +70,8 @@ class MGL(ImmortalTable):
             use_map=use_map,
             keep_meta_info=False
         )
-        self.set_key_cols()
-        self.__parse_acctmap()
+        #  self.set_key_cols() # no need to call self.set_key_cols() now because of self.set_mgl_attr();
+        self.__parse_acctmap() # self.set_key_cols() must be called before.
         self.gl_matrix=None
         self.fake=False
         if auto_load ==True:

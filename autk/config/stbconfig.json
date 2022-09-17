@@ -1,0 +1,32 @@
+{
+    "mtb_1":{
+        "xlmeta":null,
+        "common_title":0,
+        "auto_load":true,
+        "xlmap":null,
+        "use_map":false,
+        "key_index":[],
+        "key_name":"key_id",
+        "keep_meta_info":true
+    },
+    "mtb_2":{
+        "xlmeta":null,
+        "common_title":0,
+        "auto_load":true,
+        "xlmap":null,
+        "use_map":false,
+        "key_index":[],
+        "key_name":"key_id",
+        "keep_meta_info":true
+    },
+    "mtb_3":{
+        "xlmeta":null,
+        "common_title":0,
+        "auto_load":true,
+        "xlmap":null,
+        "use_map":false,
+        "key_index":[],
+        "key_name":"key_id",
+        "keep_meta_info":true
+    }
+}
