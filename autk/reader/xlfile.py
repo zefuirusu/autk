@@ -46,7 +46,7 @@ class XlSheet:
         self.colmap_info=[]
         self.use_map=use_map
         self.__parse_meta(shmeta)
-        self.__parse_file_name(self.file_path)
+        #  self.__parse_file_name(self.file_path)
         self.load_raw_data()
         self.set_key_index(key_index,key_name)
         pass
@@ -54,9 +54,23 @@ class XlSheet:
         '''
         doing nothing except setting attributes;
         '''
-        self.file_path=shmeta[0]
-        self.sheet_name=shmeta[1]
-        self.title=shmeta[2]
+        if isinstance(shmeta,list):
+            self.file_path=shmeta[0]
+            self.sheet_name=shmeta[1]
+            self.title=shmeta[2]
+            self.__parse_file_name(self.file_path)
+        elif isinstance(shmeta,DataFrame):
+            self.file_path='no_file'
+            self.sheet_name='df'
+            self.title=0
+            self.__parse_file_name(shmeta)
+            pass
+        else:
+            self.file_path=None
+            self.sheet_name=None
+            self.title=0
+            self.__parse_file_name(self.file_path)
+            pass
         pass
     def __parse_file_name(self,file_path):
         '''
@@ -67,12 +81,14 @@ class XlSheet:
             self.pure_file_name=self.file_name
             self.sheet_name='sheet0'
             self.title=0
+            self.suffix=None
             pass
         elif isinstance(file_path,DataFrame):
             self.file_name='DataFrame'
             self.pure_file_name=self.file_name
             self.sheet_name='sheet0'
             self.title=0
+            self.suffix='df'
             pass
         elif isfile(file_path):
             self.file_name=str(file_path.split(os.sep)[-1])
@@ -84,9 +100,10 @@ class XlSheet:
                 file_path
             )
             self.file_name='woc'
-            self.pure_file_name=self.file_name
+            self.pure_file_name='woc'
             self.sheet_name='woc'
             self.title=0
+            self.suffix='woc'
             pass
         self.name=''.join(
             [self.pure_file_name,
@@ -122,10 +139,10 @@ class XlSheet:
                 pass
             elif self.suffix == r'.xlsx':
                 data_fake=read_excel(
-                shmeta[0],
-                sheet_name=shmeta[1],
-                header=shmeta[2],
-                engine='openpyxl'
+                    shmeta[0],
+                    sheet_name=shmeta[1],
+                    header=shmeta[2],
+                    engine='openpyxl'
                 )
                 pass
             else:
@@ -678,6 +695,14 @@ class XlSheet:
             type_xl=False
         )[sum_col]
         return sum(values_to_sum)
+    def get_matrix(self,start_cell_index,n_rows_range,n_cols_range):
+        if self.suffix=='xls':
+            pass
+        elif self.suffix=='xlsx':
+            pass
+        else:
+            return 0
+        pass
     def percentage(self):
         '''
         to calculate percentage for each item in a column;
