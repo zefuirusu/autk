@@ -7,6 +7,16 @@ def start_thread_list(thread_list):
     for t in thread_list:
         t.join()
     pass
+def f2list(file_path):
+    import re
+    with open(file_path,mode='r',encoding='utf-8') as f:
+        fli=f.readlines()
+    return list(map(lambda x:re.sub(r'\s*$', '', x),fli))
+def f2dict(file_path):
+    import json
+    with open(file_path,encoding='utf-8') as f:
+        fjson=json.load(f)
+    return fjson
 def dir2json(base_dir,shtna='表页-1',title=3):
     import os
     file_li=os.listdir(base_dir)
@@ -74,16 +84,6 @@ def regex_filter_dict(regex_str,dict_like,key_resu=False,parse_key=False,match_m
     import re
     regex_str=re.compile(regex_str)
     pass
-def f2list(file_path):
-    import re
-    with open(file_path,mode='r',encoding='utf-8') as f:
-        fli=f.readlines()
-    return list(map(lambda x:re.sub(r'\s*$', '', x),fli))
-def f2dict(file_path):
-    import json
-    with open(file_path,encoding='utf-8') as f:
-        fjson=json.load(f)
-    return fjson
 def get_time_str(woc=False):
     '''
     parameters:
