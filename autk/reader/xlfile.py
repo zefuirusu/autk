@@ -83,6 +83,11 @@ class XlSheet:
             self.title=0
             self.suffix=None
             pass
+        elif isfile(file_path):
+            self.file_name=str(file_path.split(os.sep)[-1])
+            self.pure_file_name=re.sub(r'\.xlsx?$','',self.file_name)
+            self.suffix=re.sub(self.pure_file_name+r'.','',self.file_name)
+            #  print('suffix:',self.suffix)
         elif isinstance(file_path,DataFrame):
             self.file_name='DataFrame'
             self.pure_file_name=self.file_name
@@ -90,10 +95,6 @@ class XlSheet:
             self.title=0
             self.suffix='df'
             pass
-        elif isfile(file_path):
-            self.file_name=str(file_path.split(os.sep)[-1])
-            self.pure_file_name=re.sub(r'\.xlsx?$','',self.file_name)
-            self.suffix=re.sub(self.pure_file_name,'',self.file_name)
         else:
             print(
                 '[Warning:XlSheet] unknown file_path:\n',
@@ -129,7 +130,7 @@ class XlSheet:
         elif shmeta[0] is None:
             create_blank()
         elif isfile(shmeta[0]):
-            if self.suffix == r'.xls':
+            if self.suffix == r'xls':
                 data_fake=read_excel(
                     shmeta[0],
                     sheet_name=shmeta[1],
@@ -137,7 +138,7 @@ class XlSheet:
                     engine='xlrd'
                 )
                 pass
-            elif self.suffix == r'.xlsx':
+            elif self.suffix == r'xlsx':
                 data_fake=read_excel(
                     shmeta[0],
                     sheet_name=shmeta[1],
@@ -272,8 +273,12 @@ class XlSheet:
             pass
     @property
     def shtli(self):
-        # shtli=list(load_workbook(self.file_path).sheetnames)
-        shtli=list(open_workbook(self.file_path).sheet_names())
+        if self.suffix=='xls':
+            shtli=list(open_workbook(self.file_path).sheet_names())
+        elif self.suffix=='xlsx':
+            shtli=list(load_workbook(self.file_path).sheetnames)
+        else:
+            shtli=[]
         return shtli
     def __clear_row_temp(self):
         self.__row_temp=[]
@@ -696,13 +701,43 @@ class XlSheet:
         )[sum_col]
         return sum(values_to_sum)
     def get_matrix(self,start_cell_index,n_rows_range,n_cols_range):
+        '''
+        For xlrd.open_workbook().sheet_by_name(), index starts from 0;
+        While for openpyxl.load_workbook().get_sheet_by_name(), index starts from 1;
+        That's all right, just start from 1 when passing argument 'start_cell_index' as tuple like (n,m).
+        '''
+        from numpy import array
         if self.suffix=='xls':
-            pass
+            sht=open_workbook(self.file_path).sheet_by_name(self.sheet_name)
+            return array(
+                [
+                    sht.row_values(
+                        row,
+                        start_cell_index[1]-1,
+                        start_cell_index[1]-1+n_cols_range
+                    ) for row in range(
+                        start_cell_index[0]-1,
+                        start_cell_index[0]-1+n_rows_range
+                    )
+                ]
+            )
         elif self.suffix=='xlsx':
-            pass
+            #  sht=load_workbook(self.file_path).get_sheet_by_name(self.sheet_name) # same as:
+            sht=load_workbook(self.file_path)[self.sheet_name]
+            return array(
+                list(
+                    sht.iter_rows(
+                        min_row=start_cell_index[0],
+                        max_row=start_cell_index[0]+n_rows_range-1,
+                        min_col=start_cell_index[1],
+                        max_col=start_cell_index[1]+n_cols_range-1,
+                        values_only=True
+                    )
+                )
+            )
         else:
-            return 0
-        pass
+            from numpy import zeros
+            return zeros((n_rows_range,n_cols_range))
     def percentage(self):
         '''
         to calculate percentage for each item in a column;

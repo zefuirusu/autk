@@ -100,7 +100,7 @@ class CalSheet(XlSheet):
             #  accna_col='accna'
         #  else:
             #  pass
-        if self.shmeta[0] is not None:
+        if isinstance(self.data,DataFrame):
             map_df=self.data[[self.accid_col,self.accna_col]]
             map_dict=zip(
                 list(map_df[self.accid_col]),
@@ -185,6 +185,14 @@ class CalSheet(XlSheet):
         #  if use_meta==False:
             #  calculator.clear()
         #  return calculator
+    def accept_df(self,in_df):
+        '''
+        if you code 'self.data=in_df',
+        index/columns of them may differs,
+        yet inner data will be the same;
+        '''
+        super().accept_df(in_df)
+        self.__parse_acctmap()
     def calxl(self,df=None):
         cal=CalSheet(
             shmeta=[None,self.sheet_name,self.title],
