@@ -4,8 +4,8 @@ import re
 import os
 from copy import deepcopy
 from os.path import isfile,isdir
-from openpyxl import load_workbook
 from xlrd import open_workbook
+from openpyxl import load_workbook
 from pandas import concat,DataFrame,read_excel
 from autk.parser.funcs import transType,get_time_str
 # from autk.mapper.map import XlMap
@@ -13,16 +13,13 @@ class XlSheet:
     def __init__(
         self,
         shmeta=[None,'sheet0',0],
-        #  file_path=None,
-        #  sheet_name='sheet0',
-        #  title=0,
-        # structure of the table is less important than meta information.
-        keep_meta_info=True,
         xlmap=None,
         use_map=False,
-        # key_index is not so important for class XlSheet;
+        # structure of the table is less important than meta information, yet simply make keep_meta_info default to True.
+        keep_meta_info=True,
+        # key_index is not so important for class XlSheet, so simply make key_index and key_name as defalt.
         key_index=[],
-        key_name='key_id'
+        key_name='keyid'
     ):
         '''
         XlSheet fills all blanks with float zero.
@@ -37,18 +34,36 @@ class XlSheet:
             If not necessary, passing None is fine.
         keep_meta_info: bool,default True
             If False, columns of 'from_book' and 'from_sheet' will be dropped; else will be kept.
+        Basic Structure of XlSheet on default:
+        {
+            "__row_temp":[],
+            "shmeta":[None,"sheet0",0],
+            "data":None,
+            "colmap_info":[],
+            "xlmap":None,
+            "use_map":False,
+            "keep_meta_info":False,
+            "file_path":"None",
+            "sheet_name":"sheet0",
+            "title":0,
+            "pure_file_name":"None",
+            "suffix":"None",
+            "name":"None-sheet0-0",
+            "key_index":[],
+            "key_name":"keyid"
+        }
         '''
         self.__row_temp=[]
         self.data=None
         self.shmeta=shmeta # [None,'sheet0',0] as default
-        self.keep_meta_info=keep_meta_info
-        self.xlmap=xlmap
         self.colmap_info=[]
-        self.use_map=use_map
+        self.xlmap=xlmap
+        self.use_map=use_map # use_map determines whether to use self.xlmap.
+        self.keep_meta_info=keep_meta_info
         self.__parse_meta(shmeta)
         #  self.__parse_file_name(self.file_path)
         self.load_raw_data()
-        self.set_key_index(key_index,key_name)
+        self.set_key_index(key_index,key_name) # this method make the argument passed count and set the key_index,key_name.
         pass
     def __parse_meta(self,shmeta):
         '''
@@ -81,12 +96,20 @@ class XlSheet:
             self.pure_file_name=self.file_name
             self.sheet_name='sheet0'
             self.title=0
-            self.suffix=None
+            self.suffix='None'
             pass
         elif isfile(file_path):
             self.file_name=str(file_path.split(os.sep)[-1])
-            self.pure_file_name=re.sub(r'\.xlsx?$','',self.file_name)
-            self.suffix=re.sub(self.pure_file_name+r'.','',self.file_name)
+            self.pure_file_name=re.sub(
+                re.compile(r'\.xls[xm]?$'),
+                '',
+                self.file_name
+            )
+            self.suffix=re.sub(
+                self.pure_file_name+r'.',
+                '',
+                self.file_name
+            )
             #  print('suffix:',self.suffix)
         elif isinstance(file_path,DataFrame):
             self.file_name='DataFrame'
@@ -139,6 +162,14 @@ class XlSheet:
                 )
                 pass
             elif self.suffix == r'xlsx':
+                data_fake=read_excel(
+                    shmeta[0],
+                    sheet_name=shmeta[1],
+                    header=shmeta[2],
+                    engine='openpyxl'
+                )
+                pass
+            elif self.suffix == r'xlsm':
                 data_fake=read_excel(
                     shmeta[0],
                     sheet_name=shmeta[1],
@@ -700,16 +731,19 @@ class XlSheet:
             type_xl=False
         )[sum_col]
         return sum(values_to_sum)
-    def get_matrix(self,start_cell_index,n_rows_range,n_cols_range):
+    def get_matrix(self,start_cell_index,n_rows_range,n_cols_range,type_df=False):
         '''
         For xlrd.open_workbook().sheet_by_name(), index starts from 0;
         While for openpyxl.load_workbook().get_sheet_by_name(), index starts from 1;
         That's all right, just start from 1 when passing argument 'start_cell_index' as tuple like (n,m).
+        For numbers, different file type results in different data type:
+            xls:str(float)
+            xlsx/xlsm:str(int)
         '''
         from numpy import array
         if self.suffix=='xls':
             sht=open_workbook(self.file_path).sheet_by_name(self.sheet_name)
-            return array(
+            matrix=array(
                 [
                     sht.row_values(
                         row,
@@ -724,7 +758,21 @@ class XlSheet:
         elif self.suffix=='xlsx':
             #  sht=load_workbook(self.file_path).get_sheet_by_name(self.sheet_name) # same as:
             sht=load_workbook(self.file_path)[self.sheet_name]
-            return array(
+            matrix=array(
+                list(
+                    sht.iter_rows(
+                        min_row=start_cell_index[0],
+                        max_row=start_cell_index[0]+n_rows_range-1,
+                        min_col=start_cell_index[1],
+                        max_col=start_cell_index[1]+n_cols_range-1,
+                        values_only=True
+                    )
+                )
+            )
+        elif self.suffix=='xlsm':
+            #  sht=load_workbook(self.file_path).get_sheet_by_name(self.sheet_name) # same as:
+            sht=load_workbook(self.file_path,keep_vba=True)[self.sheet_name]
+            matrix=array(
                 list(
                     sht.iter_rows(
                         min_row=start_cell_index[0],
@@ -737,7 +785,15 @@ class XlSheet:
             )
         else:
             from numpy import zeros
-            return zeros((n_rows_range,n_cols_range))
+            matrix=zeros((n_rows_range,n_cols_range))
+        if type_df==True:
+            matrix=DataFrame(
+                data=matrix[1:],
+                columns=matrix[0]
+            )
+        else:
+            pass
+        return matrix
     def percentage(self):
         '''
         to calculate percentage for each item in a column;

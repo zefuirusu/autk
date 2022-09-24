@@ -6,7 +6,7 @@ from threading import Thread
 from openpyxl import load_workbook
 from xlrd import open_workbook
 from pandas import concat,DataFrame
-from autk.reader.xlfile import XlSheet
+from autk.reader.xlsht import XlSheet
 from autk.parser.funcs import start_thread_list
 class ImmortalTable:
     '''

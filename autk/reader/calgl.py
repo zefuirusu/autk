@@ -5,7 +5,7 @@ from threading import Thread
 from copy import deepcopy
 from pandas import DataFrame
 from autk.parser.funcs import transType,regex_filter,save_df
-from autk.reader.xlfile import XlSheet
+from autk.reader.xlsht import XlSheet
 from autk.mapper.map import MglMap
 class CalSheet(XlSheet):
     def __init__(

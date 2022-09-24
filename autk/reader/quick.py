@@ -5,7 +5,7 @@ from autk.mapper.map import SampleMglMap,MglMap
 from autk.reader.table import ImmortalTable
 from autk.reader.mortalgl import MGL
 from autk.reader.chart import MCA
-from autk.reader.xlfile import XlSheet
+from autk.reader.xlsht import XlSheet
 def calxl(df=None):
     '''
     Calculator Excel.

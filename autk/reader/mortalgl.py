@@ -1125,8 +1125,28 @@ class MGL(ImmortalTable):
         not perfect yet;
         '''
         import re
-        target_cal=deepcopy(self.getAcct(target_accid_item, target_side, pure=False, accurate=False, type_xl=True, accid_label=self.accid_col))
-        ref_cal=deepcopy(self.getAcct(ref_accid_item, ref_side, pure=True, accurate=False, type_xl=True, accid_label=self.accid_col))
+        target_cal=deepcopy(
+            self.getAcct(
+                target_accid_item,
+                target_side,
+                pure=False,
+                accurate=False,
+                type_xl=True,
+                accid_label=self.accid_col
+            )
+        )
+        ref_cal=deepcopy(
+            self.getAcct(
+                ref_accid_item,
+                ref_side,
+                pure=True,
+                accurate=False,
+                type_xl=True,
+                accid_label=self.accid_col
+            )
+        )
+        #  print(target_cal.data)
+        #  print(ref_cal.data)
         def drop_zero(resu_list):
             for test_value in resu_list:
                 if test_value in [0,0.0,'0','0.0']:
@@ -1157,6 +1177,7 @@ class MGL(ImmortalTable):
                     multi_values=multi_values[0]
                 else:
                     multi_values=';'.join(multi_values)
+                #  print(multi_values)
                 return multi_values
         target_cal.apply_df_func(__df_find_opposite,col_index,col_name)
         return target_cal

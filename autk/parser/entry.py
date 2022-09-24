@@ -7,7 +7,7 @@ JournalEntry: sum of debit side equals to credit side;
 OppositeFinder: to find opposite account;
 Acct: Account;
 '''
-from autk.reader.xlfile import XlSheet
+from autk.reader.xlsht import XlSheet
 from autk.mapper.map import MglMap
 class SimpleEntry:
     def __init__(self):
