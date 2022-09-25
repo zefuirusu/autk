@@ -262,7 +262,34 @@ class SGL:
             entity_col=deepcopy(self.entity_col)
         )
         return new_sgl
+    @property
+    def data(self):
+        dfli=[]
+        def __mgl_load_raw_data(mgl):
+            mgl.load_raw_data()
+            dfli.append(mgl.data)
+            pass
+        thread_list=[]
+        for mgl in self.mgls:
+            thread_list.append(
+                Thread(
+                    target=__mgl_load_raw_data,
+                    args=(mgl,),
+                    name=''
+                )
+            )
+            continue
+        start_thread_list(thread_list)
+        return concat(
+            dfli,
+            axis=0,
+            join='outer'
+        )
+        pass
     def dfli_concat(self,dfli,type_gl=False):
+        '''
+        this method often works with self.apply_mgl_func;
+        '''
         if type_gl==False:
             resu=concat(dfli,axis=0,join='outer')
         else:
@@ -274,6 +301,7 @@ class SGL:
         This method starts multi-thread to manipulate every mgl,
         in self.mgl to call one of his method,
         so as to collect data into outside data-capsule.
+        This method often works with self.dfli_concat.
         -------
         mgl_func is a customized function to manipulate mgl object in self.mgls,
         whose first parameter of mgl_func must be mgl object,
@@ -292,7 +320,11 @@ class SGL:
             continue
         start_thread_list(thread_list)
         pass
-    def mgl_run_collect(self,func_name):
+    def mgl_run_collect(self,customized_func_name,args):
+        '''
+        run func_name of mgl in self.mgls and collect df into dfli, then return dfli.
+        this method seems failed.
+        '''
         dfli=[]
         return dfli
     def filter(
@@ -330,6 +362,8 @@ class SGL:
             pass
         self.apply_mgl_func(__mgl_vlookup,*args,**kwargs)
         return self.dfli_concat(dfli,False)
+    def vlookups(self):
+        pass
     def sumifs(self,*args,**kwargs):
         dfli=[]
         def __mgl_sumifs(mgl,*args,**kwargs):
@@ -388,15 +422,38 @@ class SGL:
         type_xl=False,
         accid_label=None
     ):
+        '''
+        accid_item,
+        side='all',
+        pure=False,
+        accurate=False,
+        over_write=False,
+        type_xl=False,
+        accid_label=None
+        '''
         pass
     def correspond(
         self,
+        *args,
+        **kwargs
+    ):
+        '''
         cr_accid,
         dr_accid,
         accurate=False,
         type_gl=False
-    ):
-        pass
+        '''
+        dfli=[]
+        def __mgl_correspond(mgl,*args,**kwargs):
+            dfli.append(
+                mgl.correspond(
+                    *args,
+                    **kwargs
+                )
+            )
+            pass
+        self.apply_mgl_func(__mgl_correspond,*args,**kwargs)
+        return self.dfli_concat(dfli,type_gl=args[3])
     def inner_sale(self,incomli):
         '''
         incomli: inner company name list;

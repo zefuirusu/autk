@@ -26,12 +26,12 @@ class ImmortalTable:
         self,
         xlmeta=None,
         common_title=0,
-        auto_load=False,
-        key_index=[],
-        key_name='key_id',
         xlmap=None,
         use_map=False,
-        keep_meta_info=True
+        auto_load=False,
+        keep_meta_info=True,
+        key_index=[],
+        key_name='key_id'
     ):
         self.xlset=[]
         self.__df_temp=[]

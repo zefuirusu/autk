@@ -731,8 +731,33 @@ class XlSheet:
             type_xl=False
         )[sum_col]
         return sum(values_to_sum)
-    def get_matrix(self,start_cell_index,n_rows_range,n_cols_range,type_df=False):
+    def select_matrix(
+        self,
+        from_cell_index,
+        to_cell_index,
+        type_df=False,
+        has_title=False
+    ):
         '''
+        from_cell_index and to_cell_index are tuples like 'R1C1' ref-style in Excel: (row,column);
+        '''
+        return self.get_matrix(
+            from_cell_index,
+            to_cell_index[0]-from_cell_index[0]+1,
+            to_cell_index[1]-from_cell_index[1]+1,
+            type_df=type_df,
+            has_title=has_title
+        )
+    def get_matrix(
+        self,
+        start_cell_index,
+        n_rows_range,
+        n_cols_range,
+        type_df=False,
+        has_title=False
+    ):
+        '''
+        start_cell_index is a tuple like 'R1C1' ref-style in Excel: (row,column);
         For xlrd.open_workbook().sheet_by_name(), index starts from 0;
         While for openpyxl.load_workbook().get_sheet_by_name(), index starts from 1;
         That's all right, just start from 1 when passing argument 'start_cell_index' as tuple like (n,m).
@@ -787,10 +812,15 @@ class XlSheet:
             from numpy import zeros
             matrix=zeros((n_rows_range,n_cols_range))
         if type_df==True:
-            matrix=DataFrame(
-                data=matrix[1:],
-                columns=matrix[0]
-            )
+            if has_title==True:
+                matrix=DataFrame(
+                    data=matrix[1:],
+                    columns=matrix[0]
+                )
+            else:
+                matrix=DataFrame(
+                    data=matrix
+                )
         else:
             pass
         return matrix

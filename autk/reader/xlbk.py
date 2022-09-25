@@ -45,6 +45,23 @@ class XlBook:
         elif self.suffix=='xlsm':
             return load_workbook(self.file_path,keep_vba=True).sheetnames
         pass
+    def select_matrix(
+        self,
+        from_cell_index,
+        to_cell_index,
+        type_df=False,
+        has_title=False
+    ):
+        '''
+        from_cell_index and to_cell_index are tuples like 'R1C1' ref-style in Excel: (row,column);
+        '''
+        return self.get_matrix(
+            from_cell_index,
+            to_cell_index[0]-from_cell_index[0]+1,
+            to_cell_index[1]-from_cell_index[1]+1,
+            type_df=type_df,
+            has_title=has_title
+        )
     def get_matrix(
             self,
             sheet_name,
@@ -55,6 +72,7 @@ class XlBook:
             has_title=False
     ):
         '''
+        start_cell_index is a tuple like 'R1C1' ref-style in Excel: (row,column);
         For xlrd.open_workbook().sheet_by_name(), index starts from 0;
         While for openpyxl.load_workbook().get_sheet_by_name(), index starts from 1;
         That's all right, just start from 1 when passing argument 'start_cell_index' as tuple like (n,m).
@@ -125,6 +143,29 @@ class XlBook:
         from autk.parser.funcs import regex_filter
         possible_names=regex_filter(regex_str,self.shtli,match_mode=False)
         return possible_names
+    def to_mtb(self,common_title=0,auto_load=False):
+        '''
+        Transform self into ImmortalTable.
+        '''
+        from autk.reader.table import ImmortalTable
+        xlmeta={}
+        for sht in self.shtli:
+            xlmeta.update(
+                {self.file_path:[[sht,common_title]]}
+            )
+        return ImmortalTable(
+            xlmeta=xlmeta,
+            common_title=common_title,
+            xlmap=None,
+            use_map=False,
+            auto_load=auto_load,
+            keep_meta_info=True,
+            #  key_index=[],
+            #  key_name='key_id'
+        )
+        pass
+    def to_mgl(self,common_title=0):
+        pass
     pass
 if __name__=='__main__':
     pass
