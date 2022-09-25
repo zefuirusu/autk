@@ -504,7 +504,7 @@ class ImmortalTable:
             for xl in self.xlset:
                 thread_list.append(
                     Thread(
-                        target=_-__single_get_rawdf,
+                        target=__single_get_rawdf,
                         args=(xl,),
                         name=''
                     )

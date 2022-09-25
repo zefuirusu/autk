@@ -47,6 +47,7 @@ class XlBook:
         pass
     def select_matrix(
         self,
+        sheet_name,
         from_cell_index,
         to_cell_index,
         type_df=False,
@@ -56,6 +57,7 @@ class XlBook:
         from_cell_index and to_cell_index are tuples like 'R1C1' ref-style in Excel: (row,column);
         '''
         return self.get_matrix(
+            sheet_name,
             from_cell_index,
             to_cell_index[0]-from_cell_index[0]+1,
             to_cell_index[1]-from_cell_index[1]+1,
