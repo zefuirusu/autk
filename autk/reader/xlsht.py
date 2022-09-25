@@ -303,6 +303,35 @@ class XlSheet:
             print('[Warning:XlSheet] Data is None!')
             pass
     @property
+    def rawdf(self):
+        '''
+        It seems useless, because self.data may be updated when using XlSheet.
+        Thus the original data loaded from self.shmeta may not be what you need.
+        '''
+        if self.shmeta is None:
+            df=deepcopy(self.data)
+        elif isfile(self.shmeta[0]):
+            if self.suffix=='xls':
+                df=read_excel(
+                    self.shmeta[0],
+                    sheet_name=self.shmeta[1],
+                    header=self.shmeta[2],
+                    engine='xlrd'
+                )
+            elif self.suffix=='xlsx' or self.suffix=='xlsm':
+                df=read_excel(
+                    self.shmeta[0],
+                    sheet_name=self.shmeta[1],
+                    header=self.shmeta[2],
+                    engine='openpyxl'
+                )
+            else:
+                print('[Warning] Not an Excel file!')
+                df=None
+        else:
+            df=None
+        return df
+    @property
     def shtli(self):
         if self.suffix=='xls':
             shtli=list(open_workbook(self.file_path).sheet_names())

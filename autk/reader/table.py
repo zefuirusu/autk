@@ -486,7 +486,36 @@ class ImmortalTable:
     def __clear_data(self):
         self.data=None
     def get_data(self):
-        return self.data
+        return deepcopy(self.data)
+    @property
+    def rawdf(self):
+        '''
+        It seems useless, because self.data may be updated when using ImmortalTable.
+        Thus the original data loaded from self.xlmeta may not be what you need.
+        '''
+        if self.xlset !=[]:
+            dfli=[]
+            def __single_get_rawdf(xl):
+                dfli.append(
+                    xl.rawdf
+                )
+                pass
+            thread_list=[]
+            for xl in self.xlset:
+                thread_list.append(
+                    Thread(
+                        target=_-__single_get_rawdf,
+                        args=(xl,),
+                        name=''
+                    )
+                )
+                continue
+            start_thread_list(thread_list)
+            df=concat(dfli,axis=0,join='outer')
+            pass
+        else:
+            df=None
+        return df
     def clear_temp_df(self):
         self.__clear_temp()
     def __clear_temp(self):
