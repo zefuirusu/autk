@@ -454,6 +454,16 @@ class SGL:
             pass
         self.apply_mgl_func(__mgl_correspond,*args,**kwargs)
         return self.dfli_concat(dfli,type_gl=args[3])
+    def multi_acct_analysis(self,*args,**kwargs):
+        '''
+        Not perfect.
+        Each entity share the same sheet_name in the ouput file saved.
+        '''
+        def __mgl_multi_acct_analysis(mgl,*args,**kwargs):
+            mgl.multi_acct_analysis(*args,**kwargs)
+            pass
+        self.apply_mgl_func(__mgl_multi_acct_analysis,*args,**kwargs)
+        pass
     def inner_sale(self,incomli):
         '''
         incomli: inner company name list;

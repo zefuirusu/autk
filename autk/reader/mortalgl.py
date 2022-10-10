@@ -586,7 +586,7 @@ class MGL(ImmortalTable):
                 {accid:self.acctmap[accid]}
             )
             continue
-        print(accid_str)
+        print(acctid_str,'\t',acct)
         return acct
     def scan_byna(self,accna_item):
         acct_cols=[

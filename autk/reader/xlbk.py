@@ -45,6 +45,16 @@ class XlBook:
         elif self.suffix=='xlsm':
             return load_workbook(self.file_path,keep_vba=True).sheetnames
         pass
+    @property
+    def shape(self):
+        '''
+        sheet_name | shape
+        -----------|-------
+        sheet_1    | (n_1,m_1)
+        sheet_2    | (n_2,m_2)
+        ....
+        '''
+        pass
     def select_matrix(
         self,
         sheet_name,
