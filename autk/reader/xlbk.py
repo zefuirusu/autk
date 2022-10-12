@@ -52,9 +52,36 @@ class XlBook:
         -----------|-------
         sheet_1    | (n_1,m_1)
         sheet_2    | (n_2,m_2)
-        ....
+        .......
         '''
-        pass
+        from numpy import array
+        if self.suffix=='xls':
+            shape=array(
+                [
+                    [open_workbook(self.file_path).sheet_by_name(sht).nrows,
+                     open_workbook(self.file_path).sheet_by_name(sht).ncols]
+                    for sht in self.shtli
+                ]
+            )
+            pass
+        elif self.suffix=='xlsx' or 'xlsm':
+            shape=array(
+                [
+                    [load_workbook(self.file_path)[sht].max_row,
+                     load_workbook(self.file_path)[sht].max_column]
+                    for sht in self.shtli
+                ]
+            )
+            pass
+        return shape
+    @property
+    def shape_df(self):
+        from pandas import DataFrame
+        return DataFrame(
+            data=self.shape,
+            columns=['rows','cols'],
+            index=self.shtli
+        )
     def select_matrix(
         self,
         sheet_name,

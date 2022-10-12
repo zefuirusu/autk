@@ -388,15 +388,26 @@ class ImmortalTable:
     def xlscan(self):
         scan_xl_df=[]
         for xl in self.xlset:
-            scan_xl_df.append(
-                [
-                    xl.pure_file_name,
-                    xl.sheet_name,
-                    xl.title,
-                    xl.data.shape,
-                    xl.xlmap.name
-                ]
-            )
+            if xl.xlmap is not None:
+                scan_xl_df.append(
+                    [
+                        xl.pure_file_name,
+                        xl.sheet_name,
+                        xl.title,
+                        xl.data.shape,
+                        xl.xlmap.name
+                    ]
+                )
+            else:
+                scan_xl_df.append(
+                    [
+                        xl.pure_file_name,
+                        xl.sheet_name,
+                        xl.title,
+                        xl.data.shape,
+                        'no_map'
+                    ]
+                )
         scan_xl_df=DataFrame(
             scan_xl_df,
             columns=['file','sheet_name','title','shape','map']
@@ -442,9 +453,7 @@ class ImmortalTable:
         Generate an calculator XlSheet.
         '''
         calculator=XlSheet(
-            file_path=None,
-            sheet_name='',
-            title=self.common_title,
+            [None,'',self.common_title],
             keep_meta_info=False,
             xlmap=self.xlmap,
             use_map=self.use_map,
@@ -454,7 +463,7 @@ class ImmortalTable:
         if df is None:
             return calculator
         else:
-            calculator.accept_data(df)
+            calculator.accept_df(df)
             return calculator
     def load_raw_data(self):
         '''
@@ -1046,16 +1055,14 @@ class ImmortalTable:
         not perfect yet.
         '''
         xl=XlSheet(
-            file_path=None,
-            sheet_name='',
-            title=self.common_title,
+            [None,'',self.common_title],
             keep_meta_info=self.keep_meta_info,
             xlmap=self.xlmap,
             use_map=self.use_map,
             key_index=self.key_index,
             key_name=self.key_name
         )
-        xl.accept_data(in_df)
+        xl.accept_df(in_df)
         table=ImmortalTable(
             key_index=self.key_index,
             key_name=self.key_name,
