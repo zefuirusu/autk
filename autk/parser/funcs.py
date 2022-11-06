@@ -33,7 +33,13 @@ def dir2json(base_dir,shtna='表页-1',title=3):
     pass
 def relative_path(target,reference):
     '''
-    return the relative path of 'target' towards 'reference'.
+    What is the relative path of 'target' file in sight of 'reference' file ?
+    How to get 'target' file location from 'reference' file ?
+    ----
+    Return the relative path of 'target' towards 'reference'.
+    Find the location relationship between two `files`.
+    ----
+    This function is being tested.
     '''
     import os
     from copy import deepcopy
@@ -45,7 +51,7 @@ def relative_path(target,reference):
     ref_split=reference.split(os.sep)
     def remove_common(left_list,right_list):
         '''
-        left_list is shorter than right_list;
+        Assume that left_list is shorter than right_list;
         '''
         left_list_copy=deepcopy(left_list)
         right_list_copy=deepcopy(right_list)
@@ -62,7 +68,11 @@ def relative_path(target,reference):
     common_count=remove_common(ref_split,target_split)[0]
     ref_list_copy=remove_common(ref_split,target_split)[1]
     target_list_copy=remove_common(ref_split,target_split)[2]
-    resu_path=[r'..']*(len(ref_split)-common_count)
+    up_step=len(ref_split)-common_count-1
+    if up_step==0:
+        resu_path=[r'.']
+    else:
+        resu_path=[r'..']*(up_step)
     resu_path.extend(target_list_copy)
     resu_path=os.sep.join(resu_path)
     #  print('result:\n',resu_path)

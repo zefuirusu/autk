@@ -16,3 +16,5 @@ from autk.reader.mortalgl import MGL
 from autk.reader.supergl import SGL
 from autk.reader.chart import MCA,APAR
 from autk.reader.mInventory import Inventory
+
+from autk.zh.egl import EGL
