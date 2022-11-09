@@ -73,6 +73,10 @@ def add_nick_name(nick_name,suf_type,file_dir):
         continue
     pass
 def find_regex(item,search_dir=os.path.abspath(os.curdir),match=False):
+    '''
+    To find and return `files/paths` according to regex `item` given, in `search_dir`.
+    Search mode/Match mode are both supported.
+    '''
     print('start time:',datetime.datetime.now())
     w1=Walker(item=item,search_dir=search_dir,match=match)
     w1.start_search()

@@ -5,7 +5,7 @@ Audit Toolkit for those who are working hard near the end of the year.
 ### 1.2 Key Traits
 1. To perform audit procedures quickly.
 2. To enjoy your auditing work.
-3. To make benefit for the People.
+3. To make benefit for the auditors.
 ## 2. Deployment
 ### 2.1 Requirements
 ```json
@@ -41,8 +41,8 @@ git clone 'https://github.com/zefuirusu/autk.git' ~/Downloads/
 ```
 ## 3. To Contribute
 Feel free to fork.<br>
-Any questions, suggestions please start an issue.<br>
+Any questions or suggestions, start an issue.<br>
 ## 4. Declaration
 1. This repository is still growing and being tested..
 2. Financial Auditors and relevant developers are the target users of this repository.
-3. This repository is built by,with and for Chinese People.
+3. This repository is built by,with and for the auditors.
