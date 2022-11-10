@@ -35,7 +35,7 @@ class Walker:
         for i,j,k in os.walk(self.search_dir):
             for file_path in j:
                 if self.one_match(file_path) is not None:
-                    yield os.path.abspath(file_path)
+                    yield os.path.abspath(os.path.join(i,file_path))
         pass
     def start_search(self):
         def th1():
@@ -50,6 +50,17 @@ class Walker:
         t2.join()
         pass
     pass
+def find_regex(item,search_dir=os.path.abspath(os.curdir),match=False):
+    '''
+    To find and return `files/paths` according to regex `item` given, in `search_dir`.
+    Search mode/Match mode are both supported.
+    '''
+    print('start time:',datetime.datetime.now())
+    w1=Walker(item=item,search_dir=search_dir,match=match)
+    w1.start_search()
+    resu=[list(w1.resu_files),list(w1.resu_dirs)]
+    print('end time:',datetime.datetime.now())
+    return resu
 def add_nick_name(nick_name,suf_type,file_dir):
     import shutil
     def __change_file_name(file_path):
@@ -72,17 +83,6 @@ def add_nick_name(nick_name,suf_type,file_dir):
         __change_file_name(f)
         continue
     pass
-def find_regex(item,search_dir=os.path.abspath(os.curdir),match=False):
-    '''
-    To find and return `files/paths` according to regex `item` given, in `search_dir`.
-    Search mode/Match mode are both supported.
-    '''
-    print('start time:',datetime.datetime.now())
-    w1=Walker(item=item,search_dir=search_dir,match=match)
-    w1.start_search()
-    resu=[list(w1.resu_files),list(w1.resu_dirs)]
-    print('end time:',datetime.datetime.now())
-    return resu
 def scanxl(xl_dir=os.path.abspath(os.curdir)):
     from openpyxl import load_workbook
     from pandas import read_excel
