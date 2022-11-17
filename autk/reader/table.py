@@ -358,18 +358,20 @@ class ImmortalTable:
         self.parse_meta(
             self.xlmeta,
             self.common_title,
-            auto_load=self.auto_load
+            auto_load=True ## self.auto_load
         )
-        #  self.__init__(
-            #  xlmeta=self.xlmeta,
-            #  common_title=self.common_title,
-            #  auto_load=False,
-            #  key_index=self.key_index,
-            #  key_name=self.key_name,
-            #  xlmap=self.xlmap,
-            #  use_map=self.use_map,
-            #  keep_meta_info=self.keep_meta_info
-        #  )
+        pass
+    def reload_by_map(self,xlmap,keep_meta_info=False):
+        self.__init__(
+            xlmeta=deepcopy(self.xlmeta),
+            common_title=deepcopy(self.common_title),
+            xlmap=xlmap,
+            use_map=True,
+            auto_load=True,
+            keep_meta_info=keep_meta_info,
+            key_index=deepcopy(self.key_index),
+            key_name=deepcopy(self.key_name)
+        )
         pass
     @property
     def colscan(self):

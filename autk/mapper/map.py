@@ -4,6 +4,7 @@ class XlMap:
     '''
     class XlMap indicates the index of a data sheet's columns.
     XlMap is mapping column name to column index.
+    If you need a new column which does not exist, set its value to None.
     col_name_in_xlmap(col_name=name of attribute) ---> col_index_in_xlmap(col_index=value of attribute) ---> col_name_in_actual_file (col_name=column_of_file[col_index])
     属性的排列顺序就是读取后表格的列顺序;
     '''
