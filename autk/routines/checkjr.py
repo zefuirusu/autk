@@ -6,7 +6,7 @@ from autk.parser.findfile import find_regex
 from autk.parser.funcs import f2list,save_df,relative_path
 def update_jr_by_func(
     version_str, # sheet name
-    by_func, # to transform jrid into jr_item; one parameter;
+    by_func, # to transform glid into glid_item; one parameter;
     jrli_path, # file path of journal entry id (in regex form) list; list can be passed as well;
     sdir, # search directory;
     savepath, # file path of the output Excel file;
@@ -67,13 +67,13 @@ def update_jr_by_func(
         continue
     print('we have %d:'%len(haveli),haveli)
     print('not have %d:'%len(noli),noli)
-    d_have=DataFrame(haveli,columns=['jrid','jr_item','location'])
+    d_have=DataFrame(haveli,columns=['glid','glid_item','location'])
     d_have['status']='√'
-    d_no=DataFrame(noli,columns=['jrid','jr_item','location'])
+    d_no=DataFrame(noli,columns=['glid','glid_item','location'])
     d_no['status']='×'
     d=concat([d_have,d_no],axis=0,join='outer')
     d.sort_values(
-        'jrid',
+        'glid',
         ascending=True,
         inplace=True,
         ignore_index=True
@@ -137,13 +137,13 @@ def update_jr_status(
         continue
     print('we have %d:'%len(haveli),haveli)
     print('not have %d:'%len(noli),noli)
-    d_have=DataFrame(haveli,columns=['jrid','location'])
+    d_have=DataFrame(haveli,columns=['glid_item','location'])
     d_have['status']='√'
-    d_no=DataFrame(noli,columns=['jrid','location'])
+    d_no=DataFrame(noli,columns=['glid_item','location'])
     d_no['status']='×'
     d=concat([d_have,d_no],axis=0,join='outer')
     d.sort_values(
-        'jrid',
+        'glid_item',
         ascending=True,
         inplace=True,
         ignore_index=True
