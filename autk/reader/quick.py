@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from autk.mapper.map import SampleMglMap,MglMap
+from autk.mapper.map import SampleEglMap,EglMap
 from autk.reader.table import ImmortalTable
 from autk.reader.mortalgl import MGL
 from autk.reader.chart import MCA

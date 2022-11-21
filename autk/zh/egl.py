@@ -8,7 +8,7 @@ from autk.parser.funcs import transType,save_df,regex_filter,get_time_str
 #  from autk.reader.table import ImmortalTable
 from autk.reader.mortalgl import MGL
 from autk.reader.calgl import CalSheet
-from autk.mapper.map import MglMap,SampleMglMap
+from autk.mapper.map import EglMap,SampleEglMap
 class EGL(MGL):
     '''
     E-Audit Cloud General Ledger.
@@ -41,16 +41,16 @@ class EGL(MGL):
             auto_load=False,
             nick_name='egl'
         ):
-        print('---Initializing MGL---')
+        print('---Initializing E-Audit-GL---')
         t_start=datetime.datetime.now()
         if nick_name=='egl':
             self.name=nick_name+'_'+get_time_str()
         else:
             self.name=nick_name
         if sample_col==True:
-            xlmap=SampleMglMap()
+            xlmap=SampleEglMap()
         else:
-            xlmap=MglMap()
+            xlmap=EglMap()
         self.set_mgl_attr(
             drcrdesc,
             accid_col,
@@ -80,7 +80,7 @@ class EGL(MGL):
         t_end=datetime.datetime.now()
         t_interval=t_end-t_start
         print('Initialize time spent:',t_interval)
-        print('---MGL Initialized---')
+        print('---E-Audit-GL Initialized---')
         pass
     def __str__(self):
         if self.data is not None:
@@ -113,32 +113,32 @@ class EGL(MGL):
     #     #  key_index=['凭证日期','字','号'],key_name='glid',drcrdesc=['借方发生金额','贷方发生金额'],accid_col='科目编号',accna_col='科目全路径'
     #     if key_index != ['凭证日期','字','号']:
     #         self.key_index=key_index
-    #     elif isinstance(self.xlmap,MglMap):
+    #     elif isinstance(self.xlmap,EglMap):
     #         self.key_index=self.xlmap.key_index
     #     else:
     #         self.key_index = ['凭证日期','字','号']
     #         pass
     #     if key_name != 'key_id':
     #         self.key_name=key_name
-    #     elif isinstance(self.xlmap,MglMap):
+    #     elif isinstance(self.xlmap,EglMap):
     #         self.key_name=self.xlmap.key_name
     #     else:
     #         self.key_name = 'key_id'
     #     if accid_col != '科目编号' :
     #         self.accid_col=accid_col
-    #     elif isinstance(self.xlmap, MglMap):
+    #     elif isinstance(self.xlmap, EglMap):
     #         self.accid_col=self.xlmap.accid_col
     #     else:
     #         self.accid_col = '科目编号'
     #     if accna_col != '科目全路径':
     #         self.accna_col=accna_col
-    #     elif isinstance(self.xlmap, MglMap):
+    #     elif isinstance(self.xlmap, EglMap):
     #         self.accna_col=self.xlmap.accna_col
     #     else:
     #         self.accna_col = '科目全路径'
     #     if drcrdesc !=['借方发生金额','贷方发生金额']:
     #         self.drcrdesc=drcrdesc
-    #     elif isinstance(self.xlmap, MglMap):
+    #     elif isinstance(self.xlmap, EglMap):
     #         self.drcrdesc=self.xlmap.drcrdesc
     #     else:
     #         self.drcrdesc = ['借方发生金额','贷方发生金额']
@@ -220,7 +220,7 @@ class EGL(MGL):
         # if self.use_map==False:
         #     accid_col='科目编号'
         #     accna_col='科目全路径'
-        # elif isinstance(self.xlmap,MglMap):
+        # elif isinstance(self.xlmap,EglMap):
         #     accid_col='accid'
         #     accna_col='accna'
         # else:

@@ -350,8 +350,10 @@ class ImmortalTable:
                 print('[Warning:Table] columns not fit.')
                 self.update_columns([])
         else:
-            print('self.xlmeta is None so nothing to check.')
-            self.update_columns([])
+            print('self.xlmeta is None so nothing to check.\n columns is set by self.xlmap.')
+            self.update_columns(
+                self.xlmap.columns
+            )
             pass
         return deepcopy(self.columns)
     def reload(self):
@@ -488,7 +490,10 @@ class ImmortalTable:
             )
             continue
         start_thread_list(thread_list)
-        self.data=concat(self.__df_temp,axis=0,join='outer')
+        #  get_df_temp_data(self,over_write=False,type_xl=False)
+        #  self.data=concat(self.__df_temp,axis=0,join='outer')
+        self.data=self.get_df_temp_data(over_write=True,type_xl=False)
+        print('if columns fit to self.data:',self.columns==list(self.data.columns))
         if self.key_name in self.data.columns:
             self.key_list=list(self.data[self.key_name].drop_duplicates())
         self.load_count+=1
@@ -914,7 +919,10 @@ class ImmortalTable:
             continue
         start_thread_list(thread_list)
         from pandas import Series
-        resu=Series(resu)
+        if len(resu) != 0:
+            resu=Series(resu,dtype=type(resu[0]))
+        else:
+            resu=Series(resu,dtype=str)
         resu=resu.drop_duplicates()
         resu=list(resu)
         return resu

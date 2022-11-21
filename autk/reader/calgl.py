@@ -41,14 +41,14 @@ class CalSheet(XlSheet):
             drcrdesc=drcrdesc,
             accid_col=accid_col,
             accna_col=accna_col )
-        self.set_top_acct(
-            top_accid_len,
-            accna_split_by
-        )
-        self.set_date(
-            date_col=date_col,
-            date_split_by=date_split_by
-        )
+        #  self.set_top_acct(
+            #  top_accid_len,
+            #  accna_split_by
+        #  )
+        #  self.set_date(
+            #  date_col=date_col,
+            #  date_split_by=date_split_by
+        #  )
         self.__parse_acctmap()
         self.fake=False
         pass
@@ -129,7 +129,7 @@ class CalSheet(XlSheet):
                 return top_accid
             def top_accna_apply_func(row_series):
                 accna=row_series[self.accna_col]
-                top_accna=accna.split(self.accna_split_by)[0]
+                top_accna=accna.split(self.xlmap.accna_split_by)[0]
                 top_accna=str(top_accna)
                 return top_accna
             self.apply_df_func(top_accid_apply_func,1,'top_accid')

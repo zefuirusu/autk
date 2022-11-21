@@ -7,10 +7,12 @@ from pandas import DataFrame
 from autk.parser.funcs import transType,save_df,regex_filter,get_time_str
 from autk.reader.table import ImmortalTable
 from autk.reader.calgl import CalSheet
-from autk.mapper.map import MglMap,SampleMglMap
+from autk.mapper.map import MglMap,get_glmap
 class MGL(ImmortalTable):
     '''
     Mortal General Ledger.
+        columns must be included:
+            glid,date,mark,jrid,accid,accna,dr_amount,cr_amount,drcr,item_name,note;
         1. self.xlmap is passed as an argument only when instantiating an CalSheet object, in method of parsing xlmeta.
         2. key_index and key_name are needed only when you have to combine a few columns as the KEY column. Simply loading data of ImmortalTable does not needed key_index and key_name. 
         key_index and key_name are NOT necessary for ImmortalTable, yet FAIRLY necessary for MGL.
@@ -26,17 +28,18 @@ class MGL(ImmortalTable):
             self,
             xlmeta=None,
             common_title=0,
-            key_index=['date','mark','jrid'],#['凭证日期','字','号'],
-            key_name='glid',
-            drcrdesc=['dr_amount','cr_amount'],#['借方发生金额','贷方发生金额'],
-            accid_col='accid',#'科目编号',
-            accna_col='accna',#'科目全路径',
-            date_col='date',#'凭证日期',
-            date_split_by=r'-',
-            top_accid_len=4,
-            accna_split_by=r'/',
-            sample_col=True,
-            use_map=True,
+            #  key_index=['date','mark','jrid'],#['凭证日期','字','号'],
+            #  key_name='glid',
+            #  drcrdesc=['dr_amount','cr_amount'],#['借方发生金额','贷方发生金额'],
+            #  accid_col='accid',#'科目编号',
+            #  accna_col='accna',#'科目全路径',
+            #  date_col='date',#'凭证日期',
+            #  date_split_by=r'-',
+            #  top_accid_len=4,
+            #  accna_split_by=r'/',
+            #  sample_col=True,
+            xlmap=None,
+            #  use_map=True,
             auto_load=False,
             nick_name='mgl'
         ):
@@ -46,36 +49,41 @@ class MGL(ImmortalTable):
             self.name=nick_name+'_'+get_time_str()
         else:
             self.name=nick_name
-        if sample_col==True:
-            xlmap=SampleMglMap()
-        else:
-            xlmap=MglMap()
-        self.set_mgl_attr(
-            drcrdesc,
-            accid_col,
-            accna_col,
-            date_col,
-            date_split_by,
-            top_accid_len,
-            accna_split_by
-        )
+        if xlmap is None:
+            self.xlmap=get_map([
+                'glid','date','mark','jrid','accid','accna','dr_amount','cr_amount','drcr','item_name','note'
+            ])(),
+        #  self.xlmap=xlmap
+        #  if sample_col==True:
+            #  xlmap=SampleMglMap()
+        #  else:
+            #  xlmap=MglMap()
         ImmortalTable.__init__(
             self,
             xlmeta=xlmeta,
             common_title=common_title,
             auto_load=auto_load,
-            key_index=key_index,
-            key_name=key_name,
+            key_index=xlmap.key_index,
+            key_name=xlmap.key_name,
             xlmap=xlmap,
-            use_map=use_map,
+            use_map=True,
             keep_meta_info=False
+        )
+        self.set_mgl_attr(
+            self.xlmap.drcrdesc,
+            self.xlmap.accid_col,
+            self.xlmap.accna_col,
+            self.xlmap.date_col,
+            self.xlmap.date_split_by,
+            self.xlmap.top_accid_len,
+            self.xlmap.accna_split_by
         )
         #  self.set_key_cols() # no need to call self.set_key_cols() now because of self.set_mgl_attr();
         self.__parse_acctmap() # self.set_key_cols() must be called before.
         self.gl_matrix=None
         self.fake=False
-        if auto_load ==True:
-            self.load_raw_data()
+        #  if auto_load ==True:
+            #  self.load_raw_data()
         t_end=datetime.datetime.now()
         t_interval=t_end-t_start
         print('Initialize time spent:',t_interval)
@@ -165,22 +173,22 @@ class MGL(ImmortalTable):
         self.xlset.append(
             CalSheet(
                 shmeta,
-                keep_meta_info=self.keep_meta_info,
-                key_index=self.key_index,
-                key_name=self.key_name,
-                drcrdesc=self.drcrdesc,
-                accid_col=self.accid_col,
-                accna_col=self.accna_col,
-                date_col=self.date_col,
-                top_accid_len=self.top_accid_len,
-                accna_split_by=self.accna_split_by,
+                keep_meta_info=False,
+                key_index=self.xlmap.key_index,
+                key_name=self.xlmap.key_name,
+                drcrdesc=self.xlmap.drcrdesc,
+                accid_col=self.xlmap.accid_col,
+                accna_col=self.xlmap.accna_col,
+                date_col=self.xlmap.date_col,
+                top_accid_len=self.xlmap.top_accid_len,
+                accna_split_by=self.xlmap.accna_split_by,
                 xlmap=self.xlmap,
-                use_map=self.use_map,
+                use_map=True,
             )
         )
         pass
     def __parse_None_xlmeta(self):
-        if self.use_map==True and self.xlmap is not None:
+        if self.xlmap is not None:
             self.drcrdesc=self.xlmap.drcrdesc
             self.accid_col=self.xlmap.accid_col
             self.accna_col=self.xlmap.accna_col
@@ -202,14 +210,14 @@ class MGL(ImmortalTable):
             self.accid_col,
             self.accna_col
         )
-        self.set_top_acct(
-            self.top_accid_len,
-            self.accna_split_by
-        )
-        self.set_date(
-            self.date_col,
-            self.date_split_by
-        )
+        #  self.set_top_acct(
+            #  self.top_accid_len,
+            #  self.accna_split_by
+        #  )
+        #  self.set_date(
+            #  self.date_col,
+            #  self.date_split_by
+        #  )
         self.__parse_acctmap()
     def __parse_acctmap(self):
         '''
@@ -253,7 +261,7 @@ class MGL(ImmortalTable):
         accid_col='科目编号',
         accna_col='科目全路径'
     ):
-        if self.use_map==True:
+        if self.xlmap is not None:
             setattr(self,'drcrdesc',self.xlmap.drcrdesc)
             setattr(self,'accid_col',self.xlmap.accid_col)
             setattr(self,'accna_col',self.xlmap.accna_col)
@@ -306,7 +314,8 @@ class MGL(ImmortalTable):
         pass
     def set_date(self,date_col='date',date_split_by=r'-'):
         def __get_year(row_series):
-            if self.use_map==True:
+            #  if self.use_map==True:
+            if self.xlmap is not None:
                 date_str=row_series[self.xlmap.date_col]
             else:
                 date_str=row_series[date_col]
@@ -316,7 +325,8 @@ class MGL(ImmortalTable):
                 year='0'
             return year
         def __get_month(row_series):
-            if self.use_map==True:
+            #  if self.use_map==True:
+            if self.xlmap is not None:
                 date_str=row_series[self.xlmap.date_col]
             else:
                 date_str=row_series[date_col]
@@ -326,7 +336,8 @@ class MGL(ImmortalTable):
                 month='0'
             return month
         def __get_day(row_series):
-            if self.use_map==True:
+            #  if self.use_map==True:
+            if self.xlmap is not None:
                 date_str=row_series[self.xlmap.date_col]
             else:
                 date_str=row_series[date_col]
@@ -335,7 +346,8 @@ class MGL(ImmortalTable):
             else:
                 day='0'
             return day
-        if self.use_map==True:
+        #  if self.use_map==True:
+        if self.xlmap is not None:
             setattr(self,'date_col',self.xlmap.date_col)
             setattr(self,'date_split_by',self.xlmap.date_split_by)
         else:
@@ -1211,8 +1223,8 @@ class MGL(ImmortalTable):
     def side_analysis(self,accid,side='cr',top_mode=False):
         '''
         accid must NOT be regex!
-        Credit number is negative;
-        Debit number is positive;
+        Credit amount is negative;
+        Debit amount is positive;
         '''
         if top_mode==True:
             accid=str(accid)[0:self.top_accid_len]

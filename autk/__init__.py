@@ -8,7 +8,7 @@ from autk.parser.funcs import *
 from autk.parser.findfile import find_regex,add_nick_name
 from autk.parser.entry import JournalEntry
 
-from autk.mapper.map import MglMap,SampleMglMap,ChartMap
+from autk.mapper.map import get_glmap
 
 from autk.reader.quick import *
 from autk.reader.table import ImmortalTable

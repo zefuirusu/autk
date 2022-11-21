@@ -66,6 +66,65 @@ class XlMap:
     pass
 class MglMap(XlMap):
     '''
+    columns must be included:
+        glid,date,mark,jrid,accid,accna,dr_amount,cr_amount;
+    '''
+    def __init__(self):
+        pass
+    @property
+    def name(self):
+        return 'MglMap'
+    @property
+    def key_name(self):
+        return 'glid'
+    @property
+    def key_index(self):
+        return ['date','mark','jrid']
+    @property
+    def accid_col(self):
+        return 'accid'
+    @property
+    def top_accid_len(self):
+        return 4
+    @property
+    def accna_col(self):
+        return 'accna'
+    @property
+    def accna_split_by(self):
+        return r'/',
+    @property
+    def drcrdesc(self):
+        return ['dr_amount','cr_amount']
+    @property
+    def date_col(self):
+        return 'date'
+    @property
+    def date_split_by(self):
+        return r'-'
+    pass
+def get_glmap(columns,key_index=['date','mark','jrid'],drcrdesc=['dr_amount','cr_amount']):
+    '''
+    columns must be included:
+        glid,date,mark,jrid,accid,accna,dr_amount,cr_amount,item_name,note;
+    '''
+    print('columns of map:\n',columns)
+    class InstantMap(MglMap):
+        def __init__(self):
+            if isinstance(columns,list):
+                for n in range(len(columns)):
+                    setattr(self,columns[n],n)
+                    continue
+            elif isinstance(columns,dict):
+                for k in columns.keys():
+                    setattr(self,k,columns[k])
+            else:
+                print('invalid columns:',columns)
+                pass
+            pass
+        pass
+    return InstantMap
+class EglMap(MglMap):
+    '''
     Mapping for keys from MGL object towards GeneralLedger Template.
     ['抽', '凭证日期', '字', '号', '摘要', '科目编号', '科目全路径', '借方发生金额', '贷方发生金额', '汇率',
        '外币金额', '外币名称', '数量额', '单价', '计量单位', '核算编号', '核算名称']
@@ -131,7 +190,7 @@ class MglMap(XlMap):
     def date_split_by(self):
         return r'-'
     pass
-class SampleMglMap(MglMap):
+class SampleEglMap(EglMap):
     def __init__(self):
         # self.if_index_map=if_index_map
         self.if_sampled=0
