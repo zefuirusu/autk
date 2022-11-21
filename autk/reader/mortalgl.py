@@ -50,9 +50,11 @@ class MGL(ImmortalTable):
         else:
             self.name=nick_name
         if xlmap is None:
-            self.xlmap=get_map([
+            self.xlmap=get_glmap([
                 'glid','date','mark','jrid','accid','accna','dr_amount','cr_amount','drcr','item_name','note'
-            ])(),
+            ])()
+        else:
+            pass
         #  self.xlmap=xlmap
         #  if sample_col==True:
             #  xlmap=SampleMglMap()
@@ -173,17 +175,18 @@ class MGL(ImmortalTable):
         self.xlset.append(
             CalSheet(
                 shmeta,
-                keep_meta_info=False,
-                key_index=self.xlmap.key_index,
-                key_name=self.xlmap.key_name,
-                drcrdesc=self.xlmap.drcrdesc,
-                accid_col=self.xlmap.accid_col,
-                accna_col=self.xlmap.accna_col,
-                date_col=self.xlmap.date_col,
-                top_accid_len=self.xlmap.top_accid_len,
-                accna_split_by=self.xlmap.accna_split_by,
+                #  key_index=self.xlmap.key_index,
+                #  key_name=self.xlmap.key_name,
+                #  drcrdesc=self.xlmap.drcrdesc,
+                #  accid_col=self.xlmap.accid_col,
+                #  accna_col=self.xlmap.accna_col,
+                #  date_col=self.xlmap.date_col,
+                #  date_split_by=self.xlmap.date_split_by,
+                #  top_accid_len=self.xlmap.top_accid_len,
+                #  accna_split_by=self.xlmap.accna_split_by,
                 xlmap=self.xlmap,
-                use_map=True,
+                #  use_map=True,
+                keep_meta_info=False,
             )
         )
         pass
@@ -445,16 +448,16 @@ class MGL(ImmortalTable):
         '''
         cal=CalSheet(
             shmeta=[None,'sheet0',self.common_title],
-            keep_meta_info=self.keep_meta_info,
-            key_index=deepcopy(self.key_index),
-            key_name=deepcopy(self.key_name),
-            drcrdesc=deepcopy(self.drcrdesc),
-            accid_col=deepcopy(self.accid_col),
-            accna_col=deepcopy(self.accna_col),
-            date_col=deepcopy(self.date_col),
-            date_split_by=self.date_split_by,
+            #  key_index=deepcopy(self.key_index),
+            #  key_name=deepcopy(self.key_name),
+            #  drcrdesc=deepcopy(self.drcrdesc),
+            #  accid_col=deepcopy(self.accid_col),
+            #  accna_col=deepcopy(self.accna_col),
+            #  date_col=deepcopy(self.date_col),
+            #  date_split_by=self.date_split_by,
             xlmap=deepcopy(self.xlmap),
-            use_map=self.use_map
+            #  use_map=self.use_map,
+            keep_meta_info=self.keep_meta_info,
         )
         cal.accept_df(df)
         return cal
@@ -1411,9 +1414,9 @@ class MGL(ImmortalTable):
             [None,
             '',
             self.common_title],
+            xlmap=deepcopy(self.xlmap),
+            #  use_map=self.use_map,
             keep_meta_info=self.keep_meta_info,
-            xlmap=self.xlmap,
-            use_map=self.use_map
         )
         xl.accept_data(in_df)
         table=MGL(

@@ -1,13 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from threading import Thread
 from copy import deepcopy
+from threading import Thread
 from pandas import DataFrame
 from autk.parser.funcs import transType,regex_filter,save_df
 from autk.reader.xlsht import XlSheet
-from autk.mapper.map import MglMap
+from autk.mapper.map import MglMap,get_glmap
 class CalSheet(XlSheet):
+    '''
+    CalSheet must have a map to indicate its column-structure;
+    If xlmap is passed None,then columns will be:
+        ['glid','date','mark','jrid','accid','accna','dr_amount','cr_amount','drcr','item_name','note']
+    '''
     def __init__(
         self,
         shmeta=[None,'sheet0',0],
@@ -15,32 +20,38 @@ class CalSheet(XlSheet):
         #  sheet_name='sheet0',
         #  title=0,
         # structure of the table is less important than meta information.
+        #  key_index=['date','mark','jrid'], #['凭证日期','字','号'],
+        #  key_name='glid',
+        #  drcrdesc=['dr_amount','cr_amount'],#['借方发生金额','贷方发生金额'],
+        #  accid_col='accid',#科目编号',
+        #  accna_col='accna',#科目全路径',
+        #  date_col='date',#凭证日期',
+        #  date_split_by=r'-',
+        #  top_accid_len=4,
+        #  accna_split_by=r'/',
+        xlmap=None,
+        #  use_map=False,
         keep_meta_info=False,
-        key_index=['date','mark','jrid'], #['凭证日期','字','号'],
-        key_name='glid',
-        drcrdesc=['dr_amount','cr_amount'],#['借方发生金额','贷方发生金额'],
-        accid_col='accid',#科目编号',
-        accna_col='accna',#科目全路径',
-        date_col='date',#凭证日期',
-        date_split_by=r'-',
-        top_accid_len=4,
-        accna_split_by=r'/',
-        xlmap=MglMap(),
-        use_map=False,
     ):
+        if xlmap is None:
+            xlmap=get_glmap([
+                'glid','date','mark','jrid','accid','accna','dr_amount','cr_amount','drcr','item_name','note'
+            ])()
+        else:
+            pass
         XlSheet.__init__(
             self,
             shmeta=shmeta,
-            keep_meta_info=keep_meta_info,
             xlmap=xlmap,
-            use_map=use_map,
-            key_index=key_index,
-            key_name=key_name
+            use_map=True,
+            keep_meta_info=keep_meta_info,
+            key_index=xlmap.key_index,
+            key_name=xlmap.key_name
         )
-        self.set_key_cols(
-            drcrdesc=drcrdesc,
-            accid_col=accid_col,
-            accna_col=accna_col )
+        #  self.set_key_cols(
+            #  drcrdesc=drcrdesc,
+            #  accid_col=accid_col,
+            #  accna_col=accna_col )
         #  self.set_top_acct(
             #  top_accid_len,
             #  accna_split_by
@@ -54,9 +65,9 @@ class CalSheet(XlSheet):
         pass
     def set_key_cols(
         self,
-        drcrdesc=['借方发生金额','贷方发生金额'],
-        accid_col='科目编号',
-        accna_col='科目全路径'
+        #  drcrdesc=['借方发生金额','贷方发生金额'],
+        #  accid_col='科目编号',
+        #  accna_col='科目全路径'
     ):
         if self.use_map==True:
             setattr(self,'drcrdesc',self.xlmap.drcrdesc)
@@ -100,11 +111,12 @@ class CalSheet(XlSheet):
             #  accna_col='accna'
         #  else:
             #  pass
+        print('see the cols:',self.xlmap.columns)
         if isinstance(self.data,DataFrame):
-            map_df=self.data[[self.accid_col,self.accna_col]]
+            map_df=self.data[[self.xlmap.accid_col,self.xlmap.accna_col]]
             map_dict=zip(
-                list(map_df[self.accid_col]),
-                list(map_df[self.accna_col])
+                list(map_df[self.xlmap.accid_col]),
+                list(map_df[self.xlmap.accna_col])
             )
             self.acctmap.update(map_dict)
             self.acctmap_invert=dict(
@@ -199,16 +211,16 @@ class CalSheet(XlSheet):
             #  file_path=None,
             #  sheet_name='sheet0',
             #  title=0,
-            keep_meta_info=self.keep_meta_info,
-            key_index=deepcopy(self.key_index),
-            key_name=deepcopy(self.key_name),
-            drcrdesc=deepcopy(self.drcrdesc),
-            accid_col=deepcopy(self.accid_col),
-            accna_col=deepcopy(self.accna_col),
-            date_col=deepcopy(self.date_col),
-            date_split_by=self.date_split_by,
+            #  key_index=deepcopy(self.key_index),
+            #  key_name=deepcopy(self.key_name),
+            #  drcrdesc=deepcopy(self.drcrdesc),
+            #  accid_col=deepcopy(self.accid_col),
+            #  accna_col=deepcopy(self.accna_col),
+            #  date_col=deepcopy(self.date_col),
+            #  date_split_by=self.date_split_by,
             xlmap=deepcopy(self.xlmap),
-            use_map=self.use_map
+            use_map=self.use_map,
+            keep_meta_info=self.keep_meta_info,
         )
         cal.accept_df(df)
         return cal

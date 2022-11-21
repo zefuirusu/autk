@@ -10,6 +10,9 @@ from pandas import concat,DataFrame,read_excel
 from autk.parser.funcs import transType,get_time_str
 # from autk.mapper.map import XlMap
 class XlSheet:
+    '''
+    Map is not so important to XlSheet.
+    '''
     def __init__(
         self,
         shmeta=[None,'sheet0',0],
@@ -151,6 +154,7 @@ class XlSheet:
         if isinstance(shmeta,DataFrame):
             self.accept_df(shmeta[0])
         elif shmeta[0] is None:
+            print(shmeta)
             create_blank()
         elif isfile(shmeta[0]):
             if self.suffix == r'xls':
@@ -186,6 +190,7 @@ class XlSheet:
                 self.accept_df(data_fake)
             pass
         else:
+            print(shmeta)
             create_blank()
         if (
             self.data is not None 
@@ -199,7 +204,23 @@ class XlSheet:
             self.apply_df_func(__set_file_name,0,'from_book')
         else:
             print('[Waining] meta_info not kept in self.data.')
+            print(self.xlmap)
         pass
+    #  @property
+    #  def columns(self):
+        #  '''
+        #  self.xlmap must not be None.
+        #  this function cannot display the instant columns of self.data;
+        #  '''
+        #  if self.xlmap is not None:
+            #  columns=deepcopy(
+                #  list(
+                    #  self.xlmap.columns
+                #  )
+            #  )
+        #  else:
+            #  columns=[]
+        #  return columns
     def fresh_columns(self):
         '''
         self.data must not be None.
@@ -220,6 +241,7 @@ class XlSheet:
             )
         )
     def load_df_by_map(self,df,xlmap):
+        print('XlSheet loads data ','with shape',df.shape,'by map:',xlmap)
         col_names_in_xlmap=list(self.xlmap.show.keys())
         self.data=DataFrame([],columns=col_names_in_xlmap)
         self.colmap_info=[]
