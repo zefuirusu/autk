@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
+from copy import deepcopy
 class XlMap:
     '''
     class XlMap indicates the index of a data sheet's columns.
@@ -31,13 +32,20 @@ class XlMap:
             setattr(self,k,json_str[k])
             continue
         pass
-    @staticmethod
-    def from_list(columns):
+    @classmethod
+    def from_list(cls,columns):
         print('create map from list: ',columns)
-        xlmap=XlMap()
+        xlmap=cls()
         xlmap._overwt_dict()
         xlmap.append_col_list(columns)
         print('new map created:\n',xlmap.show)
+        return xlmap
+    @classmethod
+    def from_dict(cls,columns):
+        print('create map from dict: ',columns)
+        xlmap=cls()
+        #  xlmap._overwt_dict()
+        xlmap.accept_json(columns,over_write=True)
         return xlmap
     @property
     def name(self):
@@ -102,27 +110,6 @@ class MglMap(XlMap):
     def date_split_by(self):
         return r'-'
     pass
-def get_glmap(columns,key_index=['date','mark','jrid'],drcrdesc=['dr_amount','cr_amount']):
-    '''
-    columns must be included:
-        glid,date,mark,jrid,accid,accna,dr_amount,cr_amount,item_name,note;
-    '''
-    print('columns of map:\n',columns)
-    class InstantMap(MglMap):
-        def __init__(self):
-            if isinstance(columns,list):
-                for n in range(len(columns)):
-                    setattr(self,columns[n],n)
-                    continue
-            elif isinstance(columns,dict):
-                for k in columns.keys():
-                    setattr(self,k,columns[k])
-            else:
-                print('invalid columns:',columns)
-                pass
-            pass
-        pass
-    return InstantMap
 class EglMap(MglMap):
     '''
     Mapping for keys from MGL object towards GeneralLedger Template.
@@ -287,6 +274,21 @@ class GenChartMap(XlMap):
     @property
     def name(self):
         return 'GenChartMap'
+    @property
+    def accid_col(self):
+        return 'accid'
+    @property
+    def accna_col(self):
+        return 'accna'
+    @property
+    def drcrdesc(self):
+        return ['dr_amount','cr_amount']
+    @property
+    def top_accid_len(self):
+        return 4
+    @property
+    def accna_split_by(self):
+        return r'/'
     #  @property
     #  def key_cols(self):
         #  '''
@@ -294,7 +296,7 @@ class GenChartMap(XlMap):
         #  '''
         #  return ['accid','accna','start_amount','dr_amount','cr_amount','end_amount','end_bal_type','entity']
     pass
-class ChartMap(XlMap):
+class ChartMap(GenChartMap):
     def __init__(self):
         '''
         key_cols必须和Acct类的accept_key_chart_row(key_chart_row)方法联动，否则MCA类的getAcct(accid=6001)方法会得到错误的数据！
@@ -430,6 +432,69 @@ def InvMonthMap(InvChartMap):
     def name(self):
         return 'InvMonthMap'
     pass
+def get_glmap(columns,key_index=['date','mark','jrid'],drcrdesc=['dr_amount','cr_amount']):
+    '''
+    columns must be included:
+        glid,date,mark,jrid,accid,accna,dr_amount,cr_amount,item_name,note;
+    '''
+    print('columns of glmap:\n',columns)
+    class InstantMap(MglMap):
+        def __init__(self):
+            if isinstance(columns,list):
+                for n in range(len(columns)):
+                    setattr(self,columns[n],n)
+                    continue
+            elif isinstance(columns,dict):
+                for k in columns.keys():
+                    setattr(self,k,columns[k])
+            else:
+                print('invalid columns:',columns)
+                pass
+            pass
+        @property
+        def key_index(self):
+            key_index=deepcopy(key_index)
+            return key_index
+        @property
+        def drcrdesc(self):
+            drcrdesc=deepcopy(drcrdesc)
+            return drcrdesc
+        pass
+    return InstantMap
+def get_chmap(columns,drcrdesc=['dr_amount','cr_amount'],accna_split_by=r'/',top_accid_len=4):
+    '''
+    columns must be included:
+        accid,accna,dr_amount,cr_amount;
+        glid,date,mark,jrid,accid,accna,dr_amount,cr_amount,item_name,note;
+    '''
+    print('columns of chmap:\n',columns)
+    class InstantMap(GenChartMap):
+        def __init__(self):
+            if isinstance(columns,list):
+                for n in range(len(columns)):
+                    setattr(self,columns[n],n)
+                    continue
+            elif isinstance(columns,dict):
+                for k in columns.keys():
+                    setattr(self,k,columns[k])
+            else:
+                print('invalid columns:',columns)
+                pass
+            pass
+        pass
+        #  @property
+        #  def drcrdesc(self):
+            #  drcrdesc=deepcopy(drcrdesc)
+            #  return drcrdesc
+        #  @property
+        #  def accna_split_by(self):
+            #  accna_split_by=deepcopy(accna_split_by)
+            #  return accna_split_by
+        #  @property
+        #  def top_accid_len(self):
+            #  top_accid_len=deepcopy(top_accid_len)
+            #  return top_accid_len
+    return InstantMap
 # standard item json:
 inv_gl_json={
     "row_key":0,

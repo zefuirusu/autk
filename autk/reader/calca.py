@@ -8,40 +8,51 @@ from copy import deepcopy
 from autk.mapper.map import ChartMap,ApArMap
 from autk.reader.xlsht import XlSheet
 class CalChart(XlSheet):
+    '''
+    CalChart must have a map to indicate its column-structure;
+    If xlmap is passed None,then columns will be:
+        ['entity','accid','accna','start_bal_type','start','dr_amount','cr_amount','end_bal_type','end','check_balance']
+    '''
     def __init__(
         self,
         shmeta=[None,'sheet0',0],
         # structure of the table is less important than meta information.
-        keep_meta_info=False,
-        key_index=['accid'], #['凭证日期','字','号'],
-        key_name='accid',
-        drcrdesc=['dr_amount','cr_amount'],#['借方发生','贷方发生'],
-        accid_col='accid',#科目编号,
-        accna_col='accna',#科目名称,
+        xlmap=None,
+        #  key_index=['accid'], #['凭证日期','字','号'],
+        #  key_name='accid',
+        #  drcrdesc=['dr_amount','cr_amount'],#['借方发生','贷方发生'],
+        #  accid_col='accid',#科目编号,
+        #  accna_col='accna',#科目名称,
         #  date_col='date',#凭证日期',
         #  date_split_by=r'-',
-        top_accid_len=4,
-        accna_split_by=r'/',
-        xlmap=ChartMap(),
-        use_map=False,
+        #  top_accid_len=4,
+        #  accna_split_by=r'/',
+        #  use_map=False,
+        keep_meta_info=False,
     ):
+        if xlmap is None:
+            xlmap=ChartMap.from_list([
+                'entity','accid','accna','start_bal_type','start','dr_amount','cr_amount','end_bal_type','end','check_balance'
+            ])
+        else:
+            pass
         XlSheet.__init__(
             self,
             shmeta=shmeta,
-            keep_meta_info=keep_meta_info,
             xlmap=xlmap,
-            use_map=use_map,
-            key_index=key_index,
-            key_name=key_name
+            use_map=True,
+            keep_meta_info=keep_meta_info,
+            key_index=[xlmap.accid_col],
+            key_name=xlmap.accid_col,
         )
         self.set_key_cols(
-            drcrdesc=drcrdesc,
-            accid_col=accid_col,
-            accna_col=accna_col
+            drcrdesc=xlmap.drcrdesc,
+            accid_col=xlmap.accid_col,
+            accna_col=xlmap.accna_col
         )
         self.set_top_acct(
-            top_accid_len,
-            accna_split_by
+            xlmap.top_accid_len,
+            xlmap.accna_split_by
         )
         pass
     def set_key_cols(

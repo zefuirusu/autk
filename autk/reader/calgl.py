@@ -34,9 +34,12 @@ class CalSheet(XlSheet):
         keep_meta_info=False,
     ):
         if xlmap is None:
-            xlmap=get_glmap([
+            #  xlmap=get_glmap([
+                #  'glid','date','mark','jrid','accid','accna','dr_amount','cr_amount','drcr','item_name','note'
+            #  ])()
+            xlmap=MglMap.from_list([
                 'glid','date','mark','jrid','accid','accna','dr_amount','cr_amount','drcr','item_name','note'
-            ])()
+            ])
         else:
             pass
         XlSheet.__init__(

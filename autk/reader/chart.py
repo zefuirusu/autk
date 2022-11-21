@@ -2,9 +2,10 @@
 # coding=utf-8
 import datetime
 from threading import Thread
-from autk.parser.funcs import transType
+from autk.parser.funcs import transType,get_time_str
 from autk.parser.entry import Acct
 from autk.mapper.map import ChartMap,ApArMap
+from autk.reader.calca import CalChart
 from autk.reader.table import ImmortalTable
 class MCA(ImmortalTable):
     '''
@@ -21,48 +22,80 @@ class MCA(ImmortalTable):
     def __init__(
         self,
         xlmeta=None,
-        common_title=3,
-        accid_col='科目编号',
-        accna_col='科目名称',
-        drcrdesc=['借方发生','贷方发生'],
-        top_accid_len=4,
-        xlmap=ChartMap(),
-        use_map=True,
+        common_title=0,
+        #  accid_col='科目编号',
+        #  accna_col='科目名称',
+        #  drcrdesc=['借方发生','贷方发生'],
+        #  top_accid_len=4,
+        xlmap=None,
+        #  use_map=True,
         auto_load=False,
-        key_cols=[]
+        key_cols=[],
+        nick_name='mca'
     ):
         '''
         key_index, key_name, and chartmap, are useless, keep them as default.
         '''
         print('---Initializing MCA---')
         t_start=datetime.datetime.now()
+        if nick_name=='mca':
+            self.name=nick_name+'_'+get_time_str()
+        else:
+            self.name=nick_name
+        if xlmap is None:
+            xlmap=ChartMap.from_list([
+                'entity','accid','accna','start_bal_type','start','dr_amount','cr_amount','end_bal_type','end','check_balance'
+            ])
+        else:
+            pass
         self.xlmeta=xlmeta
-        self.xlmap=xlmap
-        self.xlset=[]
-        self.load_count=0
-        self.keep_meta_info=False
-        # self.key_list=None # all possible values of key 主键的所有可能取值
-        self.top_accid_len=top_accid_len
-        self.__set_drcr_accid(left_len=self.top_accid_len)
-        self.__parse_key(accid_col,accna_col,drcrdesc)
-        #  self.parse_meta(self.accid_col, xlmeta, common_title)
-        self.change_float_to_str(self.accid_col)
-        if auto_load==True:
-            self.load_raw_data()
         ImmortalTable.__init__(
             self,
             xlmeta,
             common_title=common_title,
-            auto_load=auto_load,
-            key_index=self.key_index,
-            key_name=self.key_name,
             xlmap=xlmap,
-            keep_meta_info=False
+            use_map=True,
+            auto_load=auto_load,
+            keep_meta_info=False,
+            key_index=xlmap.key_index,
+            key_name=xlmap.key_name,
         )
+        #  self.xlmap=xlmap
+        self.xlset=[]
+        self.load_count=0
+        self.parse_meta(self.xlmeta,common_title,auto_load=auto_load)
+        #  self.keep_meta_info=False
+        # self.key_list=None # all possible values of key 主键的所有可能取值
+        #  self.top_accid_len=xlmap.top_accid_len
+        #  self.__set_drcr_accid(left_len=xlmap.top_accid_len)
+        #  self.__parse_key(xlmap.accid_col,xlmap.accna_col,xlmap.drcrdesc)
+        #  self.parse_meta(self.accid_col, xlmeta, common_title)
+        self.change_float_to_str(xlmap.accid_col)
+        #  if auto_load==True:
+            #  self.load_raw_data()
         t_end=datetime.datetime.now()
         t_interval=t_end-t_start
         print('Initialize time spent:',t_interval)
         print('---MCA Initialized---')
+        pass
+    def append_xl_by_meta(self,shmeta):
+        self.xlset.append(
+            CalChart(
+                shmeta,
+                xlmap=self.xlmap,
+                #  key_index=self.xlmap.key_index,
+                #  key_name=self.xlmap.key_name,
+                #  drcrdesc=self.xlmap.drcrdesc,
+                #  accid_col=self.xlmap.accid_col,
+                #  accna_col=self.xlmap.accna_col,
+                #  date_col=self.xlmap.date_col,
+                #  date_split_by=self.xlmap.date_split_by,
+                #  top_accid_len=self.xlmap.top_accid_len,
+                #  accna_split_by=self.xlmap.accna_split_by,
+                #  use_map=True,
+                keep_meta_info=False,
+            )
+        )
         pass
     def __parse_key(self,accid_col,accna_col,drcrdesc):
         self.key_index=[]
