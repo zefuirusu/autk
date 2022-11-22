@@ -4,7 +4,7 @@
 from pandas import DataFrame,concat
 from autk.parser.findfile import find_regex
 from autk.parser.funcs import f2list,save_df,relative_path
-def update_jr_by_func(
+def locate_by_func(
     version_str, # sheet name
     by_func, # to transform glid into glid_item; one parameter;
     jrli_path, # file path of journal entry id (in regex form) list; list can be passed as well;
@@ -14,6 +14,23 @@ def update_jr_by_func(
     ref_path=None, # to what base path does the output relative path relative to?
     dir_resu=False
 ):
+    '''
+    Input which jrs to find by file at `jrli_path`; 
+    Tansform jrs into regular expression through `by_func`;
+    Search jrs by regex in `sdir`;
+    Save location-mapping results into Excel at `savepath`
+    whose sheet name is `version_str`;
+    `relative:bool` determines whether results are relative path
+    from `ref_path`;
+    `dir_resu` determines whether to search directory
+    in `sdir`; if False, search files.
+    Output data looks like:
+    ________________________________
+    |glid|glid_item|location|status|
+    |----|---------|--------|------|
+    ________________________________
+    Output data will be sort by column 'glid';
+    '''
     if ref_path is None:
         ref_path=savepath
     haveli=[]
@@ -80,7 +97,7 @@ def update_jr_by_func(
     )
     print(d)
     save_df(d,version_str,savepath)
-    return
+    return d
 def update_jr_status(
     version_str, # name of the output sheet;
     jrli_path, # file path of journal entry id (in regex form) list; list can be passed as well;
@@ -151,71 +168,5 @@ def update_jr_status(
     print(d)
     save_df(d,version_str,savepath)
     return
-def tidy_up_jr(
-    jr_to_regex_func, # function to transform jr_str into regex;
-    jrli_path, #
-    fs_dir, # 'from' and search directory;
-    to_dir # 'to' and save/copy-to directory;
-):
-    import os
-    import shutil
-    from threading import Thread
-    from autk.parser.funcs import start_thread_list
-    jrli=f2list(jrli_path)
-    def single_tidy(jr_str):
-        save_dir=os.path.join(
-            to_dir,
-            jr_str
-        )
-        from_path_list=find_regex(
-            jr_to_regex_func(jr_str),
-            search_dir=fs_dir,
-            match=True
-        )[0]
-        from_dir_path_list=find_regex(
-            jr_to_regex_func(jr_str),
-            search_dir=fs_dir,
-            match=True
-        )[1]
-        if os.path.isdir(save_dir):
-            pass
-        else:
-            if len(from_path_list)==0:
-                pass
-            else:
-                os.mkdir(
-                   save_dir 
-                )
-        #  print('save to',save_dir)
-        #  print('tidy up ',jr_str,':')
-        #  print(from_path_list)
-        thread_list=[]
-        for p in from_path_list:
-            file_name=str(p.split(os.sep)[-1])
-            thread_list.append(
-                Thread(
-                    target=shutil.copy,
-                    args=(
-                        p,
-                        os.path.join(save_dir,file_name)
-                    ),
-                    name='copy_file_'+file_name
-                )
-            )
-            continue
-        start_thread_list(thread_list)
-        pass
-    thread_list=[]
-    for jr_str in jrli:
-        thread_list.append(
-            Thread(
-                target=single_tidy,
-                args=(jr_str,),
-                name='copy_jr_'+jr_str
-            )
-        )
-        continue
-    start_thread_list(thread_list)
-    pass
 if __name__=='__main__':
     pass
