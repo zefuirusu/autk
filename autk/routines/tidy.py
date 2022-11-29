@@ -5,7 +5,7 @@
 import os
 import shutil
 from threading import Thread
-from autk.parser.funcs import start_thread_list
+from autk.parser.funcs import start_thread_list,f2list
 def tidy_up(
     jr_to_regex_func, # function to transform jr_str into regex;
     jrli_path, # the file which lists which jrs to find;
