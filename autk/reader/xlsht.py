@@ -753,6 +753,15 @@ class XlSheet:
         filter_type='adv',
         unique=False
     ):
+        '''
+        parameters:
+            resu_col,
+            condition_matrix,
+            filter_type='adv',
+            unique=False
+        return:
+            list
+        '''
         if resu_col is None:
             resu_col=self.key_name
         d=self.filter(

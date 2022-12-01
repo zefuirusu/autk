@@ -926,6 +926,43 @@ class ImmortalTable:
         resu=resu.drop_duplicates()
         resu=list(resu)
         return resu
+    def vlookups(
+        self,
+        #  resu_col,
+        #  condition_matrix,
+        #  filter_type='adv',
+        #  unique=False
+        *args,
+        **kwargs,
+    ):
+        '''
+        parameters:
+            resu_col,
+            condition_matrix,
+            filter_type='adv',
+            unique=False
+        return:
+            list
+        '''
+        self.__clear_temp()
+        resuli=[]
+        def __xl_vlookups(xl,*args,**kwargs):
+            resuli.extend(
+                xl.vlookups(
+                    *args,
+                    **kwargs
+                )
+            )
+            pass
+        self.apply_xl_func(
+            __xl_vlookups,
+            *args,
+            **kwargs
+        )
+        resuli=list(
+            set(resuli)
+        )
+        return resuli
     def sumifs(self,target_col,condition,filter_type='adv'):
         '''
         condition can be matrix or dict;
@@ -1019,47 +1056,37 @@ class ImmortalTable:
             thread_list.append(t)
         start_thread_list(thread_list)
         pass
-    ### nice idea but needs to improve;
     def apply_xl_func(
         self,
-        func_name,
-        args,
-        over_write=False,
-        type_xl=False
+        xl_func,
+        *args,
+        **kwargs,
     ):
         '''
-        This function does not work, right now.
-        multi-thread apply a function for each xl in self.xlset;
-        func_name must be method of class XlSheet;
-        This method changes self.__df_temp;
-        If func_name returns DataFrame, this method will return data;
+        This method starts multi-thread to manipulate every xl,
+        in self.xlset to call one of his method named `xl_func`,
+        so as to collect data into outside data-capsule.
+        Then you get data by self.get_df_temp_data();
+        `xl_func` must be method of class XlSheet;
+        This method works with self.get_df_temp_data;
         '''
-        self.__clear_temp()
-        def __apply_xl_func_single(xl_obj):
-            self.__df_temp.append(
-                xl_obj.func_name(*args)
-            )
-            pass
         thread_list=[]
         for xl in self.xlset:
-            t=Thread(
-                target=__apply_xl_func_single,
-                args=(xl,),
-                name=''.join(
-                    [
-                        r'apply_xl_func_df_temp->',
+            thread_list.append(
+                Thread(
+                    target=xl_func,
+                    args=(xl,*args),
+                    name=''.join([
+                        r'apply_xl_func->',
+                        xl_func.__name__,
                         xl.pure_file_name,
                         xl.sheet_name
-                    ]
+                    ])
                 )
             )
-            thread_list.append(t)
             continue
         start_thread_list(thread_list)
-        d=self.get_df_temp_data(over_write=over_write,type_xl=type_xl)
-        self.__clear_temp()
-        return d
-    ### not perfect yet ???
+        return
     def append_df(self,in_df):
         '''
         not perfect yet.

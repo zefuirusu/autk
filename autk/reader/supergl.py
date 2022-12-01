@@ -333,7 +333,7 @@ class SGL:
         **kwargs
     ):
         '''
-        keyword arguments are not allowed.
+        Note:keyword arguments are not allowed.
         '''
         dfli=[]
         def __mgl_filter(

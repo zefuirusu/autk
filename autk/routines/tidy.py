@@ -17,6 +17,7 @@ def tidy_up(
     move=False, # whether to move or copy find-results to `saveto_dir`;
     create_dir=False, # whether to create new directory by the name of `jr_str` beside `saveto_dir` for multi-find-results of files;
     datapath=None, # where to save `jr-location` mapping data;
+    preview=True
 ):
     '''
     Input which jrs to search, by file at `jrli_path`; 
@@ -40,7 +41,7 @@ def tidy_up(
         Nothing. This function does not return anything.
     '''
     jrli=f2list(jrli_path)
-    data_cols=['target','regex','status','past_path','location']
+    data_cols=['target','regex','count','past_path','location']
     data=[]
     def single_tidy(jr_str):
         target=jr_str
@@ -58,16 +59,23 @@ def tidy_up(
         past_path=';'.join(from_path_list)
         past_path=past_path+';'+';'.join(from_dir_list)
         def mvcp_list(resu_list):
-            if move==True:
-                process_func=shutil.move
+            count=len(resu_list)
+            def preview_move(from_path,to_path):
+                print(jr_str,'-->',from_path.split(os.sep)[-1],',save_to:',to_path)
+                pass
+            if preview==True:
+                process_func=preview_move
             else:
-                process_func=shutil.copy
+                if move==True:
+                    process_func=shutil.move
+                else:
+                    process_func=shutil.copy
             if len(resu_list)==0:
-                status='×'
-                location='None'
+                #  status='×'
+                location=''
                 pass
             else:
-                status='√'
+                #  status='√'
                 if len(resu_list)>1 or create_dir==True:
                     # directory will be created anyway 
                     # if more than one results found;
@@ -77,10 +85,13 @@ def tidy_up(
                             jr_str+'_rslts' # results for short, as suffix;
                         )
                     )
-                    if os.path.isdir(save_dir):
+                    if preview==True:
                         pass
                     else:
-                        os.mkdir(save_dir)
+                        if os.path.isdir(save_dir):
+                            pass
+                        else:
+                            os.mkdir(save_dir)
                     location=save_dir
                 else:
                     # len(resu_list)=1
@@ -91,10 +102,13 @@ def tidy_up(
                                 jr_str+'_rslts'
                             )
                         )
-                        if os.path.isdir(save_dir):
+                        if preview==True:
                             pass
                         else:
-                            os.mkdir(save_dir)
+                            if os.path.isdir(save_dir)==True:
+                                pass
+                            else:
+                                os.mkdir(save_dir)
                     else:
                         save_dir=os.path.abspath(saveto_dir)
                     # get location:
@@ -109,11 +123,23 @@ def tidy_up(
                 thread_list=[]
                 for resu_path in resu_list:
                     if len(resu_list)>1:
+                        #  print(
+                            #  'find multi for',
+                            #  jr_str,
+                            #  ':',
+                            #  len(resu_list)
+                        #  )
                         save_path=os.path.join(
                             save_dir,
                             resu_path.split(os.sep)[-1]
                         )
                     else:
+                        #  print(
+                            #  'find unique for',
+                            #  jr_str,
+                            #  ':',
+                            #  len(resu_list)
+                        #  )
                         save_path=location
                     thread_list.append(
                         Thread(
@@ -124,7 +150,7 @@ def tidy_up(
                     )
                     continue
                 start_thread_list(thread_list)
-            row_data=[target,regex,status,past_path,location]
+            row_data=[target,regex,count,past_path,location]
             data.append(row_data)
             pass
         # start to process with search-results:
@@ -145,7 +171,13 @@ def tidy_up(
     start_thread_list(thread_list)
     # get location data:
     data=DataFrame(data,columns=data_cols)
-    if datapath is not None:
-        save_df(data,'location',datapath)
+    data.sort_values(
+        'target',
+        ascending=True,
+        inplace=True,
+        ignore_index=True
+    )
     print(data)
+    if datapath is not None and preview==False:
+        save_df(data,'location',datapath)
     return data

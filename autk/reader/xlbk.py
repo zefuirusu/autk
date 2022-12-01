@@ -188,10 +188,10 @@ class XlBook:
         '''
         from autk.reader.table import ImmortalTable
         xlmeta={}
-        for sht in self.shtli:
-            xlmeta.update(
-                {self.file_path:[[sht,common_title]]}
-            )
+        xlmeta.update(
+            {self.file_path:[[sht,common_title] for sht in
+                             self.shtli]}
+        )
         return ImmortalTable(
             xlmeta=xlmeta,
             common_title=common_title,
@@ -203,7 +203,28 @@ class XlBook:
             #  key_name='key_id'
         )
         pass
-    def to_mgl(self,common_title=0):
+    def to_mgl(
+        self,
+        common_title=0,
+        xlmap=None,
+        auto_load=False
+    ):
+        from autk.reader.mortalgl import MGL
+        xlmeta={}
+        xlmeta.update(
+            {self.file_path:[[sht,common_title] for sht in
+                             self.shtli]}
+        )
+        return MGL(
+            xlmeta=xlmeta,
+            common_title=common_title,
+            xlmap=xlmap,
+            auto_load=auto_load,
+            nick_name='mgl_frbk'
+        )
+    def to_inventory(
+        self,
+    ):
         pass
     pass
 if __name__=='__main__':
