@@ -1,4 +1,5 @@
-#!/usr/bin/env python # coding=utf-8
+#!/usr/bin/env python 
+# coding=utf-8
 '''
 说明:
     1. AuSample类初始化时的部分属性没有得到充分利用,需要后期升级.
@@ -302,4 +303,6 @@ class genSample:
         '''
         from pandas import read_excel
         # from autk.financialtk.journal import EntryRecord
+    pass
+if __name__=='__main__':
     pass

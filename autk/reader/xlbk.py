@@ -45,6 +45,10 @@ class XlBook:
         elif self.suffix=='xlsm':
             return load_workbook(self.file_path,keep_vba=True).sheetnames
         pass
+    def find_sheet(self,regex_str):
+        from autk.parser.funcs import regex_filter
+        possible_names=regex_filter(regex_str,self.shtli,match_mode=False)
+        return possible_names
     @property
     def shape(self):
         '''
@@ -81,25 +85,6 @@ class XlBook:
             data=self.shape,
             columns=['rows','cols'],
             index=self.shtli
-        )
-    def select_matrix(
-        self,
-        sheet_name,
-        from_cell_index,
-        to_cell_index,
-        type_df=False,
-        has_title=False
-    ):
-        '''
-        from_cell_index and to_cell_index are tuples like 'R1C1' ref-style in Excel: (row,column);
-        '''
-        return self.get_matrix(
-            sheet_name,
-            from_cell_index,
-            to_cell_index[0]-from_cell_index[0]+1,
-            to_cell_index[1]-from_cell_index[1]+1,
-            type_df=type_df,
-            has_title=has_title
         )
     def get_matrix(
             self,
@@ -178,10 +163,64 @@ class XlBook:
         else:
             pass
         return matrix
-    def find_sheet(self,regex_str):
-        from autk.parser.funcs import regex_filter
-        possible_names=regex_filter(regex_str,self.shtli,match_mode=False)
-        return possible_names
+    def select_matrix(
+        self,
+        sheet_name,
+        from_cell_index,
+        to_cell_index,
+        type_df=False,
+        has_title=False
+    ):
+        '''
+        from_cell_index and to_cell_index are tuples like 'R1C1' ref-style in Excel: (row,column);
+        '''
+        return self.get_matrix(
+            sheet_name,
+            from_cell_index,
+            to_cell_index[0]-from_cell_index[0]+1,
+            to_cell_index[1]-from_cell_index[1]+1,
+            type_df=type_df,
+            has_title=has_title
+        )
+    def get_row(self,sheet_name,row):
+        max_col=self.shape_df.at[sheet_name,'cols']
+        return list(
+            self.select_matrix(
+                sheet_name,
+                (row,1),
+                (row,max_col),
+                type_df=False,
+                has_title=False
+            )[0]
+        )
+    def get_col(self,sheet_name,col):
+        max_row=self.shape_df.at[sheet_name,'rows']
+        return list(
+            self.select_matrix(
+                sheet_name,
+                (1,col),
+                (max_row,col),
+                type_df=False,
+                has_title=False
+            )[0]
+        )
+    def test_map(self,xlmap,common_title=0):
+        '''
+        To test each sheet to check if they are fit to the input `xlmap`;
+        '''
+        resu_df=DataFrame([],index=self.shape_df.index,columns=xlmap.columns)
+        map_cols=xlmap.columns
+        map_dict=xlmap.show
+        for sht in resu_df.index:
+            max_cols=self.shape_df.at[sht,'cols']
+            sht_cols=self.get_row(sht,1)
+            for col in resu_df.columns:
+                col_index=map_dict[col]
+                if col_index is not None:
+                    resu_df.at[sht,col]=sht_cols[col_index]
+                continue
+            continue
+        return resu_df
     def to_mtb(self,common_title=0,auto_load=False):
         '''
         Transform self into ImmortalTable.
@@ -222,6 +261,27 @@ class XlBook:
             auto_load=auto_load,
             nick_name='mgl_frbk'
         )
+    def to_chart(
+        self,
+        common_title=0,
+        xlmap=None,
+        auto_load=False
+    ):
+        from autk.reader.chart import MCA
+        xlmeta={}
+        xlmeta.update(
+            {self.file_path:[[sht,common_title] for sht in 
+                             self.shtli]}
+        )
+        return MCA(
+            xlmeta=xlmeta,
+            common_title=common_title,
+            xlmap=xlmap,
+            auto_load=auto_load,
+            key_cols=[],
+            nick_name='mca_frbk'
+        )
+        pass
     def to_inventory(
         self,
     ):

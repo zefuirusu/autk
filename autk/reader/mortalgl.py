@@ -431,18 +431,19 @@ class MGL(ImmortalTable):
         self.__init__(
             xlmeta=self.xlmeta,
             common_title=self.common_title,
-            key_index=self.key_index,
-            key_name=self.key_name,
-            drcrdesc=self.drcrdesc,
-            accid_col=self.accid_col,
-            accna_col=self.accna_col,
-            date_col=self.date_col,
-            date_split_by=self.date_split_by,
-            top_accid_len=self.top_accid_len,
-            accna_split_by=self.accna_split_by,
+            #  key_index=self.key_index,
+            #  key_name=self.key_name,
+            #  drcrdesc=self.drcrdesc,
+            #  accid_col=self.accid_col,
+            #  accna_col=self.accna_col,
+            #  date_col=self.date_col,
+            #  date_split_by=self.date_split_by,
+            #  top_accid_len=self.top_accid_len,
+            #  accna_split_by=self.accna_split_by,
             xlmap=self.xlmap,
-            use_map=self.use_map,
-            auto_load=False
+            #  use_map=self.use_map,
+            auto_load=False,
+            nick_name=self.name
         )
         pass
     def calxl(self,df=None):

@@ -630,7 +630,6 @@ class XlSheet:
             compare_col=condition_row[1]
             if_regex=condition_row[2]
             match_mode=condition_row[3]
-            
         '''
         self.__clear_row_temp()
         #  if self.data is None:

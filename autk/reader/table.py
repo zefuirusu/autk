@@ -933,7 +933,7 @@ class ImmortalTable:
         #  filter_type='adv',
         #  unique=False
         *args,
-        **kwargs,
+        **kwargs
     ):
         '''
         parameters:
@@ -1067,8 +1067,8 @@ class ImmortalTable:
         in self.xlset to call one of his method named `xl_func`,
         so as to collect data into outside data-capsule.
         Then you get data by self.get_df_temp_data();
-        `xl_func` must be method of class XlSheet;
         This method works with self.get_df_temp_data;
+        `xl_func` must be customized, whose first parameter is xl;
         '''
         thread_list=[]
         for xl in self.xlset:

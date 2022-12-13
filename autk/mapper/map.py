@@ -51,13 +51,13 @@ class XlMap:
     def name(self):
         return 'XlMap'
     @property
+    def show(self):
+        return self.__dict__
+    @property
     def columns(self):
         return list(
             self.show.keys()
         )
-    @property
-    def show(self):
-        return self.__dict__
     @property
     def key_index(self):
         return []
