@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pandas import DataFrame,concat
+from pandas import DataFrame,Series,concat
 from autk.parser.findfile import find_regex
 from autk.parser.funcs import f2list,save_df,relative_path
 def locate_by_func(
@@ -25,10 +25,10 @@ def locate_by_func(
     `dir_resu` determines whether to search directory
     in `sdir`; if False, search files.
     Output data looks like:
-    ________________________________
-    |glid|glid_item|location|status|
-    |----|---------|--------|------|
-    ________________________________
+    _________________________________
+    |glid|regex|file|directory|count|
+    |----|-----|----|---------|-----|
+    _________________________________
     Output data will be sort by column 'glid';
     '''
     if ref_path is None:
@@ -44,31 +44,47 @@ def locate_by_func(
         print('check argument:jrli_path')
         jrli=[]
         pass
-    for raw_jr in jrli:
-        jr=by_func(raw_jr)
+    resu_df=DataFrame(
+        [],
+        index=jrli,
+        columns=[
+            'glid',
+            'regex',
+            'location',
+            'count'
+        ]
+    )
+    for raw_jr in resu_df.index:
+        jr=by_func(raw_jr) # regex for raw_jr
         if dir_resu==True:
             search_resu=find_regex(jr,sdir)[1]
         else:
             search_resu=find_regex(jr,sdir)[0]
-        if len(search_resu)==0:
+        count=len(search_resu)
+        if count==0:
             noli.append([raw_jr,jr,0])
-        elif len(search_resu)==1:
+            location=''
+        elif count==1:
             if relative==False:
-                haveli.append([raw_jr,jr,search_resu[0]])
+                location=search_resu[0]
+                haveli.append([raw_jr,jr,location])
             else:
+                location=relative_path(
+                    search_resu[0],
+                    ref_path
+                )
                 haveli.append(
                     [
                         raw_jr,
                         jr,
-                        relative_path(
-                            search_resu[0],
-                            ref_path)
+                        location,
                      ]
                 )
-        elif len(search_resu)>1:
+        elif count>1:
             if relative==False:
+                location=';'.join(search_resu)
                 haveli.append(
-                    [raw_jr,jr,';'.join(search_resu)]
+                    [raw_jr,jr,location]
                 )
             else:
                 multi_resu=[]
@@ -76,28 +92,48 @@ def locate_by_func(
                     multi_resu.append(
                         relative_path(single_resu,ref_path)
                     )
+                    continue
+                location=';'.join(multi_resu)
                 haveli.append(
-                    [raw_jr,jr,';'.join(multi_resu)]
+                    [raw_jr,jr,location]
                 )
         else:
+            location=''
             pass
+        resu_df.loc[raw_jr,:]=Series(
+            [raw_jr,jr,location,count],
+            index=resu_df.columns
+        )
+        #  resu_df.append(
+            #  Series(
+                #  [raw_jr,jr,location,count],
+                #  index=resu_df.columns,
+                #  name=raw_jr
+            #  )
+        #  )
         continue
     print('we have %d:'%len(haveli),haveli)
     print('not have %d:'%len(noli),noli)
-    d_have=DataFrame(haveli,columns=['glid','glid_item','location'])
-    d_have['status']='√'
-    d_no=DataFrame(noli,columns=['glid','glid_item','location'])
-    d_no['status']='×'
-    d=concat([d_have,d_no],axis=0,join='outer')
-    d.sort_values(
+    #  d_have=DataFrame(haveli,columns=['glid','glid_item','location'])
+    #  d_have['status']='√'
+    #  d_no=DataFrame(noli,columns=['glid','glid_item','location'])
+    #  d_no['status']='×'
+    #  d=concat([d_have,d_no],axis=0,join='outer')
+    #  d.sort_values(
+        #  'glid',
+        #  ascending=True,
+        #  inplace=True,
+        #  ignore_index=True
+    #  )
+    resu_df.sort_values(
         'glid',
         ascending=True,
         inplace=True,
-        ignore_index=True
+        ignore_index=False
     )
-    print(d)
-    save_df(d,version_str,savepath)
-    return d
+    print(resu_df)
+    #  save_df(d,version_str,savepath)
+    return resu_df
 def update_jr_status(
     version_str, # name of the output sheet;
     jrli_path, # file path of journal entry id (in regex form) list; list can be passed as well;
