@@ -12,7 +12,6 @@ class Sample:
     ):
         self.mgl=mgl
         self.chart=chart
-        self.savepath=savepath
         self.temp=[]
         self.sample_data=None
         self.sum_df_cols=[
@@ -48,12 +47,12 @@ class Sample:
             savepath
         )
         save_df(
-            mgl.data,
+            self.mgl.data,
             'gl',
             savepath
         )
         save_df(
-            chart.data,
+            self.chart.data,
             'chart',
             savepath
         )
