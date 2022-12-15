@@ -4,10 +4,12 @@ import datetime
 from copy import deepcopy
 from threading import Thread
 from pandas import DataFrame
-from autk.parser.funcs import transType,save_df,regex_filter,get_time_str
-from autk.reader.table import ImmortalTable
-from autk.reader.calgl import CalSheet
+
 from autk.mapper.map import MglMap,get_glmap
+from autk.parser.funcs import transType,save_df,regex_filter,get_time_str
+from autk.reader.base.table import ImmortalTable
+from autk.reader.unit.calgl import CalSheet
+
 class MGL(ImmortalTable):
     '''
     Mortal General Ledger.

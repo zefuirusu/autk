@@ -4,11 +4,12 @@ import datetime
 from copy import deepcopy
 from threading import Thread
 from pandas import DataFrame
+
 from autk.parser.funcs import transType,save_df,regex_filter,get_time_str
-#  from autk.reader.table import ImmortalTable
-from autk.reader.mortalgl import MGL
-from autk.reader.calgl import CalSheet
 from autk.mapper.map import EglMap,SampleEglMap
+from autk.reader.mortal.mortalgl import MGL
+from autk.reader.unit.calgl import CalSheet
+
 class EGL(MGL):
     '''
     E-Audit Cloud General Ledger.

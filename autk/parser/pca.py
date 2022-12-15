@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
-from pandas import concat,DataFrame,Series
 from numpy import array
+from pandas import concat,DataFrame,Series
 class ClusterPca:
     '''
     1.Hierarchical Clustering.

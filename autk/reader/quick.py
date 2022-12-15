@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from autk.mapper.map import SampleEglMap,EglMap
-from autk.reader.table import ImmortalTable
-from autk.reader.mortalgl import MGL
-from autk.reader.chart import MCA
-from autk.reader.xlsht import XlSheet
+
+from autk.reader.base.xlsht import XlSheet
+from autk.reader.base.table import ImmortalTable
+from autk.reader.mortal.mortalgl import MGL
+from autk.reader.mortal.chart import MCA
+
 def calxl(df=None):
     '''
     Calculator Excel.

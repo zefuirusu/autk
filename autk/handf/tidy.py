@@ -1,14 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 import os
 import re
 import shutil
 from pandas import DataFrame
 from threading import Thread
-from autk.parser.findfile import find_regex
-from autk.parser.funcs import f2list,save_df,start_thread_list
+
+from autk.handf.findfile import find_regex
+from autk.parser.funcs import f2list,save_df,start_thread_list, get_time_str
+
+def scanxl(xl_dir=os.path.abspath(os.curdir)):
+    from openpyxl import load_workbook
+    from pandas import read_excel
+    f=find_regex(r'\.xlsx',xl_dir)[0]
+    for i in f:
+        print('='*5)
+        print('bookName:',i.split(os.sep)[-1])
+        shtli=load_workbook(i).sheetnames
+        print('sheets:',shtli)
+        for j in shtli:
+            print('\t','sheetName:',j)
+            print('\t'*2,'sheetCols:',read_excel(i,sheet_name=j,engine='openpyxl').columns)
+        print('-'*5)
+        continue
+    pass
 def tidy_up(
     transform_func, # function to transform jr_str into regex so as to match/search in `search_dir`;
     jrli_path, # the file, each line of whom stores jrs to find;
@@ -38,7 +54,8 @@ def tidy_up(
         results found;
         datapath=None, # where to save `jr-location` mapping data;
     returns:
-        Nothing. This function does not return anything.
+        DataFrame, whose columns are:
+        ['target','regex','count','past_path','location']
     '''
     jrli=f2list(jrli_path)
     data_cols=['target','regex','count','past_path','location']
@@ -179,5 +196,48 @@ def tidy_up(
     )
     print(data)
     if datapath is not None and preview==False:
-        save_df(data,'location',datapath)
+        save_df(data,get_time_str(woc=False),datapath)
     return data
+def gendirs(target_dir):
+    '''
+    This function seems useless now.
+    make directories according to the name of files in the current directory.
+    去掉所有的中文字符,以英文名字创建文件夹,用以整理资料.
+    '''
+    for file_name in os.listdir(path=target_dir):
+        pure_file_name=re.sub(r'\.pdf$',r'',file_name)
+        no_zh_dir_name=re.sub(r'-*[\u4e00-\u9fa5]+.+',r'',pure_file_name)
+        print('replace 1: %s'%pure_file_name)
+        print('replace 2: %s'%no_zh_dir_name)
+        try:
+            os.makedirs(no_zh_dir_name)
+        except FileExistsError:
+            print('%s exists!'%no_zh_dir_name)
+            pass
+def wcp(
+        item,
+        frdir,
+        todir=os.path.abspath(os.curdir),
+        nickName=get_time_str()
+):
+    '''
+    Only files, not directories can be copied.
+    frdir is the 'from and search' directory, todir is the 'to' directory.
+    Easy copy function using with the find function and then yelling out a big wocao.
+    Works well with the find function when you need to copy all the files that you find to a target new directory.
+    '''
+    import shutil
+    cp_files=find_regex(item,frdir)[0]
+    file_name='-'.join([nickName,str(frdir.split(os.sep)[-1])])
+    destination_dir=os.path.abspath(os.path.join(todir,file_name))
+    try:
+        shutil.copy(frdir,destination_dir)
+    except:
+        shutil.copytree(frdir,destination_dir)
+    else:
+        pass
+    finally:
+        print('%s is copied.'%frdir)
+    return
+if __name__=='__main__':
+    pass

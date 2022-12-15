@@ -7,7 +7,7 @@ JournalEntry: sum of debit side equals to credit side;
 OppositeFinder: to find opposite account;
 Acct: Account;
 '''
-from autk.reader.xlsht import XlSheet
+from autk.reader.base.xlsht import XlSheet
 from autk.mapper.map import MglMap
 class SimpleEntry:
     def __init__(self):
@@ -163,7 +163,7 @@ class Acct:
     Account in Chart of Account.
     '''
     def __init__(self):
-        self.depth:int=0
+        self.depth=0
         self.accid='6001'
         self.accna='Revenue'
         self.start_amount=None

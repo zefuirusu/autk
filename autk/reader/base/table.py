@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 # encoding = 'utf-8'
+
 from copy import deepcopy
 from os.path import isfile,isdir
 from threading import Thread
 from openpyxl import load_workbook
 from xlrd import open_workbook
 from pandas import concat,DataFrame
-from autk.reader.xlsht import XlSheet
+
 from autk.parser.funcs import start_thread_list
+from autk.reader.base.xlsht import XlSheet
+
 class ImmortalTable:
     '''
     ImmortalTable.

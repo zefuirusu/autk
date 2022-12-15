@@ -39,6 +39,53 @@ def add_suffix(suffix_str,filedir):
         single_rename(file)
         continue
     pass
+def change_suffix(
+    new_suffix,
+    file_type_str,
+    file_dir,
+    preview=True
+):
+    '''
+    Note:
+        previous suffix must starts with `-`;
+        for different file types, call this function separately;
+    parameters:
+        new_suffix:
+            need not include the `-`;
+        file_type_str:
+            xls,xlsx,xlsm,etc.
+        file_dir:
+            where's your files ?
+    returns:
+        None
+    '''
+    import shutil
+    from autk.handf.findfile import Walker
+    def __change_file_name(file_path):
+        new_file_path_list=file_path.split(os.sep)
+        new_file_path_list[-1]=re.sub(
+            r'-.*\.'+file_type_str+'$',
+            r'-'+new_suffix+r'.'+file_type_str,
+            file_path.split(os.sep)[-1]
+        )
+        new_file_path=os.sep.join(
+            new_file_path_list
+        )
+        print('before:')
+        print('\t',file_path.split(os.sep)[-1])
+        print('after:')
+        print('\t',new_file_path.split(os.sep)[-1])
+        if preview==True:
+            pass
+        else:
+            shutil.move(file_path,new_file_path)
+        pass
+    w1=Walker(r'\.'+file_type_str+r'$',file_dir,match=False)
+    # map(__change_file_name,w1.get_files())
+    for f in w1.get_files():
+        __change_file_name(f)
+        continue
+    pass
 class Rename:
     def __init__(self,target_dir,meta_path,shtna):
         '''

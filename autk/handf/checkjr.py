@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from pandas import DataFrame,Series,concat
-from autk.parser.findfile import find_regex
+
 from autk.parser.funcs import f2list,save_df,relative_path
+from autk.handf.findfile import find_regex
+
 def locate_by_func(
     version_str, # sheet name
     by_func, # to transform glid into glid_item; one parameter;
@@ -25,10 +27,10 @@ def locate_by_func(
     `dir_resu` determines whether to search directory
     in `sdir`; if False, search files.
     Output data looks like:
-    _________________________________
-    |glid|regex|file|directory|count|
-    |----|-----|----|---------|-----|
-    _________________________________
+    _________________________________________
+    |glid|regex|file|directory|fcount|dcount|
+    |----|-----|----|---------|-----|-------|
+    -----------------------------------------
     Output data will be sort by column 'glid';
     '''
     if ref_path is None:

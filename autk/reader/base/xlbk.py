@@ -5,7 +5,12 @@ import re
 import os
 from xlrd import open_workbook
 from openpyxl import load_workbook
+from numpy import array
+from numpy import zeros
 from pandas import read_excel,DataFrame
+
+from autk.parser.funcs import regex_filter
+
 class XlBook:
     '''
     Basic Structure of XlBook on default:
@@ -46,7 +51,6 @@ class XlBook:
             return load_workbook(self.file_path,keep_vba=True).sheetnames
         pass
     def find_sheet(self,regex_str):
-        from autk.parser.funcs import regex_filter
         possible_names=regex_filter(regex_str,self.shtli,match_mode=False)
         return possible_names
     @property
@@ -58,7 +62,6 @@ class XlBook:
         sheet_2    | (n_2,m_2)
         .......
         '''
-        from numpy import array
         if self.suffix=='xls':
             shape=array(
                 [
@@ -80,7 +83,6 @@ class XlBook:
         return shape
     @property
     def shape_df(self):
-        from pandas import DataFrame
         return DataFrame(
             data=self.shape,
             columns=['rows','cols'],
@@ -104,7 +106,6 @@ class XlBook:
             xls:str(float)
             xlsx/xlsm:str(int)
         '''
-        from numpy import array
         if self.suffix=='xls':
             sht=open_workbook(self.file_path).sheet_by_name(sheet_name)
             matrix=array(
@@ -148,7 +149,6 @@ class XlBook:
                 )
             )
         else:
-            from numpy import zeros
             matrix=zeros((n_rows_range,n_cols_range))
         if type_df==True:
             if has_title==False:
@@ -213,7 +213,7 @@ class XlBook:
         map_dict=xlmap.show
         for sht in resu_df.index:
             max_cols=self.shape_df.at[sht,'cols']
-            sht_cols=self.get_row(sht,1)
+            sht_cols=self.get_row(sht,common_title+1)
             for col in resu_df.columns:
                 col_index=map_dict[col]
                 if col_index is not None:
@@ -225,7 +225,7 @@ class XlBook:
         '''
         Transform self into ImmortalTable.
         '''
-        from autk.reader.table import ImmortalTable
+        from autk.reader.base.table import ImmortalTable
         xlmeta={}
         xlmeta.update(
             {self.file_path:[[sht,common_title] for sht in
@@ -248,7 +248,7 @@ class XlBook:
         xlmap=None,
         auto_load=False
     ):
-        from autk.reader.mortalgl import MGL
+        from autk.reader.mortal.mortalgl import MGL
         xlmeta={}
         xlmeta.update(
             {self.file_path:[[sht,common_title] for sht in
@@ -267,7 +267,7 @@ class XlBook:
         xlmap=None,
         auto_load=False
     ):
-        from autk.reader.chart import MCA
+        from autk.reader.mortal.chart import MCA
         xlmeta={}
         xlmeta.update(
             {self.file_path:[[sht,common_title] for sht in 

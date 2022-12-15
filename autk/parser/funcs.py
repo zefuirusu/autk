@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # encoding = 'utf-8'
-from autk.parser.prj import startprj,start_by_conf
+from autk.parser.start import startprj,start_by_conf
 def start_thread_list(thread_list):
     for t in thread_list:
         t.start()

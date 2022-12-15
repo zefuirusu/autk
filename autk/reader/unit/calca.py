@@ -3,10 +3,12 @@
 
 import os
 import re
-from threading import Thread
 from copy import deepcopy
+from threading import Thread
+
 from autk.mapper.map import ChartMap,ApArMap
-from autk.reader.xlsht import XlSheet
+from autk.reader.base.xlsht import XlSheet
+
 class CalChart(XlSheet):
     '''
     CalChart must have a map to indicate its column-structure;

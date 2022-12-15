@@ -2,11 +2,15 @@
 # coding=utf-8
 import datetime
 from threading import Thread
+
 from autk.parser.funcs import transType,get_time_str
 from autk.parser.entry import Acct
+
 from autk.mapper.map import ChartMap,ApArMap
-from autk.reader.calca import CalChart
-from autk.reader.table import ImmortalTable
+
+from autk.reader.base.table import ImmortalTable
+from autk.reader.unit.calca import CalChart
+
 class MCA(ImmortalTable):
     '''
     Mortal Chart of Account.

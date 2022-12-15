@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
-from numpy import array,concatenate,dot,zeros
 from numpy.linalg import norm
+from numpy import array,concatenate,dot,zeros
 class GramSchmidt:
     '''
     To perform Gram-Schmidt Orthogonalization, initialize class GramSchmidt with input numpy.ndarray of matrix, and then GramSchmidt.start().

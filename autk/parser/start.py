@@ -4,9 +4,6 @@
 import os
 from json import load,dump
 
-# json_file_path='./workspace.json'
-# with open(json_file_path) as f:
-#     PRJ_JSON=load(f)
 PRJ_JSON={
     "name":"newProject",
     "subdirs":[

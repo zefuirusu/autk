@@ -2,8 +2,9 @@
 # encoding = 'utf-8'
 from autk.parser.funcs import transType,get_time_str
 from autk.mapper.map import InvGlMap,XlMap
-from autk.reader.xlsht import XlSheet
-from autk.reader.table import ImmortalTable
+
+from autk.reader.base.xlsht import XlSheet
+from autk.reader.base.table import ImmortalTable
 
 #  fake_cal_map=XlMap()
 class CalUnit(XlSheet):

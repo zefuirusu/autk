@@ -4,9 +4,11 @@
 from copy import deepcopy
 from threading import Thread
 from pandas import DataFrame
-from autk.parser.funcs import transType,regex_filter,save_df
-from autk.reader.xlsht import XlSheet
+
 from autk.mapper.map import MglMap,get_glmap
+from autk.parser.funcs import transType,regex_filter,save_df
+from autk.reader.base.xlsht import XlSheet
+
 class CalSheet(XlSheet):
     '''
     CalSheet must have a map to indicate its column-structure;

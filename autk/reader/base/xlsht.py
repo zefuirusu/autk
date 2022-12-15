@@ -7,8 +7,9 @@ from os.path import isfile,isdir
 from xlrd import open_workbook
 from openpyxl import load_workbook
 from pandas import concat,DataFrame,read_excel
+
 from autk.parser.funcs import transType,get_time_str
-# from autk.mapper.map import XlMap
+
 class XlSheet:
     '''
     Map is not so important to XlSheet.
