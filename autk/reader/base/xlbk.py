@@ -5,11 +5,10 @@ import re
 import os
 from xlrd import open_workbook
 from openpyxl import load_workbook
-from numpy import array
-from numpy import zeros
+from numpy import array,zeros
 from pandas import read_excel,DataFrame
 
-from autk.parser.funcs import regex_filter
+from autk.parser.funcs import regex_filter,start_thread_list
 
 class XlBook:
     '''
@@ -50,9 +49,6 @@ class XlBook:
         elif self.suffix=='xlsm':
             return load_workbook(self.file_path,keep_vba=True).sheetnames
         pass
-    def find_sheet(self,regex_str):
-        possible_names=regex_filter(regex_str,self.shtli,match_mode=False)
-        return possible_names
     @property
     def shape(self):
         '''
@@ -88,6 +84,63 @@ class XlBook:
             columns=['rows','cols'],
             index=self.shtli
         )
+    def test_map(self,xlmap,common_title=0):
+        '''
+        To test each sheet to check if they are fit to the input `xlmap`;
+        '''
+        resu_df=DataFrame([],index=self.shape_df.index,columns=xlmap.columns)
+        map_cols=xlmap.columns
+        map_dict=xlmap.show
+        for sht in resu_df.index:
+            max_cols=self.shape_df.at[sht,'cols']
+            sht_cols=self.get_row(sht,common_title+1)
+            for col in resu_df.columns:
+                col_index=map_dict[col]
+                if col_index is not None:
+                    resu_df.at[sht,col]=sht_cols[col_index]
+                continue
+            continue
+        return resu_df
+    def find_sheet(self,regex_str):
+        possible_names=regex_filter(regex_str,self.shtli,match_mode=False)
+        return possible_names
+    def get_bk(self):
+        if self.suffix=='xlsx':
+            bk=load_workbook(self.file_path)
+        elif self.suffix=='xlsm':
+            bk=open_workbook(self.file_path,keep_vba=True)
+        elif self.suffix=='xls':
+            bk=open_workbook(self.file_path)
+        else:
+            bk=open_workbook(self.file_path)
+        return bk
+    def get_sht(self,sheet_name):
+        if self.suffix=='xlsx' or 'xlsm':
+            sht=self.get_bk()[sheet_name]
+        elif self.suffix=='xls':
+            sht=self.get_bk().sheet_by_name(sheet_name)
+        else:
+            sht=None
+        return sht
+    def get_value(self,sheet_name,cell_index):
+        if self.suffix=='xlsx' or 'xlsm':
+            value=self.get_sht(sheet_name).cell(
+                row=cell_index[0],
+                column=cell_index[1]
+            ).value
+        elif self.suffix=='xls':
+            value=self.get_sht(sheet_name).cell(
+                cell_index[0],
+                cell_index[1]
+            ).value
+            pass
+        else:
+            value=0
+        return value
+    def save_bk(self,bk):
+        if self.suffix=='xlsx' or 'xlsm':
+            bk.save(self.file_path)
+        pass
     def get_matrix(
             self,
             sheet_name,
@@ -204,23 +257,105 @@ class XlBook:
                 has_title=False
             )[0]
         )
-    def test_map(self,xlmap,common_title=0):
+    def fill_value(self,sheet_name,cell_index,value):
         '''
-        To test each sheet to check if they are fit to the input `xlmap`;
+        save after write;
         '''
-        resu_df=DataFrame([],index=self.shape_df.index,columns=xlmap.columns)
-        map_cols=xlmap.columns
-        map_dict=xlmap.show
-        for sht in resu_df.index:
-            max_cols=self.shape_df.at[sht,'cols']
-            sht_cols=self.get_row(sht,common_title+1)
-            for col in resu_df.columns:
-                col_index=map_dict[col]
-                if col_index is not None:
-                    resu_df.at[sht,col]=sht_cols[col_index]
-                continue
-            continue
-        return resu_df
+        if self.suffix == 'xlsx':
+            self.__xlsx_fill(sheet_name,cell_index,value,save=True)
+            pass
+        elif self.suffix == 'xlsm':
+            self.__xlsm_fill(sheet_name,cell_index,value,save=True)
+            pass
+        elif self.suffix == 'xls':
+            self.__xls_fill(sheet_name,cell_index,value,save=True)
+            pass
+        pass
+    def __xls_fill(self,sheet_name,cell_index,value,save=False):
+        import xlutils
+        b=open_workbook(self.file_path)
+        b=xlutils.copy(b)
+        #  b.sheet_by_name(sheet_name).cell(cell_index[0],cell_index[1]).value=value
+        b.write(cell_index[0],cell_index[1],value,save=False)
+        if save==True:
+            b.save(self.file_path)
+        pass
+    def __xlsx_fill(self,sheet_name,cell_index,value,save=False):
+        b=load_workbook(self.file_path)
+        b[sheet_name].cell(row=cell_index[0],column=cell_index[1]).value=value
+        if save==True:
+            b.save(self.file_path)
+        pass
+    def __xlsm_fill(self,sheet_name,cell_index,value,save=False):
+        b=load_workbook(self.file_path,keep_vba=True)
+        b[sheet_name].cell(row=cell_index[0],column=cell_index[1]).value=value
+        if save==True:
+            b.save(self.file_path)
+        pass
+    def get_fill_func(self,save=False):
+        if self.suffix=='xlsx':
+            def fill_func(sheet_name,row_num,col_num,value):
+                self.__xlsx_fill(sheet_name,(row_num,col_num),value,save=save)
+                pass
+            pass
+        elif self.suffix=='xlsm':
+            def fill_func(sheet_name,row_num,col_num,value):
+                self.__xlsm_fill(sheet_name,(row_num,col_num),value,save=save)
+                pass
+            pass
+        elif self.suffix=='xls':
+            def fill_func(sheet_name,row_num,col_num,value):
+                self.__xls_fill(sheet_name,(row_num,col_num),value,save=save)
+                pass
+            pass
+        else:
+            def fill_func(sheet_name,row_num,col_num,value):
+                self.__xlsx_fill(sheet_name,(row_num,col_num),value,save=save)
+                pass
+        return fill_func
+    def fill_bydf(self,sheet_name,matrix):
+        '''
+        matrix could be: DataFrame,array, or 2-dimension list;
+        _________________________________________
+        |sheet_name|row_index|column_index|value|
+        -----------------------------------------
+        |__________|_________|____________|_____|
+        '''
+        from threading import Thread
+        thread_list=[]
+        if isinstance(matrix,DataFrame):
+            cols=matrix.columns
+            for row in matrix.iterrows():
+                row_data=row[1]
+                sht=row_data[cols[0]]
+                r_index=row_data[cols[1]]
+                c_index=row_data[cols[2]]
+                v=row_data[cols[3]]
+                thread_list.append(
+                    Thread(
+                        target=self.get_fill_func(save=True),
+                        args=(sht,r_index,c_index,v)
+                    )
+                )
+            pass
+        elif isinstance(matrix,list):
+            for row in matrix:
+                sht=row[0]
+                r_index=row[1]
+                c_index=row[2]
+                v=row[3]
+                thread_list.append(
+                    Thread(
+                        target=self.get_fill_func(save=True),
+                        args=(sht,r_index,c_index,v)
+                    )
+                )
+            pass
+        elif isinstance(matrix,array):
+            pass
+        else:
+            pass
+        pass
     def to_mtb(self,common_title=0,auto_load=False):
         '''
         Transform self into ImmortalTable.

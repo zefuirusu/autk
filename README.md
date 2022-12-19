@@ -14,6 +14,7 @@ Audit Toolkit for those who are working hard near the end of the year.
     "libs_require":[
         "xlrd",
         "xlwt",
+        "xlutils",
         "openpyxl",
         "numpy",
         "pandas"
