@@ -3,7 +3,7 @@
 
 from pandas import DataFrame
 from autk.parser.funcs import save_df,wtlog
-from autk.reader.xlbk import XlBook
+from autk.reader.base.xlbk import XlBook
 class Sample:
     def __init__(
         self,

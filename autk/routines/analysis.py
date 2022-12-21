@@ -6,7 +6,7 @@ from os.path import isdir,isfile,join
 from threading import Thread
 from autk.parser.funcs import save_df
 from autk.mapper.map import SampleEglMap
-from autk.reader.mortalgl import MGL
+from autk.reader.mortal.mortalgl import MGL
 class CashFlow:
     def __init__(self,mgl,output_dir):
         self.mgl=mgl
