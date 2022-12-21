@@ -496,7 +496,7 @@ class ImmortalTable:
         #  get_df_temp_data(self,over_write=False,type_xl=False)
         #  self.data=concat(self.__df_temp,axis=0,join='outer')
         self.data=self.get_df_temp_data(over_write=True,type_xl=False)
-        print('if columns fit to self.data:',self.columns==list(self.data.columns))
+        print('load_raw_data, if columns fit to self.data:',self.columns==list(self.data.columns))
         if self.key_name in self.data.columns:
             self.key_list=list(self.data[self.key_name].drop_duplicates())
         self.load_count+=1

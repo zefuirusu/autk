@@ -69,6 +69,7 @@ def locate(
     sheet_name='location',
     relative=False,
     ref_path=None,
+    preview=True,
 ):
     '''
     Note:
@@ -182,7 +183,7 @@ def locate(
         row_data['file']=f_locations
         row_data['directory']=d_locations
     #  print(resu_df)
-    if savepath is not None and isinstance(savepath,str):
+    if preview==False:
         save_df(
             resu_df,
             sheet_name=sheet_name,

@@ -45,8 +45,8 @@ def relative_path(target,reference):
     from copy import deepcopy
     target=os.path.abspath(target)
     reference=os.path.abspath(reference)
-    print('target:\n',target)
-    print('ref:\n',reference)
+    #  print('target:\n',target)
+    #  print('ref:\n',reference)
     target_split=target.split(os.sep)
     ref_split=reference.split(os.sep)
     def remove_common(left_list,right_list):
