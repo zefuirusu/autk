@@ -30,7 +30,7 @@ class CalChart(XlSheet):
         #  top_accid_len=4,
         #  accna_split_by=r'/',
         #  use_map=False,
-        keep_meta_info=False,
+        keep_meta_info=True,
     ):
         if xlmap is None:
             xlmap=ChartMap.from_list([

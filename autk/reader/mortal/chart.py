@@ -60,7 +60,7 @@ class MCA(ImmortalTable):
             xlmap=xlmap,
             use_map=True,
             auto_load=auto_load,
-            keep_meta_info=False,
+            keep_meta_info=True,
             key_index=xlmap.key_index,
             key_name=xlmap.key_name,
         )
@@ -97,7 +97,7 @@ class MCA(ImmortalTable):
                 #  top_accid_len=self.xlmap.top_accid_len,
                 #  accna_split_by=self.xlmap.accna_split_by,
                 #  use_map=True,
-                keep_meta_info=False,
+                keep_meta_info=True,
             )
         )
         pass
