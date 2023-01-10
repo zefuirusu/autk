@@ -4,7 +4,7 @@
 from copy import deepcopy
 from threading import Thread
 from pandas import concat
-from autk.reader.table import ImmortalTable
+from autk.reader.base.table import ImmortalTable
 from autk.parser.funcs import f2dict,start_thread_list,save_df,get_time_str
 class STB:
     def __init__(
