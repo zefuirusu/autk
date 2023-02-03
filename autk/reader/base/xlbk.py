@@ -87,7 +87,10 @@ class XlBook:
     def test_map(self,xlmap,common_title=0):
         '''
         To test each sheet to check if they are fit to the input `xlmap`;
+        If error appears, there may be some hidden sheets, within that Excel,
+        whose columns conflict with that of the unhidden ones.
         '''
+        print('start testing map......\n','If error appears, there may be some hidden sheets, within that Excel,whose columns conflict with that of the unhidden ones.')
         resu_df=DataFrame([],index=self.shape_df.index,columns=xlmap.columns)
         map_cols=xlmap.columns
         map_dict=xlmap.show

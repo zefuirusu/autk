@@ -32,6 +32,7 @@ class Sample:
         gl_drcr=self.mgl.xlmap.drcrdesc
         ch_drcr=self.chart.xlmap.drcrdesc
         print(
+            'check if gl fits well with chart:',
             gl_drcr==ch_drcr,
             self.mgl.xlmap.accid_col==self.chart.xlmap.accid_col,
             self.mgl.xlmap.accna_col==self.chart.xlmap.accna_col
@@ -56,6 +57,15 @@ class Sample:
             'chart',
             savepath
         )
+        pass
+    def test_map(self,xlmap,common_title=0):
+        '''
+        Output:
+            columns_map:.....
+            sheet1 real_columns.....
+            sheet2 real_columns.....
+            ...
+        '''
         pass
     def percent_sample(self,p,target_top_accid_list=[]):
         pass
