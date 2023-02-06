@@ -5,7 +5,7 @@ Created on Thu Jul  8 23:15:30 2021
 
 @author: sk008
 """
-from autk.reader.table import ImmortalTable
+from autk.reader.base.table import ImmortalTable
 class XlJoin(ImmortalTable):
     @staticmethod
     def __time_monitor(afunc):
