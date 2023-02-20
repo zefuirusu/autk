@@ -23,7 +23,15 @@ PRJ_JSON={
                     {"name":"关联往来及交易","subdirs":[]}
                 ]},
                 {"name":"8000-归档","subdirs":[]},
-                {"name":"9000-其他","subdirs":[]}
+                {"name":"9000-其他","subdirs":[]},
+                {"name":"script",
+                    "subdirs":[
+                        {"name":"src","subdirs":[]},
+                        {"name":"data","subdirs":[]},
+                        {"name":"output","subdirs":[]},
+                        {"name":"config","subdirs":[]},
+                        {"name":"logfiles","subdirs":[]}
+                ]}
             ]
         },
         {
@@ -36,15 +44,7 @@ PRJ_JSON={
                 {"name":"200-本部资料","subdirs":[]},
                 {"name":"850-其他主体","subdirs":[]},
                 {"name":"900-zipbackup","subdirs":[]},
-                {"name":"glandtb","subdirs":[]},
-                {"name":"script",
-                    "subdirs":[
-                        {"name":"src","subdirs":[]},
-                        {"name":"data","subdirs":[]},
-                        {"name":"output","subdirs":[]},
-                        {"name":"config","subdirs":[]},
-                        {"name":"logfiles","subdirs":[]}
-                ]}
+                {"name":"glandtb","subdirs":[]}
             ]
         },
         {"name":"300-historical","subdirs":[]},
