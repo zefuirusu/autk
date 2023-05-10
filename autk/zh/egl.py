@@ -7,6 +7,7 @@ from pandas import DataFrame
 
 from autk.parser.funcs import transType,save_df,regex_filter,get_time_str
 from autk.mapper.map import EglMap,SampleEglMap
+from autk.reader.base.table import ImmortalTable
 from autk.reader.mortal.mortalgl import MGL
 from autk.reader.unit.calgl import CalSheet
 
@@ -27,7 +28,7 @@ class EGL(MGL):
     def __init__(
             self,
             xlmeta=None,
-            common_title=0,
+            common_title=4,
             key_index=['date','mark','jrid'],#['凭证日期','字','号'],
             key_name='glid',
             drcrdesc=['dr_amount','cr_amount'],#['借方发生金额','贷方发生金额'],

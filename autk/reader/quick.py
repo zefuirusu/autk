@@ -36,24 +36,23 @@ def table(xlmeta,common_title=0,keep_meta_info=True):
         keep_meta_info=keep_meta_info
     )
 def gl(xlmeta,common_title=3,sample_col=True,nick_name='mgl'):
-    mgl=MGL(
-        xlmeta=xlmeta,
-        common_title=common_title,
-        key_index=['date','mark','jrid'],
-        key_name='glid',
-        # accid_col='accid',
-        # accna_col='accna',
-        # drcrdesc=['dr_amount',
-        #           'cr_amount'],
-        top_accid_len=4,
-        accna_split_by=r'/',
-        date_col='date',
-        date_split_by=r'-',
-        sample_col=sample_col,
-        use_map=True,
-        auto_load=False,
-        nick_name=nick_name
-        )
+    from autk.mapper.map import EglMap,SampleEglMap
+    if sample_col==True:
+        mgl=MGL(
+            xlmeta=xlmeta,
+            common_title=common_title,
+            xlmap=SampleEglMap(),
+            auto_load=False,
+            nick_name='gl'
+            )
+    else:
+        mgl=MGL(
+            xlmeta=xlmeta,
+            common_title=common_title,
+            xlmap=EglMap(),
+            auto_load=False,
+            nick_name='gl'
+            )
     mgl.rename(nick_name)
     return mgl
 def chart(xlmeta):
