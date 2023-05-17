@@ -55,6 +55,13 @@ def test(pdf_dir,outdir):
         continue
     pass
 def multi_split(pdf_dir,outdir):
+    '''
+    This function requires `pdftk`.
+    Run `sudo pacman -S pdftk` to install `pdftk`;
+    see:
+        https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/;
+        https://gitlab.com/pdftk-java/pdftk;
+    '''
     thread_list=[]
     for f in os.listdir(pdf_dir):
         path=os.path.join(pdf_dir,f)
