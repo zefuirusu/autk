@@ -30,12 +30,12 @@ class XlBook:
     def __parse_file_type(self):
         self.file_name=self.file_path.split(os.sep)[-1]
         self.pure_file_name=re.sub(
-            re.compile(r'\.xls[xm]?'),
+            re.compile(r'\.xls[xm]?$'),
             '',
             self.file_name
         )
         self.suffix=re.sub(
-            re.compile(self.pure_file_name+r'.'),
+            re.compile(r'^.*\.'),
             '',
             self.file_name
         )
