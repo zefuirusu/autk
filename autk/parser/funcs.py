@@ -198,11 +198,22 @@ def save_df(df,sheet_name=None,save_path='./',file_nickname='data'):
         df.to_excel(save_path,sheet_name=sheet_name)
         print('\n','saved to path:',save_path,'\n','sheet_name:',sheet_name,'\n')
     def __save_to_file(save_path):
-        wb=load_workbook(save_path,read_only=False, keep_vba=True, data_only=False, keep_links=True)
-        wter=ExcelWriter(save_path,engine='openpyxl')
-        wter.book=wb
+        #  wb=load_workbook(save_path,read_only=False, keep_vba=True, data_only=False, keep_links=True)
+        wter=ExcelWriter(
+            save_path,
+            engine='openpyxl',
+            mode='a',
+            if_sheet_exists='new',
+            engine_kwargs={
+                #  "filename":save_path,
+                "read_only":False,
+                "keep_vba":True,
+                "data_only":False,
+                "keep_links":False
+            }
+        )
         df.to_excel(wter,sheet_name=sheet_name)
-        wter.save()
+        wter.close()
         print('\n','saved to file:',save_path,'\n','sheet_name:',sheet_name,'\n')
     def __save_to_dir(save_path):
         file_name=''.join([file_nickname,get_time_str(woc=True),r'.xlsx'])
