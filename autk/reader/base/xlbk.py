@@ -24,7 +24,6 @@ class XlBook:
         self.file_name=''
         self.pure_file_name=''
         self.suffix=''
-        #  self.shtli=[]
         self.__parse_file_type()
         pass
     def __parse_file_type(self):
@@ -104,9 +103,6 @@ class XlBook:
                 continue
             continue
         return resu_df
-    def find_sheet(self,regex_str):
-        possible_names=regex_filter(regex_str,self.shtli,match_mode=False)
-        return possible_names
     def get_bk(self):
         if self.suffix=='xlsx':
             bk=load_workbook(self.file_path)
@@ -117,6 +113,9 @@ class XlBook:
         else:
             bk=open_workbook(self.file_path)
         return bk
+    def find_sheet(self,regex_str):
+        possible_names=regex_filter(regex_str,self.shtli,match_mode=False)
+        return possible_names
     def get_sht(self,sheet_name):
         if self.suffix=='xlsx' or 'xlsm':
             sht=self.get_bk()[sheet_name]
@@ -140,10 +139,6 @@ class XlBook:
         else:
             value=0
         return value
-    def save_bk(self,bk):
-        if self.suffix=='xlsx' or 'xlsm':
-            bk.save(self.file_path)
-        pass
     def get_matrix(
             self,
             sheet_name,
@@ -238,6 +233,14 @@ class XlBook:
             type_df=type_df,
             has_title=has_title
         )
+    def select_all(self,sheet_name,type_df=False):
+        return self.select_matrix(
+            sheet_name,
+            (1,1),
+            (self.shape_df.at[sheet_name,'rows'],self.shape_df.at[sheet_name,'cols']),
+            type_df=type_df,
+            has_title=False if type_df==False else True
+        )
     def get_row(self,sheet_name,row):
         max_col=self.shape_df.at[sheet_name,'cols']
         return list(
@@ -258,21 +261,13 @@ class XlBook:
                 (max_row,col),
                 type_df=False,
                 has_title=False
-            )[0]
+            ).T[0]
         )
-    def fill_value(self,sheet_name,cell_index,value):
-        '''
-        save after write;
-        '''
-        if self.suffix == 'xlsx':
-            self.__xlsx_fill(sheet_name,cell_index,value,save=True)
-            pass
-        elif self.suffix == 'xlsm':
-            self.__xlsm_fill(sheet_name,cell_index,value,save=True)
-            pass
-        elif self.suffix == 'xls':
-            self.__xls_fill(sheet_name,cell_index,value,save=True)
-            pass
+    def save_bk(self,bk):
+        if self.suffix=='xlsx' or 'xlsm':
+            bk.save(self.file_path)
+        else:
+            bk.save(self.file_path)
         pass
     def __xls_fill(self,sheet_name,cell_index,value,save=False):
         import xlutils
@@ -281,21 +276,27 @@ class XlBook:
         #  b.sheet_by_name(sheet_name).cell(cell_index[0],cell_index[1]).value=value
         b.write(cell_index[0],cell_index[1],value,save=False)
         if save==True:
-            b.save(self.file_path)
+            self.save_bk(b)
+            #  b.save(self.file_path)
         pass
     def __xlsx_fill(self,sheet_name,cell_index,value,save=False):
         b=load_workbook(self.file_path)
         b[sheet_name].cell(row=cell_index[0],column=cell_index[1]).value=value
         if save==True:
-            b.save(self.file_path)
+            self.save_bk(b)
+            #  b.save(self.file_path)
         pass
     def __xlsm_fill(self,sheet_name,cell_index,value,save=False):
         b=load_workbook(self.file_path,keep_vba=True)
         b[sheet_name].cell(row=cell_index[0],column=cell_index[1]).value=value
         if save==True:
-            b.save(self.file_path)
+            self.save_bk(b)
+            #  b.save(self.file_path)
         pass
     def get_fill_func(self,save=False):
+        '''
+        save=False by default;
+        '''
         if self.suffix=='xlsx':
             def fill_func(sheet_name,row_num,col_num,value):
                 self.__xlsx_fill(sheet_name,(row_num,col_num),value,save=save)
@@ -316,6 +317,55 @@ class XlBook:
                 self.__xlsx_fill(sheet_name,(row_num,col_num),value,save=save)
                 pass
         return fill_func
+    def fill_value(self,sheet_name,cell_index,value):
+        '''
+        fill a single value and then save;
+        '''
+        self.get_fill_func(save=True)(sheet_name,cell_index[0],cell_index[1],value)
+        pass
+    def paste_matrix(self,matrix,start_index,sheet_name):
+        '''
+        matrix:
+            must be nd.array or pandas.DataFrame;
+        start_index:
+            from which cell of the `sheet_name` to start;
+        '''
+        r=start_index[0]
+        c=start_index[1]
+        from numpy import ndarray,nditer
+        if isinstance(matrix,ndarray):
+            for row in matrix:
+                for value in row:
+                    self.fill_value(sheet_name,(r,c),value)
+                    c+=1
+                    continue
+                c=start_index[1]
+                r+=1
+                continue
+            pass
+        elif isinstance(matrix,DataFrame):
+            matrix=matrix.values
+            self.paste_matrix(matrix,start_index,sheet_name)
+            pass
+        else:
+            print('You may check argument: ',matrix)
+            matrix=array(matrix)
+            self.paste_matrix(matrix,start_index,sheet_name)
+            pass
+        pass
+    def paste_list(self,value_list,start_index,sheet_name,vertical=True):
+        value_list=array([value_list])
+        if vertical==False:
+            pass
+        else:
+            value_list=value_list.T
+        self.paste_matrix(value_list,start_index,sheet_name)
+        pass
+    def clear_sheet(self,sheet_name):
+        from numpy import full
+        z=full(self.shape[0],'')
+        self.paste_matrix(z,(1,1),sheet_name)
+        pass
     def fill_bydf(self,sheet_name,matrix):
         '''
         matrix could be: DataFrame,array, or 2-dimension list;
