@@ -42,7 +42,7 @@ class XlBook:
     @property
     def shtli(self):
         if self.suffix=='xls':
-            return open_workbook(self.file_path).sheets()
+            return [sht.name for sht in open_workbook(self.file_path).sheets()]
         elif self.suffix=='xlsx':
             return load_workbook(self.file_path).sheetnames
         elif self.suffix=='xlsm':
