@@ -24,38 +24,38 @@ class CalInv(XlSheet):
         keep_meta_info=False,
         key_index=['invid'], #['凭证日期','字','号'],
         key_name='invid',
-        #  drcrdesc=['dr_amount','cr_amount'],#['借方发生','贷方发生'],
-        #  accid_col='accid',#科目编号,
-        #  accna_col='accna',#科目名称,
-        #  date_col='date',#凭证日期',
-        #  date_split_by=r'-',
-        #  top_accid_len=4,
-        #  accna_split_by=r'/',
-        age_len=3,
-        num_cols=[],
-        amt_cols=[],
-        age_cols=[],
+        age_len=3, ## age_len is the same as ages_count in map;
         is_previous=True,
         previous=None,
-        xlmap=InvChartMap(0),
+        xlmap=InvChartMap(3),
         use_map=False,
     ):
         self.data=None
-        self.shmeta=shmeta
-        self.keep_meta_info=keep_meta_info
         self.age_len=age_len
-        self.xlmap=xlmap
-        self.use_map=use_map
         self.is_previous=is_previous
         self.previous=previous
+        self.key_index=key_index
+        self.key_name=key_name
+        self.set_inv_attr(xlmap.num_cols,xlmap.amt_cols,xlmap.set_age_cols(age_len))
+        XlSheet.__init__(
+            self,
+            shmeta=shmeta,
+            xlmap=xlmap,
+            use_map=use_map,
+            keep_meta_info=keep_meta_info,
+            key_index=self.key_index,
+            key_name=self.key_name
+        )
         self.set_key_index(key_index,key_name)
+        # columns of data differs if `is_previous` is True or not:
         if is_previous==False:
             self.xlmap.set_age_cols(0)
             #  self.xlmap.set_age_cols(self.age_len)
         else:
             self.xlmap.set_age_cols(self.age_len)
-        self.set_inv_attr(num_cols,amt_cols,age_cols)
         self.load_raw_data()
+        # if previous CalInv is passed to initialize, 
+        # calculation will be processed automatically:
         #  if isinstance(previous,CalInv):
             #  self.cal_age_by_merge(previous)
             #  self.cal_age_from_previous(previous)
@@ -65,21 +65,6 @@ class CalInv(XlSheet):
         self.data=self.data[self.get_key_cols(previous=self.is_previous)]
         self.columns=list(self.data.columns)
     def set_inv_attr(self,num_cols,amt_cols,age_cols):
-        #  def __set_single(attr_name,attr_value):
-            #  if attr_value != []:
-                #  setattr(self,attr_name,attr_value)
-            #  elif self.use_map==True:
-                #  setattr(self,attr_name,self.xlmap.show[attr_name])
-            #  else:
-                #  print(
-                    #  '[Warning: CalInv] Invalid:',
-                    #  attr_name,
-                    #  attr_value
-                #  )
-            #  pass
-        #  __set_single('num_cols',num_cols)
-        #  __set_single('amt_cols',amt_cols)
-        #  __set_single('age_cols',age_cols)
         if (
             num_cols !=[] or
             amt_cols !=[] or
@@ -88,11 +73,14 @@ class CalInv(XlSheet):
             self.num_cols=num_cols
             self.amt_cols=amt_cols
             self.age_cols=age_cols
-        elif self.use_map == True:
+        elif self.use_map == True and (isinstance(xlmap,InvChartMap) or isinstance(xlmap,InvMonthMap)):
             self.num_cols=self.xlmap.num_cols
             self.amt_cols=self.xlmap.amt_cols
             self.age_cols=self.xlmap.get_age_cols(self.age_len)
         else:
+            self.num_cols=num_cols
+            self.amt_cols=amt_cols
+            self.age_cols=age_cols
             pass
         pass
     def get_key_cols(self,previous=False):
@@ -241,7 +229,7 @@ class CalInv(XlSheet):
             current_age_amt=end_v[age]
             return current_age_amt
         '''
-        testing.....
+        testing.....unfinished function;
         for row in self.data.iterrows():
             row_series=row[1]
             print(cal_by_row(row_series))

@@ -48,7 +48,7 @@ class XlMap:
         xlmap.accept_json(columns,over_write=True)
         return xlmap
     @property
-    def name(self):
+    def mapname(self):
         return 'XlMap'
     @property
     def show(self):
@@ -80,7 +80,7 @@ class MglMap(XlMap):
     def __init__(self):
         pass
     @property
-    def name(self):
+    def mapname(self):
         return 'MglMap'
     @property
     def key_name(self):
@@ -153,7 +153,7 @@ class EglMap(MglMap):
             'jrid':None
         }
     @property
-    def name(self):
+    def mapname(self):
         return 'MglMap'
     @property
     def key_index(self):
@@ -207,7 +207,7 @@ class SampleEglMap(EglMap):
         self.drcr=None # 一个数字表示金额，正数为借方，负数为贷方
         pass
     @property
-    def name(self):
+    def mapname(self):
         return 'SampleMglMap'
     pass
 class InvGlMap(XlMap):
@@ -244,7 +244,7 @@ class InvGlMap(XlMap):
         self.recal_amount_allocated=26
         pass
     @property
-    def name(self):
+    def mapname(self):
         return 'InvGlMap'
     @property
     def item_json(self):
@@ -272,7 +272,7 @@ class GenChartMap(XlMap):
         self.end_amount=8
         pass
     @property
-    def name(self):
+    def mapname(self):
         return 'GenChartMap'
     @property
     def accid_col(self):
@@ -324,7 +324,7 @@ class ChartMap(GenChartMap):
         # self.month=None
         pass
     @property
-    def name(self):
+    def mapname(self):
         return 'ChartMap'
     @property
     def accid_col(self):
@@ -368,7 +368,7 @@ class ApArMap(ChartMap):
         # self.month=None
         pass
     @property
-    def name(self):
+    def mapname(self):
         return 'ApArMap'
     @property
     def aging_items(self):
@@ -389,7 +389,7 @@ class InvChartMap(XlMap):
         #  self.append_col_list(self.get_age_cols(ages_count))
         pass
     @property
-    def name(self):
+    def mapname(self):
         return 'InvChartMap'
     @property
     def num_cols(self):
@@ -429,7 +429,7 @@ def InvMonthMap(InvChartMap):
         self.month=0
         pass
     @property
-    def name(self):
+    def mapname(self):
         return 'InvMonthMap'
     pass
 def get_glmap(columns,key_index=['date','mark','jrid'],drcrdesc=['dr_amount','cr_amount']):

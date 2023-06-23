@@ -64,6 +64,7 @@ class XlSheet:
         self.xlmap=xlmap
         self.use_map=use_map # use_map determines whether to use self.xlmap.
         self.keep_meta_info=keep_meta_info
+        self.suffix=''
         self.__parse_meta(shmeta)
         #  self.__parse_file_name(self.file_path)
         self.load_raw_data()
@@ -248,7 +249,12 @@ class XlSheet:
         self.colmap_info=[]
         for col_name in col_names_in_xlmap:
             col_index=self.xlmap.show[col_name]
+            if col_index==len(col_names_in_xlmap):
+                break
+            else:
+                pass
             #  print(col_name,col_index)
+            #  print('check:',col_name_in_file,col_index)
             # FutureWarning: Support for multi-dimensional indexing (e.g. `obj[:, None]`) is deprecated and will be removed in a future version.  Convert to a numpy array before indexing instead:
             col_name_in_file=df.columns.to_numpy()[col_index]
             self.colmap_info.append({
@@ -269,6 +275,7 @@ class XlSheet:
             else:
                 pass
             continue
+        print('load by colmap:',self.colmap_info)
         self.colmap_info=DataFrame(self.colmap_info)
         self.fresh_columns()
         pass
