@@ -42,8 +42,8 @@ git clone 'https://github.com/zefuirusu/autk.git' ~/Downloads/
 ```
 ## 3. To Contribute
 Feel free to fork.<br>
-Any questions or suggestions, start an issue.<br>
+Any questions or suggestions, open an issue.<br>
 ## 4. Declaration
-1. This repository is still growing and being tested..
+1. This repository is still growing and being tested.
 2. Financial Auditors and relevant developers are the target users of this repository.
 3. This repository is built by,with and for the auditors.
