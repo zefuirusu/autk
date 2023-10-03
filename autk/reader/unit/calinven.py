@@ -36,7 +36,11 @@ class CalInv(XlSheet):
         self.previous=previous
         self.key_index=key_index
         self.key_name=key_name
-        self.set_inv_attr(xlmap.num_cols,xlmap.amt_cols,xlmap.set_age_cols(age_len))
+        self.set_inv_attr(
+            xlmap.num_cols,
+            xlmap.amt_cols,
+            xlmap.get_age_cols(age_len)
+        )
         XlSheet.__init__(
             self,
             shmeta=shmeta,
@@ -48,17 +52,11 @@ class CalInv(XlSheet):
         )
         self.set_key_index(key_index,key_name)
         # columns of data differs if `is_previous` is True or not:
-        if is_previous==False:
-            self.xlmap.set_age_cols(0)
+        #  if is_previous==False:
+            #  self.xlmap.set_age_cols(0)
+        #  else:
             #  self.xlmap.set_age_cols(self.age_len)
-        else:
-            self.xlmap.set_age_cols(self.age_len)
-        self.load_raw_data()
-        # if previous CalInv is passed to initialize, 
-        # calculation will be processed automatically:
-        #  if isinstance(previous,CalInv):
-            #  self.cal_age_by_merge(previous)
-            #  self.cal_age_from_previous(previous)
+        #  self.load_raw_data()
         pass
     def load_raw_data(self):
         super().load_raw_data()
@@ -90,62 +88,66 @@ class CalInv(XlSheet):
         else:
             k.extend(self.amt_cols)
         return k
-    def gen_new_age(self,over_write=False):
-        '''
-        This method will overwrite self.data;
-        '''
-        def trans_start_age(row_series,age_col):
-            age_index=self.xlmap.show[age_col]
-            pre_age_col=self.data.columns[age_index-1]
-            pre_age_amt=row_series[pre_age_col]
-            if age_col==self.age_cols[-1]:
-                cur_age_amt=row_series[age_col]
-                return cur_age_amt+pre_age_amt
-            else:
-                return pre_age_amt
-        for age in self.age_cols:
-            self.data[age]=self.data.apply(
-                trans_start_age,
-                axis=1,
-                raw=False,
-                result_type=None,
-                args=(age,)
-            )
-        #  previous_age_df=deepcopy(
-            #  self.data.loc[:,self.get_key_cols(previous=True)]
-        #  )
-        #  new_age_df=deepcopy(previous_age_df)
-        #  for n in range(1,len(self.age_cols)):
-            #  new_age_df.iloc[:,n]=previous_age_df.loc[:,self.age_cols[n-1]]
-            #  continue
-        #  new_age_df.iloc[:,len(self.age_cols)-1]=new_age_df.iloc[:,len(self.age_cols)-1]+self.data.loc[:,self.age_cols[n]]
-        #  if over_write==True:
-            #  self.data[self.age_cols]=new_age_df[self.age_cols]
-        #  return new_age_df
     def cal_age_by_merge(self,pre_CalInv=None):
+        '''
+        same but faster than cal_age_from_previous;
+        '''
         if pre_CalInv is None:
             pre_CalInv=self.previous
-        #  pre_CalInv.gen_new_age(over_write=True)
-        #  left_df=self.data[self.get_key_cols(previous=False)]
-        #  right_df=pre_CalInv.data[pre_CalInv.get_key_cols(previous=True)]
         left_df=self.data
         right_df=pre_CalInv.data
-        print('left:\n',left_df)
-        print('right:\n',right_df)
+        print('left(current year):\n',left_df)
+        print('right(previous year):\n',right_df)
         resu=left_df.merge(right_df,how='left',on=self.key_name)
-        #  self.xlmap.set_age_cols(self.age_len)
-        #  print('current map:\n',self.xlmap.show)
         resu.fillna(0.0,inplace=True)
+        age_sum_before=resu[self.age_cols].sum(axis=0).sum()
         resu[self.age_cols[-1]]=resu[self.age_cols[-2]]+resu[self.age_cols[-1]]
         for n in range(1,len(self.age_cols)-1):
             resu[self.age_cols[n]]=resu[self.age_cols[n-1]]
             pass
         resu[self.age_cols[0]]=Series([0]*resu.shape[0],index=resu.index)
-        print('merge result:\n',resu)
+        age_sum_after=resu[self.age_cols].sum(axis=0).sum()
+        print('continue from previous:\n',resu)
+        print('if sum of age changed:',age_sum_before,age_sum_after)
+        def negative_adjust(series):
+            for n in range(len(series)):
+                cur_n=len(series)-n-1
+                if series[cur_n]<0:
+                    series[cur_n-1]=series[cur_n]+series[cur_n-1]
+                    series[cur_n]=0.0
+                else:
+                    pass
+                continue
+            pass
+        def row_age_cal(row_series):
+            row_age=row_series[self.age_cols]
+            row_age.fillna(0.0,inplace=True)
+            vector_in=Series(index=row_age.index)
+            vector_out=Series(index=row_age.index)
+            vector_in[0]=row_series['amt_in']
+            vector_out[-1]=row_series['amt_out']
+            vector_in.fillna(0.0,inplace=True)
+            vector_out.fillna(0.0,inplace=True)
+            if abs(row_age.sum())<0.004:
+                resu=Series(index=row_age.index)
+                resu[0]=row_series['amt_bal']
+                resu.fillna(0.0,inplace=True)
+            else:
+                resu=row_age+vector_in-vector_out
+            negative_adjust(resu)
+            return resu
+        resu[self.age_cols]=deepcopy(resu.apply(
+            row_age_cal,
+            axis=1,
+            raw=False,
+            result_type='reduce'
+        ))
         self.data=resu
-        #  self.gen_new_age(over_write=True)
         return resu
     def cal_age_from_previous(self,pre_CalInv):
+        '''
+        same but slower than self.cal_age_by_merge;
+        '''
         from numpy import zeros
         from numpy import array
         from pandas import Series
@@ -163,7 +165,7 @@ class CalInv(XlSheet):
                     index=self.age_cols
                 )
             elif start_age_df.shape[0]>1:
-                print('物料编码重复！',inv_id)
+                print('物料编码重复:',inv_id)
                 print(start_age_df)
                 start_age_series=Series(
                     [0.0]*self.age_len,
@@ -174,7 +176,7 @@ class CalInv(XlSheet):
                     [0.0]*self.age_len,
                     index=self.age_cols
                 )
-                print('woc!!!去年没这物料!',inv_id)
+                #  print('上年无此物料:',inv_id)
             start_age_vector=start_age_series.values
             start_vector=zeros((self.age_len,),dtype=float)
             for n in range(len(start_vector)-1):

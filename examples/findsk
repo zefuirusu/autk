@@ -1,0 +1,17 @@
+#!/usr/bin/env python
+import argparse
+from autk.handf.findfile import find_regex,locate
+if __name__=='__main__':
+    p=argparse.ArgumentParser(description='find files in the directory who matches that regex item.')
+    p.add_argument('--item',type=str,help='item to match')
+    p.add_argument('--dir',type=str,help='directory to search that item')
+    p.add_argument('--if_match',type=bool,help='if in match mode,true or false')
+    args=p.parse_args()
+    resu=find_regex(args.item,args.dir,args.if_match)
+    print('---files---')
+    for f in resu[0]:
+        print(f)
+    print('---directories---')
+    for d in resu[1]:
+        print(d)
+    pass

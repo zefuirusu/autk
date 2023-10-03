@@ -10,7 +10,7 @@ m21=InvChartMap(3)
 p20='./data/rawMaterial-yl-2020.xlsx'
 p21='./data/rawMaterial-yl-2021.xlsx'
 
-def test_age():
+def cal_age(savepath=None):
     c1=CalInv(
         [p20,'data',0],
         keep_meta_info=False,
@@ -33,34 +33,36 @@ def test_age():
         xlmap=m21,
         use_map=True
     )
-    print('columns:\n')
-    print(c1.columns)
-    print(c2.columns)
-    print('maps:\n')
-    print(c1.xlmap.show)
-    print(c2.xlmap.show)
-    print('data:\n')
-    print(c1.data)
-    print(c2.data)
-    print('-'*12)
-    print('columns of data 2021 before calculation:',c2.data.columns)
-    print('check age_cols:',c2.xlmap.get_age_cols(c2.age_len),c2.age_cols)
-    c2.cal_age_from_previous(c1)
+    if savepath is not None:
+        save_df(
+            c1.data,
+            'inventory2020',
+            savepath
+        )
+        save_df(
+            c2.data,
+            'inventory2021_before', 
+            # 这是他原本提供的本年进销存，
+            # 可以看到有的存货编码是重复的，这个表本身有缺陷；
+            savepath
+        )
+    else:
+        print('inventory2020')
+        print(c1.data)
+        print('inventory2021_before')
+        print(c2.data)
+    c2.cal_age_by_merge()
     c2.check()
-    print('vertical amount sum for year 2021',c2.data[c2.xlmap.amt_cols].sum().sum())
-    print('vertical sum for all ages in 2021:',c2.data[c2.age_cols].sum().sum())
-    pass
-def test_cols():
-    b1=XlBook(p20)
-    d1=b1.test_map(m20,0)
-    print(d1)
-    b2=XlBook(p21)
-    d2=b2.test_map(m21,0)
-    print(d2)
-    save_df(d1,'2020','./testmap.xlsx')
-    save_df(d2,'2021','./testmap.xlsx')
+    if savepath is not None:
+        save_df(
+            c2.data,
+            'inventory2021_after',
+            savepath
+        )
+    else:
+        print('inventory2021_after')
+        print(c2.data)
     pass
 if __name__=='__main__':
-    #  test_cols()
-    test_age()
+    cal_age(None)
     pass

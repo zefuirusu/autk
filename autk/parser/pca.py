@@ -10,25 +10,20 @@ class ClusterPca:
     def __init__(self):
         # input data of pandas.DataFrame.
         self.raw_df=None 
-
         # input DataFrame transformed into matrix and its columns.
         self.mat=None
         self.columns=None
-
         # matrix of eigen vectors, and colums.
         self.cov_matrix=None
         self.eigen_vector_matrix=None
         self.eigen_values=None
         self.principal_matrix=None
-
         # main part of final data.
         self.principal_data=None
         self.p_col=None 
-
         # other part of the final data.
         self.other_data=None
         self.other_col=None
-        
         # current data freshed at any time.
         self.cur_data=None # current data is pandas.DataFrame.
         pass
@@ -82,7 +77,9 @@ class ClusterPca:
         self.cov_matrix=cov_mat
         # characteristic value(eigenvalue 特征值), or singular value(奇异值).
         eigen_values,eigen_vector=eigh(cov_mat)
-        # Covariance Matrix must be Symmetric Matrix, so we choose numpy.linalg.eigh instead of numpy.linalg.eig.协方差矩阵是对称矩阵(转制等于逆)，必然可对角化，直接采用eigh方法更快，无需使用eig方法。
+        # Covariance Matrix must be Symmetric Matrix,
+        # so we choose numpy.linalg.eigh instead of
+        # numpy.linalg.eig.协方差矩阵是对称矩阵(转置等于逆)，必然可对角化，直接采用eigh方法更快，无需使用eig方法。
         eigen_values=Series(eigen_values,index=self.columns)
         self.eigen_values=eigen_values # update attribute before sorting.
         eigen_values_sort=eigen_values.sort_values(ascending=False).round(6) # ascending 升序
