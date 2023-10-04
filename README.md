@@ -11,7 +11,7 @@ Audit Toolkit for those who are working hard near the end of the year.
 ```json
 {
     "python_version":"python 3.8 at least",
-    "libs_require":[
+    "required":[
         "xlrd",
         "xlwt",
         "xlutils",
@@ -19,9 +19,9 @@ Audit Toolkit for those who are working hard near the end of the year.
         "numpy",
         "pandas"
     ],
-    "libs_optional":[
+    "optional":[
         "scipy",
-        "sk-learn"
+        "scikit-learn"
     ]
 }
 ```
