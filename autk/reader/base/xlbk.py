@@ -3,6 +3,7 @@
 
 import re
 import os
+from threading import Thread
 from xlrd import open_workbook
 from openpyxl import load_workbook
 from numpy import array,zeros
@@ -13,6 +14,7 @@ from autk.parser.funcs import regex_filter,start_thread_list
 class XlBook:
     '''
     Basic Structure of XlBook on default:
+    `xls` starts from 0, while `xlsx` starts from 1;
         file_path,
         file_name,
         suffix:xls/xlsx/xlsm,
@@ -124,11 +126,69 @@ class XlBook:
         else:
             sht=None
         return sht
+    def search(self,cell_content):
+        '''
+        Search cells by its content and return index of the result.
+        parameters:
+            cell_content:regex string;
+        returns:
+            `xls` starts from 0, while `xlsx` starts from 1;
+            {
+                "sheet_name A":[(row1,column1),(row2,column2),...],
+                "sheet_name B":[(row3,column3),...],
+                ...
+            }
+        '''
+        resu={}
+        def __sheet_search_xlsx(cell_content,shtna):
+            cell_content=re.compile(cell_content)
+            sht=self.get_sht(shtna)
+            sht_resu=[]
+            for r in range(sht.max_row):
+                for c in range(sht.max_column):
+                    mt=re.search(cell_content,str(sht.cell(r+1,c+1).value))
+                    if mt is not None:
+                        sht_resu.append((r+1,c+1))
+                    else:
+                        pass
+            if len(sht_resu)>0:
+                resu.update({shtna:sht_resu})
+            else:
+                pass
+        def __sheet_search_xls(cell_content,shtna):
+            cell_content=re.compile(cell_content)
+            sht=self.get_sht(shtna)
+            sht_resu=[]
+            for r in range(sht.nrows):
+                for c in range(sht.ncols):
+                    mt=re.search(cell_content,str(sht.cell(r,c).value))
+                    if mt is not None:
+                        sht_resu.append((r,c))
+                    else:
+                        pass
+            if len(sht_resu)>0:
+                resu.update({shtna:sht_resu})
+            else:
+                pass
+        thli=[]
+        for shtna in self.shtli:
+            thli.append(
+                Thread(
+                    target=__sheet_search_xls if self.suffix=='xls' else __sheet_search_xlsx,
+                    args=(cell_content,shtna)
+                )
+            )
+            continue
+        start_thread_list(thli)
+        return resu
     def get_value(self,sheet_name,cell_index):
+        '''
+        `xls` starts from 0, while `xlsx` starts from 1;
+        '''
         if self.suffix=='xlsx' or 'xlsm':
             value=self.get_sht(sheet_name).cell(
-                row=cell_index[0],
-                column=cell_index[1]
+                cell_index[0],
+                cell_index[1]
             ).value
         elif self.suffix=='xls':
             value=self.get_sht(sheet_name).cell(
